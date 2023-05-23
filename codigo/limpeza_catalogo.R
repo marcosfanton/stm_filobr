@@ -48,7 +48,7 @@ vars1321 <- c("AN_BASE",
               "CD_PROGRAMA",
               "NM_PRODUCAO", 
               "NM_SUBTIPO_PRODUCAO", 
-              "NM_GRAU_ACADEMICO"
+              "NM_GRAU_ACADEMICO",
               "DS_PALAVRA_CHAVE",
               "NM_DISCENTE",
               "NM_ORIENTADOR",
