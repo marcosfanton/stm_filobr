@@ -86,3 +86,31 @@ catalogo8721 <- catalogo8721  |>
                                        pattern = c("universidade federal da paraiba.*" = "universidade federal da paraiba",
                                                    "universidade estadual do parana reitoria" = "universidade estadual do parana",
                                                    ".*mesquita.*" = "universidade estadual paulista")))
+
+#Variáveis derivadas####
+#Gênero de orientadores, orientandos e orientador-orientando com o pacote @GenderBR####
+catalogo8721 <- catalogo8721 %>% 
+  mutate(
+    G_ORIENTADOR = genderBR::get_gender(NM_ORIENTADOR),
+    G_DISCENTE = genderBR::get_gender(NM_DISCENTE), 
+    G_ORDIS = factor(case_when(
+      G_ORIENTADOR == "Male" & G_DISCENTE == "Male" ~ "MM",
+      G_ORIENTADOR == "Male" & G_DISCENTE == "Female" ~ "MF",
+      G_ORIENTADOR == "Female" & G_DISCENTE == "Male" ~ "FM",
+      G_ORIENTADOR == "Female" & G_DISCENTE == "Female" ~ "FF")
+    ))
+
+#Banco limpo####
+#Transforma o restante das variáveis desejadas em fatores
+fatores <- c("NM_ENTIDADE_ENSINO",  
+             "NM_SUBTIPO_PRODUCAO", 
+             "NM_REGIAO", 
+             "SG_UF_IES", 
+             "G_ORIENTADOR", 
+             "G_DISCENTE")
+catalogo8721 <- catalogo8721  |>  
+  mutate_at(fatores, factor) 
+
+#Salvar banco limpo
+catalogo8721 |>
+  readr::write_csv("dados/catalogo.csv")
