@@ -72,10 +72,10 @@ catalogo8721 <- catalogo8721  |>
   dplyr::mutate(CD_PROGRAMA = as.factor(CD_PROGRAMA), # Torna variável como fator para não ser desconfigurada
                 dplyr::across(where(is.character), ~ { # Modifica apenas variáveis do tipo character
              x <- stringr::str_to_lower(.) # Padroniza todo texto em caixa baixa
-             x <- stringi::stri_trans_general(x, "Latin-ASCII") # Transforma todo texto em Latin-ASCII ou expressões equivalente
              x <- stringr::str_remove_all(x, "[[:punct:]]") # Remove pontuações
              x <- stringr::str_remove_all(x, "[[:digit:]]") # Remove números
              x <- stringr::str_squish(x) # Remove espaços consecutivos
+             x <- iconv(x, to = "ASCII//TRANSLIT") # Transforma todo texto em Latin-ASCII ou expressões equivalente | Tive problemas com o stri_trans_general(x, "Latin-ASCII"), pois ele transformava acentos (ex., "josé" == "jos\u0090")
              x
            }),
            NM_SUBTIPO_PRODUCAO = str_replace_all(NM_SUBTIPO_PRODUCAO, # Padronização dos valores das variáveis
@@ -100,16 +100,6 @@ catalogo8721 <- catalogo8721 %>%
     ))
 
 #Banco limpo####
-#Transforma o restante das variáveis desejadas em fatores
-fatores <- c("NM_ENTIDADE_ENSINO",  
-             "NM_SUBTIPO_PRODUCAO", 
-             "NM_REGIAO", 
-             "SG_UF_IES", 
-             "G_ORIENTADOR", 
-             "G_DISCENTE")
-catalogo8721 <- catalogo8721  |>  
-  mutate_at(fatores, factor) 
-
 #Salvar banco limpo
 catalogo8721 |>
   readr::write_csv("dados/catalogo.csv")
