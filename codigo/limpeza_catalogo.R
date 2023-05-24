@@ -68,6 +68,7 @@ catalogo8721 |>
   readr::write_csv("dados/catalogo_raw.csv")
 
 #Limpeza do texto e padronização de variáveis
+
 catalogo8721 <- catalogo8721  |> 
   dplyr::mutate(CD_PROGRAMA = as.factor(CD_PROGRAMA), # Torna variável como fator para não ser desconfigurada
                 dplyr::across(where(is.character), ~ { # Modifica apenas variáveis do tipo character
@@ -75,7 +76,7 @@ catalogo8721 <- catalogo8721  |>
              x <- stringr::str_remove_all(x, "[[:punct:]]") # Remove pontuações
              x <- stringr::str_remove_all(x, "[[:digit:]]") # Remove números
              x <- stringr::str_squish(x) # Remove espaços consecutivos
-             x <- iconv(x, to = "ASCII//TRANSLIT") # Transforma todo texto em Latin-ASCII ou expressões equivalente | Tive problemas com o stri_trans_general(x, "Latin-ASCII"), pois ele transformava acentos (ex., "josé" == "jos\u0090")
+             x <- stringi::stri_trans_general(x, "Latin-ASCII") # Transforma todo texto em Latin-ASCII ou expressões equivalente
              x
            }),
            NM_SUBTIPO_PRODUCAO = str_replace_all(NM_SUBTIPO_PRODUCAO, # Padronização dos valores das variáveis
