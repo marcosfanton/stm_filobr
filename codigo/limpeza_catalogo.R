@@ -87,6 +87,7 @@ catalogo8721 <- catalogo8721  |>
                                                    "universidade estadual do parana reitoria" = "universidade estadual do parana",
                                                    ".*mesquita.*" = "universidade estadual paulista")))
 
+<<<<<<< HEAD
 #Variáveis derivadas####
 #Gênero de orientadores, orientandos e orientador-orientando com o pacote @GenderBR####
 catalogo8721 <- catalogo8721 %>% 
@@ -114,3 +115,30 @@ catalogo8721 <- catalogo8721  |>
 #Salvar banco limpo
 catalogo8721 |>
   readr::write_csv("dados/catalogo.csv")
+=======
+#Gênero em orientadores e orientandos com o #GenderBR####
+catalogo <- catalogo |> 
+  mutate(
+    gorientador = get_gender(orientador),
+    galuno = get_gender(aluno), 
+    goga = factor(case_when(
+      (gorientador == "Male" & galuno == "Male") ~ "Homem/Homem",
+      (gorientador == "Male" & galuno == "Female") ~ "Homem/Mulher",
+      (gorientador == "Female" & galuno == "Male") ~ "Mulher/Homem",
+      (gorientador == "Female" & galuno == "Female") ~ "Mulher/Mulher"),
+      levels = c("Mulher/Mulher", "Mulher/Homem", "Homem/Mulher", "Homem/Homem"))
+  )
+#Transforma em fatores variáveis selecionadas
+fatores <- c("nomeies", 
+             "nivel", 
+             "regiao", 
+             "uf", 
+             "galuno", 
+             "gorientador", 
+             "goga")
+catalogo <- catalogo  |>  
+  mutate_at(fatores, factor) 
+#Salvar banco
+write_csv(catalogo, file = "23-05_catalogofilosofia8721.csv")
+
+>>>>>>> 96fcc099b800e766597d80c633e8dffea1c2323f
