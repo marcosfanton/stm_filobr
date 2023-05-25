@@ -3,48 +3,49 @@ library(tidyverse)
 library(here)
 library(tidytext) # Manipulação de texto
 library(textcat) # Detecção de resumos em outros idiomas
-library(stopwords) # Dicionário de stopwords
 
 # Importação do banco limpo em "limpeza_catalogo.R"
 dados <- read.csv("dados/catalogo.csv")
 
-#Diagnóstico e customização de bi- e trigrams da filosofia####
-#Método de frequência
-#Bigrams
-lixopt <- get_stopwords("pt")
+# Diagnóstico e customização de bi- e trigrams da filosofia####
+# Método de frequência
+# Bigrams
+stop_pt <- tidytext::get_stopwords("pt")
 bidados <- dados |> 
-  unnest_tokens(bigram, resumo, token = "ngrams", n = 2) #bigrams com todas palavras
+  tidytext::unnest_tokens(bigram, DS_RESUMO, token = "ngrams", n = 2) # Formação da variável bigram com todas palavras do resumo
 bidados_sep <- bidados  |>   
-  separate(bigram, into = c("word1", "word2"), sep = " ") #banco com bgrams separadas
-bidados_uni <- bidados_sep |> 
-  filter(!word1 %in% lixopt$word,
-         !word2 %in% lixopt$word) |> #remoção de bigrams com stopwords
-  unite("bigram", c(word1, word2), sep = " ") |> #Banco unificado com bigrams
-  count(bigram, sort = TRUE) |> #maior frequência de bigrams
-  filter(n >= 5) |> 
-  arrange(desc(n))
-View(bidados_uni)
-#Trigrams
+  tidyr::separate(bigram, into = c("word1", "word2"), sep = " ") # Separação dos bigrams para remoção de stopwords
+filobigrams <- bidados_sep |> 
+  dplyr::filter(!word1 %in% stop_pt$word, # Remoção de stopwords em bigrams
+         !word2 %in% stop_pt$word) |> # Remoção de stopwords em bigrams
+  tidyr::unite("bigram", c(word1, word2), sep = " ") |> # Unificação dos bigrams novamente
+  dplyr::count(bigram, sort = TRUE) |> # Contagem da frequência absoluta de cada bigram
+  dplyr::filter(n >= 5)
+
+# Salvar tabela com bigrams da filosofia
+filobigrams |>
+  readr::write_csv("dados/filobigrams.csv")
+
+# Trigrams
 tridados <- dados |> 
-  unnest_tokens(trigram, resumo, token = "ngrams", n = 3) #bigrams
+  tidytext::unnest_tokens(trigram, DS_RESUMO, token = "ngrams", n = 3) # Formação da variável trigram com todas palavras do resumo
 tridados_sep <- tridados  |>   
-  separate(trigram, into = c("word1", "word2", "word3"), sep = " ")
-tridados_uni <- tridados_sep |> 
-  filter(!word1 %in% lixopt$word,
-         !word2 %in% lixopt$word,
-         !word3 %in% lixopt$word) |> 
-  unite("trigram", c(word1, word2, word3), sep = " ") |> 
-  count(trigram, sort = TRUE) |> 
-  filter(n >= 5) |> 
-  arrange(desc(n))
-View(tridados_uni)
+  tidyr::separate(trigram, into = c("word1", "word2", "word3"), sep = " ") # Separação dos trigrams para remoção de stopwords
+filotrigrams <- tridados_sep |> 
+  dplyr::filter(!word1 %in% stop_pt$word, 
+                !word2 %in% stop_pt$word,
+                !word3 %in% stop_pt$word) |> # Remoção de stopwords em trigrams
+  tidyr::unite("trigram", c(word1, word2, word3), sep = " ") |> # Unificação dos trigrams novamente
+  dplyr::count(trigram, sort = TRUE) |> # Contagem da frequência absoluta de cada trigram
+  dplyr::filter(n >= 5)
 
-write.csv(bidados_uni, "23-05_filo_bidados.csv")
-write.csv(tridados_uni, "23-05_filo_tridados.csv")
+# Salvar tabela com trigrams da filosofia
+filotrigrams |>
+  readr::write_csv("dados/filotrigrams.csv")
 
-#Formação de bi- e trigrams####
-filo_ngrams <- c(
-  #######################Trigrams com até 10 ocorrências | Ver File 23-04_filotrigrams.csv##
+#Incorporação de bi- e trigrams relevantes na variável DS_RESUMO####
+filongrams <- c(
+  #####Trigrams relevantes com até 05 ocorrências | Arquivo: dados/filotrigrams.csv##
   "tractatus logico philosophicus", 
   "humano demasiado humano", 
   "animais nao humanos",
@@ -60,8 +61,7 @@ filo_ngrams <- c(
   "theory of justice", 
   "logicas nao classica",
   "sine qua non",
-  #"prmuxis", 
-  #######################Bigrams | Ver File filobigrams##
+  #####Bigrams relevantes com até 10 ocorrências | Arquivo: dados/filobigrams.csv##
   "ser humano ",
   "natureza humana",
   "filosofia politica",
@@ -243,14 +243,11 @@ filo_ngrams <- c(
   "seres vivos",
   "vida pratica",
   "a priori",
-  #Bigrams para EXCLUSÃO POSTERIOR
-  "deste trabalho",
-  "nesse sentido",
-  "neste sentido",
+  #Bigrams para exclusão (reconhecidas após alguns modelos STM)
   "diz respeito",
   "outro lado",
   "santa maria")
 
-#Substituição dos ngrams##
-filograms <- str_replace_all(filo_ngrams, " ", "")
-names(filograms) <- c(filo_ngrams)
+#Substituição dos ngrams na variável DS_RESUMO##
+filograms <- str_replace_all(filongrams, " ", "")
+names(filograms) <- c(filongrams)
