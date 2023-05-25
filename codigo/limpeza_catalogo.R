@@ -68,7 +68,6 @@ catalogo8721 |>
   readr::write_csv("dados/catalogo_raw.csv")
 
 #Limpeza do texto e padronização de variáveis
-
 catalogo8721 <- catalogo8721  |> 
   dplyr::mutate(CD_PROGRAMA = as.factor(CD_PROGRAMA), # Torna variável como fator para não ser desconfigurada
                 dplyr::across(where(is.character), ~ { # Modifica apenas variáveis do tipo character
@@ -99,6 +98,38 @@ catalogo8721 <- catalogo8721 %>%
       G_ORIENTADOR == "Female" & G_DISCENTE == "Male" ~ "FM",
       G_ORIENTADOR == "Female" & G_DISCENTE == "Female" ~ "FF")
     ))
+
+#O pacote genderBR não consegue atribuir gênero a alguns nomes de orientadores. 
+#Para não enviesar a amostra (excluir todos trabalhos orientados por determinador professor),
+#iremos atribuir o gênero manualmente para as observações que não foram definidas.
+
+#Seleção dos nomes sem gênero atribuído
+semgenero <- catalogo8721 |> 
+  filter(!is.na(NM_ORIENTADOR)) |> # Filtra NAs do nome do orientador
+  filter(is.na(G_ORIENTADOR)) |> #Filtra apenas observações sem atribuição de gênero
+  distinct(NM_ORIENTADOR)   # Mantêm apenas os nomes únicos
+
+#Vetor para mulheres
+mulheres <- c("heleieth iara saffioti",
+              "olgaria chain feres matos",
+              "nelci do nascimento goncalves",
+              "jeannemarie gagnebin de bons",
+              "acylene maria cabral ferreira",
+              "jeannemarie gagnebindebons",
+              "jeannemarie gagnebindebons"
+              )
+#Vetor para homens
+homens <- semgenero %>%
+  filter(!NM_ORIENTADOR %in% mulheres) |> # Filtra os nomes de mulheres
+  pull() # Extrai vetor de nomes
+
+#Atribuição de gênero para os casos correspondentes no restante do banco
+catalogo8721 <- catalogo8721 %>%
+  mutate(G_ORIENTADOR = case_when(
+    NM_ORIENTADOR %in% mulheres ~ "Female", 
+    NM_ORIENTADOR %in% homens ~ "Male", 
+    TRUE ~ G_ORIENTADOR # Preserva os valores correspondentes nos demais casos
+  ))
 
 #Banco limpo####
 #Salvar banco limpo
