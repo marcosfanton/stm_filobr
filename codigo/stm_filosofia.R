@@ -29,3 +29,13 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
 #Para não poluir esse arquivo, a análise de ngrams e de stopwords foi realizada em arquivos separados:
 #ngrams --> Ver filograms.R
 #stopwords --> filolixo.R
+
+# Incorporação de ngrams
+#Substituição dos ngrams na variável DS_RESUMO##
+filograms <- str_replace_all(filongrams, " ", "")
+names(filograms) <- c(filongrams)
+
+dados <- dados |> 
+  mutate(DS_RESUMO = str_replace_all(DS_RESUMO, pattern = filograms)) #substitui expressões compostas
+
+

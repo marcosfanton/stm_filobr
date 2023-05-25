@@ -71,17 +71,17 @@ catalogo8721 |>
 catalogo8721 <- catalogo8721  |> 
   dplyr::mutate(CD_PROGRAMA = as.factor(CD_PROGRAMA), # Torna variável como fator para não ser desconfigurada
                 dplyr::across(where(is.character), ~ { # Modifica apenas variáveis do tipo character
-             x <- stringr::str_to_lower(.) # Padroniza todo texto em caixa baixa
-             x <- stringr::str_remove_all(x, "[[:punct:]]") # Remove pontuações
-             x <- stringr::str_remove_all(x, "[[:digit:]]") # Remove números
-             x <- stringr::str_squish(x) # Remove espaços consecutivos
-             x <- stringi::stri_trans_general(x, "Latin-ASCII") # Transforma todo texto em Latin-ASCII ou expressões equivalente
-             x
-           }),
-           NM_SUBTIPO_PRODUCAO = str_replace_all(NM_SUBTIPO_PRODUCAO, # Padronização dos valores das variáveis
+                  x <- stringr::str_to_lower(.) # Padroniza todo texto em caixa baixa
+                  x <- stringr::str_remove_all(x, "[[:punct:]]") # Remove pontuações
+                  x <- stringr::str_remove_all(x, "[[:digit:]]") # Remove números
+                  x <- stringi::stri_trans_general(x, "Latin-ASCII") # Transforma todo texto em Latin-ASCII ou expressões equivalente
+                  x <- stringr::str_squish(x) # Remove espaços consecutivos
+                  x
+                  }),
+                NM_SUBTIPO_PRODUCAO = str_replace_all(NM_SUBTIPO_PRODUCAO, # Padronização dos valores das variáveis
                                         pattern = c("mestrado" = "dissertacao", 
                                                     "doutorado" = "tese")),
-           NM_ENTIDADE_ENSINO = str_replace_all(NM_ENTIDADE_ENSINO, 
+                NM_ENTIDADE_ENSINO = str_replace_all(NM_ENTIDADE_ENSINO, 
                                        pattern = c("universidade federal da paraiba.*" = "universidade federal da paraiba",
                                                    "universidade estadual do parana reitoria" = "universidade estadual do parana",
                                                    ".*mesquita.*" = "universidade estadual paulista")))
@@ -130,7 +130,6 @@ catalogo8721 <- catalogo8721 %>%
     NM_ORIENTADOR %in% homens ~ "Male", 
     TRUE ~ G_ORIENTADOR # Preserva os valores correspondentes nos demais casos
   ))
-
 #Banco limpo####
 #Salvar banco limpo
 catalogo8721 |>
