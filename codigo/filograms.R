@@ -1,12 +1,3 @@
-####Pacotes####
-library(tidyverse)
-library(here)
-library(tidytext) # Manipulação de texto
-library(textcat) # Detecção de resumos em outros idiomas
-
-# Importação do banco limpo em "limpeza_catalogo.R"
-dados <- read.csv("dados/catalogo.csv")
-
 # Diagnóstico e customização de bi- e trigrams da filosofia####
 # Método de frequência
 # Bigrams
@@ -20,7 +11,7 @@ filobigrams <- bidados_sep |>
          !word2 %in% stop_pt$word) |> # Remoção de stopwords em bigrams
   tidyr::unite("bigram", c(word1, word2), sep = " ") |> # Unificação dos bigrams novamente
   dplyr::count(bigram, sort = TRUE) |> # Contagem da frequência absoluta de cada bigram
-  dplyr::filter(n >= 5)
+  dplyr::filter(n >= 29) # Filtragem de bigrams com 29 ou mais ocorrências (n = 1019)
 
 # Salvar tabela com bigrams da filosofia
 filobigrams |>
@@ -37,7 +28,7 @@ filotrigrams <- tridados_sep |>
                 !word3 %in% stop_pt$word) |> # Remoção de stopwords em trigrams
   tidyr::unite("trigram", c(word1, word2, word3), sep = " ") |> # Unificação dos trigrams novamente
   dplyr::count(trigram, sort = TRUE) |> # Contagem da frequência absoluta de cada trigram
-  dplyr::filter(n >= 5)
+  dplyr::filter(n >= 5) # Filtragem de bigrams com 10 ou mais ocorrências (n = 909)
 
 # Salvar tabela com trigrams da filosofia
 filotrigrams |>
