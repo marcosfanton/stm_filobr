@@ -84,20 +84,20 @@ catalogo8721 <- catalogo8721  |>
                 NM_ENTIDADE_ENSINO = str_replace_all(NM_ENTIDADE_ENSINO, 
                                        pattern = c("universidade federal da paraiba.*" = "universidade federal da paraiba",
                                                    "universidade estadual do parana reitoria" = "universidade estadual do parana",
-                                                   ".*mesquita.*" = "universidade estadual paulista")) |> 
-                  dplyr::rename_all(tolower))
+                                                   ".*mesquita.*" = "universidade estadual paulista"))) |> 
+                dplyr::rename_all(tolower)
 
 #Variáveis derivadas####
 #Gênero de orientadores, orientandos e orientador-orientando com o pacote @GenderBR####
 catalogo8721 <- catalogo8721 %>% 
   mutate(
-    G_ORIENTADOR = genderBR::get_gender(NM_ORIENTADOR),
-    G_DISCENTE = genderBR::get_gender(NM_DISCENTE), 
-    G_ORDIS = factor(case_when(
-      G_ORIENTADOR == "Male" & G_DISCENTE == "Male" ~ "MM",
-      G_ORIENTADOR == "Male" & G_DISCENTE == "Female" ~ "MF",
-      G_ORIENTADOR == "Female" & G_DISCENTE == "Male" ~ "FM",
-      G_ORIENTADOR == "Female" & G_DISCENTE == "Female" ~ "FF")
+    g_orientador = genderBR::get_gender(nm_orientador),
+    g_discente = genderBR::get_gender(nm_discente), 
+    g_oridis = factor(case_when(
+      g_orientador == "Male" & g_discente == "Male" ~ "MM",
+      g_orientador == "Male" & g_discente == "Female" ~ "MF",
+      g_orientador == "Female" & g_discente == "Male" ~ "FM",
+      g_orientador == "Female" & g_discente == "Female" ~ "FF")
     ))
 
 #O pacote genderBR não consegue atribuir gênero a alguns nomes de orientadores. 
@@ -106,9 +106,9 @@ catalogo8721 <- catalogo8721 %>%
 
 #Seleção dos nomes sem gênero atribuído
 semgenero <- catalogo8721 |> 
-  filter(!is.na(NM_ORIENTADOR)) |> # Filtra NAs do nome do orientador
-  filter(is.na(G_ORIENTADOR)) |> #Filtra apenas observações sem atribuição de gênero
-  distinct(NM_ORIENTADOR)   # Mantêm apenas os nomes únicos
+  filter(!is.na(nm_orientador)) |> # Filtra NAs do nome do orientador
+  filter(is.na(g_orientador)) |> #Filtra apenas observações sem atribuição de gênero
+  distinct(nm_orientador)   # Mantêm apenas os nomes únicos
 
 #Vetor para mulheres
 mulheres <- c("heleieth iara saffioti",
@@ -121,15 +121,15 @@ mulheres <- c("heleieth iara saffioti",
               )
 #Vetor para homens
 homens <- semgenero %>%
-  filter(!NM_ORIENTADOR %in% mulheres) |> # Filtra os nomes de mulheres
+  filter(!nm_orientador %in% mulheres) |> # Filtra os nomes de mulheres
   pull() # Extrai vetor de nomes
 
 #Atribuição de gênero para os casos correspondentes no restante do banco
 catalogo8721 <- catalogo8721 %>%
-  mutate(G_ORIENTADOR = case_when(
-    NM_ORIENTADOR %in% mulheres ~ "Female", 
-    NM_ORIENTADOR %in% homens ~ "Male", 
-    TRUE ~ G_ORIENTADOR # Preserva os valores correspondentes nos demais casos
+  mutate(g_orientador = case_when(
+    nm_orientador %in% mulheres ~ "Female", 
+    nm_orientador %in% homens ~ "Male", 
+    TRUE ~ g_orientador # Preserva os valores correspondentes nos demais casos
   ))
 #Banco limpo####
 #Salvar banco limpo

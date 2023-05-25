@@ -3,7 +3,7 @@
 # Bigrams
 stop_pt <- tidytext::get_stopwords("pt")
 bidados <- dados |> 
-  tidytext::unnest_tokens(bigram, DS_RESUMO, token = "ngrams", n = 2) # Formação da variável bigram com todas palavras do resumo
+  tidytext::unnest_tokens(bigram, ds_resumo, token = "ngrams", n = 2) # Formação da variável bigram com todas palavras do resumo
 bidados_sep <- bidados  |>   
   tidyr::separate(bigram, into = c("word1", "word2"), sep = " ") # Separação dos bigrams para remoção de stopwords
 filobigrams <- bidados_sep |> 
@@ -19,7 +19,7 @@ filobigrams |>
 
 # Trigrams
 tridados <- dados |> 
-  tidytext::unnest_tokens(trigram, DS_RESUMO, token = "ngrams", n = 3) # Formação da variável trigram com todas palavras do resumo
+  tidytext::unnest_tokens(trigram, ds_resumo, token = "ngrams", n = 3) # Formação da variável trigram com todas palavras do resumo
 tridados_sep <- tridados  |>   
   tidyr::separate(trigram, into = c("word1", "word2", "word3"), sep = " ") # Separação dos trigrams para remoção de stopwords
 filotrigrams <- tridados_sep |> 
@@ -34,7 +34,7 @@ filotrigrams <- tridados_sep |>
 filotrigrams |>
   readr::write_csv("dados/filotrigrams.csv")
 
-#Incorporação de bi- e trigrams relevantes na variável DS_RESUMO####
+# NGRAMS ####
 filongrams <- c(
   #####Trigrams relevantes com até 05 ocorrências | Arquivo: dados/filotrigrams.csv##
   "humano demasiado humano", 
@@ -304,11 +304,11 @@ readr::write_lines(filongrams, "dados/filongrams")
 filograms <- str_replace_all(filongrams, " ", "")
 names(filograms) <- c(filongrams)
 dados <- dados |> 
-  mutate(DS_RESUMO = str_replace_all(DS_RESUMO, pattern = filograms)) #substitui expressões compostas
+  mutate(ds_resumo = str_replace_all(ds_resumo, pattern = filograms)) #substitui expressões compostas
 
 #Diagnóstico de palavras mais frequentes#### 
 filo_freqwords <- dados |> 
-  tidytext::unnest_tokens(output = word, input = DS_RESUMO) |> # Separação de palavras dos resumos
+  tidytext::unnest_tokens(output = word, input = ds_resumo) |> # Separação de palavras dos resumos
   anti_join(get_stopwords("pt")) |> # Eliminação de stopwords (serão eliminadas posteriormente)
   anti_join(get_stopwords("en")) |> 
   filter(!str_length(word) <= 2) |> # Eliminação de palavras com 2 ou menos caracteres
