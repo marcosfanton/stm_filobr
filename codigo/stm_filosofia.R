@@ -24,14 +24,20 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
     !is.na(G_ORIENTADOR), # -184 trabalhos sem identificação de gênero do orientador (n = 11743)
     !is.na(NM_PRODUCAO)) |> # -1 trabalho sem título (n = 11742)
   dplyr::distinct(NM_PRODUCAO, DS_RESUMO, .keep_all = TRUE) |> # -6 trabalhos repetidos (n = 11736)
-  dplyr::select(AN_BASE, NM_PRODUCAO, DS_RESUMO, DS_PALAVRA_CHAVE, G_ORIENTADOR) # Seleção de variáveis para STM e outras análises
+  dplyr::mutate(DOC_ID = row_number()) |> 
+  dplyr::select(DOC_ID, AN_BASE, NM_PRODUCAO, DS_RESUMO, DS_PALAVRA_CHAVE, G_ORIENTADOR) # Seleção de variáveis para STM e outras análises
 
-# Para não poluir esse script, a análise de ngrams e de stopwords foi realizada em arquivos separados
-# Incorporação de ngrams relevantes na variável DS_RESUMO##
-filongrams <- read_lines("dados/filongrams") # Arquivo elaborado em filograms.R
-filograms <- str_replace_all(filongrams, " ", "")
-names(filograms) <- c(filongrams)
-dados <- dados |> 
-  mutate(DS_RESUMO = str_replace_all(DS_RESUMO, pattern = filograms)) #substitui expressões compostas
+# Para não poluir esse script, a análise de ngrams e de stopwords foi realizada em script separado.
+# Ver filograms.R 
+# Tokenização e exclusão de stopwords de dicionários padronizados e de dicionário específico da filosofia (filograms.R)####
+filowords <- dados |> 
+  tidytext::unnest_tokens(output = word, # Tokenização das palavras do resumo
+                          input = DS_RESUMO, 
+                          drop = TRUE) |> # Exclusão da variável DS_RESUMO
+  anti_join(get_stopwords("pt"))|> #stopwords 
+  anti_join(get_stopwords("en"))|> #stopwords 
+  anti_join(filolixo) |> #utilizar file 23-04_filolixo.R <===
+  filter(str_detect(word, "^si$|^fe$|...")) |> #remove todas palavras com menos de 3 caracteres 
+  count(doc_id, titulo, word, ano, gorientador)   #contagem da frequência de tokens
 
 
