@@ -84,7 +84,8 @@ catalogo8721 <- catalogo8721  |>
                 NM_ENTIDADE_ENSINO = str_replace_all(NM_ENTIDADE_ENSINO, 
                                        pattern = c("universidade federal da paraiba.*" = "universidade federal da paraiba",
                                                    "universidade estadual do parana reitoria" = "universidade estadual do parana",
-                                                   ".*mesquita.*" = "universidade estadual paulista")))
+                                                   ".*mesquita.*" = "universidade estadual paulista")) |> 
+                  dplyr::rename_all(tolower))
 
 #Variáveis derivadas####
 #Gênero de orientadores, orientandos e orientador-orientando com o pacote @GenderBR####
