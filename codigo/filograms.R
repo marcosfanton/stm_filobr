@@ -216,7 +216,6 @@ filongrams <- c(
   "ecce homo",
   "educacao estetica",
   "filosofia teorica",
-  "genero humano",
   "mal radical",
   "mundo natural",
   "revolucoes cientificas",
@@ -252,7 +251,6 @@ filongrams <- c(
   "filosofia grega",
   "mecanica quantica",
   "ordem politica",
-  "si proprio",
   "sociedade industrial",
   "teoria social",
   "vida cotidiana",
@@ -268,31 +266,24 @@ filongrams <- c(
   "ilusao transcendental",
   "logica modal",
   "mundo fisico",
-  "organizacao social",
   "relacoes internacionais",
-  "transformacao social",
   "ciencias cognitivas",
   "consequencia logica",
   "critica imanente",
   "estado social",
   "filosofia aristotelica",
-  "instituicoes politicas",
-  "instituicoes sociais",
   "pesquisa cientifica",
   "primeiro principio",
   "principios fundamentais",
-  "projeto politico",
   "representacao politica",
   "sociedades democraticas",
   "agir moral",
   "antiguidade classica",
   "ideologia alema",
-  "justificacao epistemica",
   "revolucao cientifica",
   "sexto empirico",
   "sistema hegeliano",
   "teoria kantiana",
-  "terceira critica",
   #Bigrams para exclusão (reconhecidos após rodar alguns modelos STM)
   "diz respeito",
   "outro lado",
@@ -300,11 +291,7 @@ filongrams <- c(
 # Salvar vetor para uso em stm_filosofia.R
 readr::write_lines(filongrams, "dados/filongrams")
 
-# Incorporação de ngrams relevantes na variável DS_RESUMO####
-filograms <- str_replace_all(filongrams, " ", "")
-names(filograms) <- c(filongrams)
-dados <- dados |> 
-  mutate(ds_resumo = str_replace_all(ds_resumo, pattern = filograms)) #substitui expressões compostas
+
 
 #Diagnóstico de palavras mais frequentes#### 
 filo_freqwords <- dados |> 
@@ -312,7 +299,7 @@ filo_freqwords <- dados |>
   anti_join(get_stopwords("pt")) |> # Eliminação de stopwords (serão eliminadas posteriormente)
   anti_join(get_stopwords("en")) |> 
   filter(!str_length(word) <= 2) |> # Eliminação de palavras com 2 ou menos caracteres
-  count(word, sort = TRUE) |> # Contagem
+  count(word, sort = TRUE) |> # Contagem de palavras
   filter(n >= 100)
 
 # Salvar banco com palavras mais frequências de resumos de filosofia

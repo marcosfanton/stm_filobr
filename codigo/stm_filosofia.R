@@ -15,7 +15,7 @@ dados <- read.csv("dados/catalogo.csv")
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filosofia (N = 12525)
-  mutate(g_orientador = as.factor(g_orientador), # Tranforma em fator variável gênero
+  dplyr::mutate(g_orientador = as.factor(g_orientador), # Tranforma em fator variável gênero
     lang = textcat::textcat(ds_resumo)) |> # Cria identificar de idioma com base nos resumos
   dplyr::filter(
     stringi::stri_count_words(dados$ds_resumo) > 15, # -172 trabalhos com resumos insuficientes (n = 12353)
@@ -37,12 +37,16 @@ names(filograms) <- c(filongrams)
 dados <- dados |> 
   mutate(ds_resumo = str_replace_all(ds_resumo, pattern = filograms)) #substitui expressões compostas
 
-# Stopwords personalizada da filosofia
+# Salvar banco com amostra final para testes com stopwords personalizadas
+dados |> 
+  readr::write_csv("dados/dados_pre-stm.csv")
+
+# Stopwords personalizada da filosofia ####
 filolixo <- readr::read_lines("dados/filolixo")
 # Transformação em tibble para uso no anti_join####
 filolixo <- tibble(word = unlist(str_split(filolixo, "\n")))
 
-# Preparação do banco - Tokenização e exclusão de stopwords
+# Preparação do banco - Tokenização e exclusão de stopwords (n: 11736)
 filowords <- dados |> 
   tidytext::unnest_tokens(output = word, # Tokenização de palavras do resumo
                           input = ds_resumo, 
@@ -61,8 +65,53 @@ covars <- dplyr::distinct(filowords, doc_id, an_base, g_orientador) #matriz de c
 # Modelo STM
 #Modelo simples####
 topic_model <- stm(filosparse,
-                   K = 60,
+                   K = 61,
                    prevalence = ~ g_orientador + s(an_base),
                    seed = 1987,
                    data = covars,
                    init.type = "Spectral")
+
+# Extração de matrizes
+# Beta
+tidybeta <- tidy(topic_model) 
+# Gamma
+tidygamma <- tidy(topic_model, matrix = "gamma",
+                 document_names = rownames(filosparse))
+
+# Matriz Beta - Palavras mais frequentes de cada tópico 
+top_words <- tidybeta %>%
+  arrange(desc(beta)) %>%
+  group_by(topic) %>%
+  top_n(15, beta) %>%
+  summarise(terms = paste(term, collapse = ", ")) %>%
+  ungroup()
+
+# Matriz Gamma - Prevalência de tópicos com respectivos termos
+gamma_words <- tidygamma %>%
+  group_by(topic) %>%
+  summarise(gamma = mean(gamma)) %>%
+  arrange(desc(gamma)) %>%
+  left_join(top_words, by = "topic") %>%
+  mutate(topic = paste0("T", topic),
+         topic = reorder(topic, gamma))
+
+
+gamma_words |> 
+  top_n(80, gamma) |> 
+  ggplot(aes(topic, gamma, label = terms, fill = topic)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(hjust = 0, nudge_y = 0.0001, size = 5) +
+  coord_flip() +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0, 0.05),
+                     labels = percent_format()) +
+  scale_fill_manual(values = met.brewer("Cross", 80)) + 
+  theme_classic() +
+  theme(plot.title = element_text(size = 10),
+        plot.subtitle = element_text(size = 12),
+        text = element_text(size = 2)) +
+  labs(x = NULL, y = expression(gamma),
+       title = "60 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
+       subtitle = "Elaboração: Os autores | Dados: Catálogo de Teses e Dissertações (CAPES)") 
+
+
