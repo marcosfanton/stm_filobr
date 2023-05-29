@@ -43,6 +43,7 @@ filongrams <- c(
   "sine qua non",
   "todos contra todos",
   "letre et le neant",
+  "ortega y gasset",
   "sein und zeit",
   "assim falava zaratustra", 
   "theory of justice", 
@@ -216,6 +217,7 @@ filongrams <- c(
   "ecce homo",
   "educacao estetica",
   "filosofia teorica",
+  "genero humano",
   "mal radical",
   "mundo natural",
   "revolucoes cientificas",
@@ -251,6 +253,7 @@ filongrams <- c(
   "filosofia grega",
   "mecanica quantica",
   "ordem politica",
+  "si proprio",
   "sociedade industrial",
   "teoria social",
   "vida cotidiana",
@@ -266,20 +269,26 @@ filongrams <- c(
   "ilusao transcendental",
   "logica modal",
   "mundo fisico",
+  "organizacao social",
   "relacoes internacionais",
+  "transformacao social",
   "ciencias cognitivas",
   "consequencia logica",
   "critica imanente",
   "estado social",
   "filosofia aristotelica",
+  "instituicoes politicas",
+  "instituicoes sociais",
   "pesquisa cientifica",
   "primeiro principio",
   "principios fundamentais",
+  "projeto politico",
   "representacao politica",
   "sociedades democraticas",
   "agir moral",
   "antiguidade classica",
   "ideologia alema",
+  "justificacao epistemica",
   "revolucao cientifica",
   "sexto empirico",
   "sistema hegeliano",
@@ -290,9 +299,6 @@ filongrams <- c(
   "santa maria")
 # Salvar vetor para uso em stm_filosofia.R
 readr::write_lines(filongrams, "dados/filongrams")
-
-
-
 #Diagnóstico de palavras mais frequentes#### 
 filo_freqwords <- dados |> 
   tidytext::unnest_tokens(output = word, input = ds_resumo) |> # Separação de palavras dos resumos

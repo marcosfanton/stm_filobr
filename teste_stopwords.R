@@ -160,6 +160,7 @@ longo
 outras
 formacao
 nocoes
+uso
 terceiro
 campo
 disso
@@ -176,6 +177,7 @@ dentro
 procura
 capaz
 principalmente
+criticas
 mesma
 trata
 qualquer
@@ -188,6 +190,7 @@ estabelecer
 definicao
 grande
 livro
+contra
 constitui
 temas
 todas
@@ -202,6 +205,7 @@ diferenca
 estao
 ter
 doutrina
+distincao
 concepcoes
 tentativa
 tarefa
@@ -336,6 +340,7 @@ responder
 surge
 esclarecer
 frente
+reconstrucao
 mestrado
 desenvolver
 examinar
@@ -381,6 +386,7 @@ teoricos
 analises
 fio
 novos
+objetivos
 aproximacao
 grandes
 decada
@@ -498,6 +504,7 @@ muitas
 oferecer
 realizada
 veremos
+ensaios
 entende
 adequada
 devido
@@ -1056,10 +1063,20 @@ consolidacao
 pesquisar
 eio
 pertencera
-apresente"
-
+apresente
+santamaria
+dizrespeito
+outrolado
+tica
+mira
+sinalizar
+trecho
+dedicase
+decorrem
+analiso
+trato
+abordo"
 
 #AD HOC começam em -SERTAÇÃO-
-
 #Transformação em tibble para uso no anti_join####
 filolixo <- tibble(word = unlist(str_split(filolixo, "\n")))

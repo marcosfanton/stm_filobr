@@ -10,10 +10,10 @@ library(tidystm) # Extração de efeitos do modelo
 library(MetBrewer) # Paleta de cores
 library(scales) # Uso de porcentagem em gráficos
 
+# Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
 dados <- read.csv("dados/catalogo.csv")
 
-# Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filosofia (N = 12525)
   dplyr::mutate(g_orientador = as.factor(g_orientador), # Tranforma em fator variável gênero
     lang = textcat::textcat(ds_resumo)) |> # Cria identificar de idioma com base nos resumos
@@ -65,7 +65,7 @@ covars <- dplyr::distinct(filowords, doc_id, an_base, g_orientador) #matriz de c
 # Modelo STM
 #Modelo simples####
 topic_model <- stm(filosparse,
-                   K = 61,
+                   K = 70,
                    prevalence = ~ g_orientador + s(an_base),
                    seed = 1987,
                    data = covars,
@@ -82,7 +82,7 @@ tidygamma <- tidy(topic_model, matrix = "gamma",
 top_words <- tidybeta %>%
   arrange(desc(beta)) %>%
   group_by(topic) %>%
-  top_n(15, beta) %>%
+  top_n(10, beta) %>%
   summarise(terms = paste(term, collapse = ", ")) %>%
   ungroup()
 
@@ -97,7 +97,7 @@ gamma_words <- tidygamma %>%
 
 
 gamma_words |> 
-  top_n(80, gamma) |> 
+  top_n(100, gamma) |> 
   ggplot(aes(topic, gamma, label = terms, fill = topic)) +
   geom_col(show.legend = FALSE) +
   geom_text(hjust = 0, nudge_y = 0.0001, size = 5) +
@@ -105,7 +105,7 @@ gamma_words |>
   scale_y_continuous(expand = c(0,0),
                      limits = c(0, 0.05),
                      labels = percent_format()) +
-  scale_fill_manual(values = met.brewer("Cross", 80)) + 
+  scale_fill_manual(values = met.brewer("Cross", 100)) + 
   theme_classic() +
   theme(plot.title = element_text(size = 10),
         plot.subtitle = element_text(size = 12),
@@ -113,5 +113,26 @@ gamma_words |>
   labs(x = NULL, y = expression(gamma),
        title = "60 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
        subtitle = "Elaboração: Os autores | Dados: Catálogo de Teses e Dissertações (CAPES)") 
+
+
+# Findthoughts (STM) #### 
+td_gamma$document <- as.integer(td_gamma$document)
+
+findallthoughts <- td_gamma |> 
+  mutate(document = as.integer(document)) |> 
+  left_join(dados,
+            by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma
+  group_by(document) |> # Agrupa os valores gamma de cada tópico
+  slice_max(order_by = gamma, n = 1) |> # Escolhe o tópico com maior gamma de cada documento
+  select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
+  
+
+findthoughts <- td_gamma |> 
+  mutate(document = as.integer(document)) |> 
+  left_join(dados,
+            by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma 
+  group_by(topic) |> 
+  slice_max(order_by = gamma, n = 5) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
+  select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
 
 
