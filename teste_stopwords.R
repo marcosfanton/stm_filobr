@@ -16,7 +16,6 @@ presente
 objetivo
 dissertacao
 critica
-modo
 homem
 analise
 assim
@@ -1072,8 +1071,10 @@ estender
 praticamente
 publicada
 funda
-lima
-vaz"
+forma
+trabalhar
+modo
+compreensao"
 
 #AD HOC começam em -SERTAÇÃO-
 #Transformação em tibble para uso no anti_join####

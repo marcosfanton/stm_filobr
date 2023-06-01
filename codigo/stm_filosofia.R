@@ -9,6 +9,9 @@ library(furrr) # Rodar múltiplos modelos
 library(tidystm) # Extração de efeitos do modelo
 library(MetBrewer) # Paleta de cores
 library(scales) # Uso de porcentagem em gráficos
+library(embed) # UMAP
+library(umap) # UMAP
+library(recipe) # UMAP
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
@@ -65,7 +68,7 @@ covars <- dplyr::distinct(filowords, doc_id, an_base, g_orientador) #matriz de c
 # Modelo STM
 #Modelo simples####
 topic_model <- stm(filosparse,
-                   K = 74,
+                   K = 75,
                    prevalence = ~ g_orientador + s(an_base),
                    seed = 1987,
                    data = covars,
@@ -124,7 +127,7 @@ findallthoughts <- tidygamma |>
   slice_max(order_by = gamma, n = 1) |> # Escolhe o tópico com maior gamma de cada documento
   select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
   
-findthoughts <- td_gamma |> 
+findthoughts <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
   left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma 
@@ -134,13 +137,14 @@ findthoughts <- td_gamma |>
 
 #Efeitos#### 
 #Efeito ano####
-stm_prep_ano <- estimateEffect(1:75 ~ an_base, 
+stm_prep_ano <- stm::estimateEffect(1:75 ~ an_base, 
                                stmobj = topic_model, 
                                metadata = covars, 
                                uncertainty = "Global")
-stm_prep_ano_tidy <- tidy(stm_prep_ano)
 
-sig_effects_ano_tidy <- extract.estimateEffect(x = stm_prep_ano, 
+stm_prep_ano_tidy <- tidytext::tidy(stm_prep_ano)
+
+sig_effects_ano_tidy <- tidystm::extract.estimateEffect(x = stm_prep_ano, 
                                                covariate = "an_base", 
                                                model = topic_model, 
                                                method = "pointestimate",
@@ -159,14 +163,14 @@ ggplot(sig_effects_ano_tidy, aes(x = covariate.value, y = estimate,
   theme(legend.position = "none")
 
 #Efeito gênero de orientador####
-stm_prep_gender <- estimateEffect(1:74 ~ g_orientador, 
+stm_prep_gender <- stm::estimateEffect(1:75 ~ g_orientador, 
                                   stmobj = topic_model, 
                                   metadata = covars, 
                                   uncertainty = "Global")
-stm_prep_gender_tidy <- tidy(stm_prep_gender)
+stm_prep_gender_tidy <- tidytext::tidy(stm_prep_gender)
 
 #Efeitos orientador
-sig_effects_gender_tidy <- extract.estimateEffect(x = stm_prep_gender, 
+sig_effects_gender_tidy <- tidystm::extract.estimateEffect(x = stm_prep_gender, 
                                                   covariate = "g_orientador", 
                                                   model = topic_model, 
                                                   method = "pointestimate",
@@ -178,9 +182,10 @@ ggplot(sig_effects_gender_tidy, aes(x = covariate.value,
                                     group = covariate)) +
   geom_line() +
   geom_point() +
+  geom_errorbar(aes(ymin = ci.lower, ymax = ci.upper), width = 0.1) + 
   facet_wrap(~label, labeller = labeller(label = label_wrap_gen(width = 60))) +
   labs(x = "Gênero",
-       y = "Proporção de Tópico Esperada") +
+       y = "Estimativa") +
   theme(legend.position = "none")
 
 
@@ -247,36 +252,30 @@ topic_model <- k_result  |>
   .[[1]]
 
 # UMAP####
+#Transformação de matriz theta com informações
 #Transformação de matriz thetha com informações
 stm_gamma <- tidy(topic_model,
                   matrix = "gamma",
-                  document_names = topic_model$meta$doc_id) %>% 
-  group_by(topic) %>% 
-  arrange(topic, desc(gamma)) %>% 
+                  document_names = rownames(filosparse))  |>  
+  group_by(topic) |>  
+  arrange(topic, desc(gamma)) |>  
   mutate(topic = as_factor(topic))
 
-
-me_gamma_wide <- stm_gamma %>% 
-  group_by(topic) %>% 
-  summarise(gamma = mean(gamma)) %>% 
-  pivot_wider(id_col = document, names_from = topic, values_from = gamma)
-
-#Matriz thetha com infos
 gamma_matrix <- stm_gamma |> 
-  pivot_wider(names_from = topic, values_from = gamma)
+  pivot_wider(names_from = topic, 
+              values_from = gamma)
 
 topic_labels <- stm_gamma  |> 
   group_by(document) |> 
   slice_max(order_by = gamma) |> 
   ungroup()
 
-gamma_matrix <- gamma_matrix |> 
+theta_matrix <- gamma_matrix |> 
   left_join(topic_labels  |>  
               select(document, topic), by = "document")
 
 
-#Análise UMAP
-umap_rec <- recipe(~., data = gamma_matrix) %>%
+umap_rec <- recipe(~., data = theta_matrix) %>%
   update_role(document, topic, new_role = "id") %>%
   step_normalize(all_predictors()) %>%
   step_umap(all_predictors())
@@ -285,19 +284,15 @@ umap_prep <- prep(umap_rec)
 #Gráfico
 #Extrair docs exemplares
 docs_labels <- topic_labels %>%
-  group_by(topic) %>%
+  group_by(document) %>%
   slice_max(order_by = gamma) %>%
   ungroup() |> 
   pull(document)
 
+# Plot do UMAP
 juice(umap_prep) %>%
-  ggplot(aes(UMAP1, UMAP2, color = topic, label = topic)) +
-  geom_point(alpha = 0.2, size = 2) +
-  geom_jitter() +
-  geom_text(topic == docs_labels)
-
-#geom_point(aes(color = topic), alpha = 0.7, size = 2) +
-#geom_text(check_overlap = TRUE, hjust = "inward", family = "IBMPlexSans") +
-#labs(color = NULL)
-
+  ggplot(aes(UMAP1, UMAP2, label = topic)) +
+  geom_point(aes(color = topic), alpha = 0.2, size = 2) +
+  geom_text(check_overlap = TRUE) +
+  theme_minimal()
 
