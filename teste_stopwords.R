@@ -19,8 +19,6 @@ critica
 modo
 homem
 analise
-sentido
-forma
 assim
 segundo
 tambem
@@ -38,16 +36,12 @@ nocao
 capitulo
 estudo
 parte
-historia
 atraves
 primeiro
 tanto
 possivel
 enquanto
-bem
 desta
-compreensao
-ideia
 autor
 possibilidade
 dois
@@ -140,10 +134,8 @@ segunda
 consiste
 toda
 hipotese
-valores
 nesta
 aqui
-condicao
 diferentes
 demonstrar
 todos
@@ -153,21 +145,18 @@ termos
 debate
 porque
 fazer
-humano
 podem
 escritos
 longo
 outras
 formacao
 nocoes
-uso
 terceiro
 campo
 disso
 periodo
 sempre
 novo
-homens
 tipo
 fundamentais
 sobretudo
@@ -265,7 +254,6 @@ tratado
 desses
 consequencias
 proposito
-contemporanea
 contudo
 teorica
 serao
@@ -302,7 +290,6 @@ atual
 implicacoes
 presenca
 desenvolve
-paradigma
 analisa
 buscamos
 afirma
@@ -520,7 +507,6 @@ feito
 leituras
 chamado
 construir
-normas
 superar
 mostramos
 serie
@@ -857,7 +843,6 @@ elaborar
 empreendimento
 envolvidos
 problematizacao
-criador
 der
 exemplos
 permanece
@@ -951,9 +936,7 @@ concluir
 propostos
 saida
 assuntos
-atributos
 complexa
-correta
 daquela
 lidar
 poe
@@ -1043,7 +1026,6 @@ chamar
 distincoes
 evitar
 filosofar
-reforma
 tratam
 usos
 abordaremos
@@ -1075,7 +1057,23 @@ dedicase
 decorrem
 analiso
 trato
-abordo"
+abordo
+trabalha
+realizou
+aotureza
+presentouse
+isa
+destacase
+oes
+inge
+nuo
+dedicou
+estender
+praticamente
+publicada
+funda
+lima
+vaz"
 
 #AD HOC começam em -SERTAÇÃO-
 #Transformação em tibble para uso no anti_join####

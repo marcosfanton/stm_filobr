@@ -40,7 +40,7 @@ dados <- dados |>
 # Salvar banco com amostra final para testes com stopwords personalizadas
 dados |> 
   readr::write_csv("dados/dados_pre-stm.csv")
-
+dados <- read.csv("dados/dados_pre-stm.csv")
 # Stopwords personalizada da filosofia ####
 filolixo <- readr::read_lines("dados/filolixo")
 # Transformação em tibble para uso no anti_join####
@@ -65,7 +65,7 @@ covars <- dplyr::distinct(filowords, doc_id, an_base, g_orientador) #matriz de c
 # Modelo STM
 #Modelo simples####
 topic_model <- stm(filosparse,
-                   K = 70,
+                   K = 74,
                    prevalence = ~ g_orientador + s(an_base),
                    seed = 1987,
                    data = covars,
@@ -73,9 +73,9 @@ topic_model <- stm(filosparse,
 
 # Extração de matrizes
 # Beta
-tidybeta <- tidy(topic_model) 
+tidybeta <- tidytext::tidy(topic_model) 
 # Gamma
-tidygamma <- tidy(topic_model, matrix = "gamma",
+tidygamma <- tidytext::tidy(topic_model, matrix = "gamma",
                  document_names = rownames(filosparse))
 
 # Matriz Beta - Palavras mais frequentes de cada tópico 
@@ -116,9 +116,7 @@ gamma_words |>
 
 
 # Findthoughts (STM) #### 
-td_gamma$document <- as.integer(td_gamma$document)
-
-findallthoughts <- td_gamma |> 
+findallthoughts <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
   left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma
@@ -126,7 +124,6 @@ findallthoughts <- td_gamma |>
   slice_max(order_by = gamma, n = 1) |> # Escolhe o tópico com maior gamma de cada documento
   select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
   
-
 findthoughts <- td_gamma |> 
   mutate(document = as.integer(document)) |> 
   left_join(dados,
@@ -134,5 +131,173 @@ findthoughts <- td_gamma |>
   group_by(topic) |> 
   slice_max(order_by = gamma, n = 5) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
   select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
+
+#Efeitos#### 
+#Efeito ano####
+stm_prep_ano <- estimateEffect(1:75 ~ an_base, 
+                               stmobj = topic_model, 
+                               metadata = covars, 
+                               uncertainty = "Global")
+stm_prep_ano_tidy <- tidy(stm_prep_ano)
+
+sig_effects_ano_tidy <- extract.estimateEffect(x = stm_prep_ano, 
+                                               covariate = "an_base", 
+                                               model = topic_model, 
+                                               method = "pointestimate",
+                                               labeltype = "prob",
+                                               n = 3)
+
+#Gráfico ano
+ggplot(sig_effects_ano_tidy, aes(x = covariate.value, y = estimate,
+                                 ymin = ci.lower, ymax = ci.upper)) +
+  facet_wrap(~label) +
+  geom_ribbon(alpha = .5, fill = "blue") +
+  geom_line() +
+  labs(x = "Ano",
+       y = "Proporção de Tópico Esperada",
+       fill = "Treated (0/1)") +
+  theme(legend.position = "none")
+
+#Efeito gênero de orientador####
+stm_prep_gender <- estimateEffect(1:74 ~ g_orientador, 
+                                  stmobj = topic_model, 
+                                  metadata = covars, 
+                                  uncertainty = "Global")
+stm_prep_gender_tidy <- tidy(stm_prep_gender)
+
+#Efeitos orientador
+sig_effects_gender_tidy <- extract.estimateEffect(x = stm_prep_gender, 
+                                                  covariate = "g_orientador", 
+                                                  model = topic_model, 
+                                                  method = "pointestimate",
+                                                  labeltype = "prob",
+                                                  n = 3)
+#Gráfico gênero
+ggplot(sig_effects_gender_tidy, aes(x = covariate.value, 
+                                    y = estimate,
+                                    group = covariate)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~label, labeller = labeller(label = label_wrap_gen(width = 60))) +
+  labs(x = "Gênero",
+       y = "Proporção de Tópico Esperada") +
+  theme(legend.position = "none")
+
+
+#Modelos Múltiplos (código de Julia Silge)####
+#Modelo com múltiplos K####
+plan(multisession)
+many_models <- tidyr::tibble(K = c(70, 72, 73, 74, 75, 76, 77)) |> #Teste de modelos com 40 a 80 Tópicos
+  dplyr::mutate(topic_model = furrr::future_map(K, ~ stm::stm(filosparse, 
+                                                              K = .,
+                                                              prevalence = ~g_orientador + s(an_base),
+                                                              seed = 1987,
+                                                              data = covars,
+                                                              init.type = "Spectral"),
+                                                .options = furrr_options(seed = TRUE)))
+#Gráficos de diagnóstico dos modelos
+heldout <- stm::make.heldout(filosparse) 
+k_result <- many_models |> # Cria banco com resultados de cada modelo
+  dplyr::mutate(exclusivity = purrr::map(topic_model, exclusivity),
+                semantic_coherence = purrr::map(topic_model, semanticCoherence, filosparse),
+                eval_heldout = purrr::map(topic_model, eval.heldout, heldout$missing),
+                residual = purrr::map(topic_model, checkResiduals, filosparse),
+                bound =  purrr::map_dbl(topic_model, function(x) max(x$convergence$bound)),
+                lfact = purrr::map_dbl(topic_model, function(x) lfactorial(x$settings$dim$K)),
+                lbound = bound + lfact,
+                iterations = purrr::map_dbl(topic_model, function(x) length(x$convergence$bound)))
+
+#Critérios de avaliação de modelos | Held-out Likelihood, Coerência Semântica, Resíduos e Lower Bound ####
+theme_set(theme_minimal(base_family = "Roboto"))
+
+k_result |>  
+  transmute(K,
+            `Limite Inferior` = lbound,
+            Resíduos = map_dbl(residual, "dispersion"),
+            `Coerência Semântica` = map_dbl(semantic_coherence, mean),
+            `Verossimilhanca retida (held-out likelihood)` = map_dbl(eval_heldout, "expected.heldout")) %>%
+  gather(Metric, Value, -K) |> 
+  ggplot(aes(K, Value, color = Metric)) +
+  geom_line(linewidth = 1.5, alpha = 0.9, show.legend = FALSE) +
+  facet_wrap(~Metric, scales = "free_y") +
+  labs(x = "K (número de Tópicos)",
+       y = NULL,
+       title = "Diagnóstico do número de tópicos (K) para o modelo",
+       subtitle = "O intervalo entre 50 e 60 tópicos parece ser o mais apropriado | Elaboração: Os autores")
+
+#Gráfico Exclusividade x Coerência Semântica por tópicos
+k_result |>  
+  select(K, exclusivity, semantic_coherence) %>%
+  filter(K %in% c(30, 40, 50, 60, 70, 75, 77, 79, 80, 90)) %>%
+  unnest(cols = c(exclusivity, semantic_coherence)) %>%
+  mutate(K = as.factor(K)) %>%
+  ggplot(aes(semantic_coherence, exclusivity, color = K)) +
+  geom_point(size = 2.5, alpha = 0.9) +
+  theme_minimal() +
+  #scale_color_manual(values = met.brewer("Renoir", 8)) +
+  labs(x = "Coerência Semântica",
+       y = "Exclusividade",
+       title = "Comparação entre Coerência Semântica e Exclusividade",
+       subtitle = "O intervalo entre 50 e 60 tópicos parece ser o mais apropriado | Elaboração: Os autores")
+
+#Escolha do modelo com número adequado de tópicos
+topic_model <- k_result  |>  
+  filter(K == 73) |> 
+  pull(topic_model)  %>%   
+  .[[1]]
+
+# UMAP####
+#Transformação de matriz thetha com informações
+stm_gamma <- tidy(topic_model,
+                  matrix = "gamma",
+                  document_names = topic_model$meta$doc_id) %>% 
+  group_by(topic) %>% 
+  arrange(topic, desc(gamma)) %>% 
+  mutate(topic = as_factor(topic))
+
+
+me_gamma_wide <- stm_gamma %>% 
+  group_by(topic) %>% 
+  summarise(gamma = mean(gamma)) %>% 
+  pivot_wider(id_col = document, names_from = topic, values_from = gamma)
+
+#Matriz thetha com infos
+gamma_matrix <- stm_gamma |> 
+  pivot_wider(names_from = topic, values_from = gamma)
+
+topic_labels <- stm_gamma  |> 
+  group_by(document) |> 
+  slice_max(order_by = gamma) |> 
+  ungroup()
+
+gamma_matrix <- gamma_matrix |> 
+  left_join(topic_labels  |>  
+              select(document, topic), by = "document")
+
+
+#Análise UMAP
+umap_rec <- recipe(~., data = gamma_matrix) %>%
+  update_role(document, topic, new_role = "id") %>%
+  step_normalize(all_predictors()) %>%
+  step_umap(all_predictors())
+umap_prep <- prep(umap_rec)
+
+#Gráfico
+#Extrair docs exemplares
+docs_labels <- topic_labels %>%
+  group_by(topic) %>%
+  slice_max(order_by = gamma) %>%
+  ungroup() |> 
+  pull(document)
+
+juice(umap_prep) %>%
+  ggplot(aes(UMAP1, UMAP2, color = topic, label = topic)) +
+  geom_point(alpha = 0.2, size = 2) +
+  geom_jitter() +
+  geom_text(topic == docs_labels)
+
+#geom_point(aes(color = topic), alpha = 0.7, size = 2) +
+#geom_text(check_overlap = TRUE, hjust = "inward", family = "IBMPlexSans") +
+#labs(color = NULL)
 
 
