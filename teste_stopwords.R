@@ -724,7 +724,6 @@ dando
 emergencia
 examina
 interpretar
-interpretes
 utilizado
 elabora
 fazse
@@ -734,8 +733,6 @@ apresentaremos
 baseado
 completa
 enfim
-otica
-recurso
 tempos
 total
 acima
@@ -805,7 +802,6 @@ toledo
 aparentemente
 continua
 devemos
-emerge
 podera
 produto
 referida
@@ -1068,13 +1064,21 @@ inge
 nuo
 dedicou
 estender
-praticamente
 publicada
 funda
-forma
 trabalhar
+otica
+interprete
+recurso
 modo
-compreensao"
+camada
+geralmente
+compreendermos
+voltada
+chegamos
+posgraduacao
+aula"
+
 
 #AD HOC começam em -SERTAÇÃO-
 #Transformação em tibble para uso no anti_join####

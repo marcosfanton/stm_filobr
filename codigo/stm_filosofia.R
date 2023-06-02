@@ -11,7 +11,7 @@ library(MetBrewer) # Paleta de cores
 library(scales) # Uso de porcentagem em gráficos
 library(embed) # UMAP
 library(umap) # UMAP
-library(recipe) # UMAP
+library(recipes) # UMAP
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
@@ -68,7 +68,7 @@ covars <- dplyr::distinct(filowords, doc_id, an_base, g_orientador) #matriz de c
 # Modelo STM
 #Modelo simples####
 topic_model <- stm(filosparse,
-                   K = 75,
+                   K = 76,
                    prevalence = ~ g_orientador + s(an_base),
                    seed = 1987,
                    data = covars,
@@ -103,7 +103,7 @@ gamma_words |>
   top_n(100, gamma) |> 
   ggplot(aes(topic, gamma, label = terms, fill = topic)) +
   geom_col(show.legend = FALSE) +
-  geom_text(hjust = 0, nudge_y = 0.0001, size = 5) +
+  geom_text(hjust = 0, nudge_y = 0.0001, size = 3) +
   coord_flip() +
   scale_y_continuous(expand = c(0,0),
                      limits = c(0, 0.05),
@@ -112,13 +112,14 @@ gamma_words |>
   theme_classic() +
   theme(plot.title = element_text(size = 10),
         plot.subtitle = element_text(size = 12),
-        text = element_text(size = 2)) +
+        text = element_text(size = 1)) +
   labs(x = NULL, y = expression(gamma),
        title = "60 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
        subtitle = "Elaboração: Os autores | Dados: Catálogo de Teses e Dissertações (CAPES)") 
 
 
 # Findthoughts (STM) #### 
+
 findallthoughts <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
   left_join(dados,
@@ -137,7 +138,7 @@ findthoughts <- tidygamma |>
 
 #Efeitos#### 
 #Efeito ano####
-stm_prep_ano <- stm::estimateEffect(1:75 ~ an_base, 
+stm_prep_ano <- stm::estimateEffect(1:76 ~ an_base, 
                                stmobj = topic_model, 
                                metadata = covars, 
                                uncertainty = "Global")
@@ -192,7 +193,7 @@ ggplot(sig_effects_gender_tidy, aes(x = covariate.value,
 #Modelos Múltiplos (código de Julia Silge)####
 #Modelo com múltiplos K####
 plan(multisession)
-many_models <- tidyr::tibble(K = c(70, 72, 73, 74, 75, 76, 77)) |> #Teste de modelos com 40 a 80 Tópicos
+many_models <- tidyr::tibble(K = c(75, 76)) |> #Teste de modelos com 40 a 80 Tópicos
   dplyr::mutate(topic_model = furrr::future_map(K, ~ stm::stm(filosparse, 
                                                               K = .,
                                                               prevalence = ~g_orientador + s(an_base),
@@ -228,26 +229,26 @@ k_result |>
   labs(x = "K (número de Tópicos)",
        y = NULL,
        title = "Diagnóstico do número de tópicos (K) para o modelo",
-       subtitle = "O intervalo entre 50 e 60 tópicos parece ser o mais apropriado | Elaboração: Os autores")
+       subtitle = "O intervalo entre 60 e 80 tópicos parece ser o mais apropriado | Elaboração: Os autores")
 
 #Gráfico Exclusividade x Coerência Semântica por tópicos
 k_result |>  
-  select(K, exclusivity, semantic_coherence) %>%
-  filter(K %in% c(30, 40, 50, 60, 70, 75, 77, 79, 80, 90)) %>%
-  unnest(cols = c(exclusivity, semantic_coherence)) %>%
-  mutate(K = as.factor(K)) %>%
+  select(K, exclusivity, semantic_coherence)  |> 
+  filter(K %in% c(30, 40, 50, 60, 65, 70, 75, 80, 90))  |> 
+  unnest(cols = c(exclusivity, semantic_coherence))  |> 
+  mutate(K = as.factor(K)) |> 
   ggplot(aes(semantic_coherence, exclusivity, color = K)) +
   geom_point(size = 2.5, alpha = 0.9) +
   theme_minimal() +
-  #scale_color_manual(values = met.brewer("Renoir", 8)) +
+  scale_color_manual(values = met.brewer("Renoir", 9)) +
   labs(x = "Coerência Semântica",
        y = "Exclusividade",
        title = "Comparação entre Coerência Semântica e Exclusividade",
-       subtitle = "O intervalo entre 50 e 60 tópicos parece ser o mais apropriado | Elaboração: Os autores")
+       subtitle = "O intervalo entre 60 e 80 tópicos parece ser o mais apropriado | Elaboração: Os autores")
 
 #Escolha do modelo com número adequado de tópicos
 topic_model <- k_result  |>  
-  filter(K == 73) |> 
+  filter(K == 76) |> 
   pull(topic_model)  %>%   
   .[[1]]
 
