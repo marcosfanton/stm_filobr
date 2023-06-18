@@ -103,7 +103,7 @@ gamma_words |>
   top_n(100, gamma) |> 
   ggplot(aes(topic, gamma, label = terms, fill = topic)) +
   geom_col(show.legend = FALSE) +
-  geom_text(hjust = 0, nudge_y = 0.0001, size = 3) +
+  geom_text(hjust = 0, nudge_y = 0.0001, size = 5) +
   coord_flip() +
   scale_y_continuous(expand = c(0,0),
                      limits = c(0, 0.05),
@@ -114,7 +114,7 @@ gamma_words |>
         plot.subtitle = element_text(size = 12),
         text = element_text(size = 1)) +
   labs(x = NULL, y = expression(gamma),
-       title = "60 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
+       title = "76 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
        subtitle = "Elaboração: Os autores | Dados: Catálogo de Teses e Dissertações (CAPES)") 
 
 
@@ -193,7 +193,7 @@ ggplot(sig_effects_gender_tidy, aes(x = covariate.value,
 #Modelos Múltiplos (código de Julia Silge)####
 #Modelo com múltiplos K####
 plan(multisession)
-many_models <- tidyr::tibble(K = c(75, 76)) |> #Teste de modelos com 40 a 80 Tópicos
+many_models <- tidyr::tibble(K = c(70, 72, 73, 74,75, 76, 77, 78, 79, 80)) |> #Teste de modelos com 40 a 80 Tópicos
   dplyr::mutate(topic_model = furrr::future_map(K, ~ stm::stm(filosparse, 
                                                               K = .,
                                                               prevalence = ~g_orientador + s(an_base),
@@ -234,13 +234,13 @@ k_result |>
 #Gráfico Exclusividade x Coerência Semântica por tópicos
 k_result |>  
   select(K, exclusivity, semantic_coherence)  |> 
-  filter(K %in% c(30, 40, 50, 60, 65, 70, 75, 80, 90))  |> 
+  filter(K %in% c(70, 72, 73, 74,75, 76, 77, 78, 79, 80))  |> 
   unnest(cols = c(exclusivity, semantic_coherence))  |> 
   mutate(K = as.factor(K)) |> 
   ggplot(aes(semantic_coherence, exclusivity, color = K)) +
   geom_point(size = 2.5, alpha = 0.9) +
   theme_minimal() +
-  scale_color_manual(values = met.brewer("Renoir", 9)) +
+  scale_color_manual(values = met.brewer("Renoir", 10)) +
   labs(x = "Coerência Semântica",
        y = "Exclusividade",
        title = "Comparação entre Coerência Semântica e Exclusividade",
@@ -248,7 +248,7 @@ k_result |>
 
 #Escolha do modelo com número adequado de tópicos
 topic_model <- k_result  |>  
-  filter(K == 76) |> 
+  filter(K == 77) |> 
   pull(topic_model)  %>%   
   .[[1]]
 
@@ -291,9 +291,12 @@ docs_labels <- topic_labels %>%
   pull(document)
 
 # Plot do UMAP
-juice(umap_prep) %>%
+juice(umap_prep)  |> 
   ggplot(aes(UMAP1, UMAP2, label = topic)) +
-  geom_point(aes(color = topic), alpha = 0.2, size = 2) +
-  geom_text(check_overlap = TRUE) +
-  theme_minimal()
+  geom_point(aes(color = topic), alpha = 0.2, size = 20) +
+  geom_text(check_overlap = TRUE) + 
+  scale_color_manual(values = met.brewer("Cross", 76)) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
 

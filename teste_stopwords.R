@@ -1077,7 +1077,14 @@ compreendermos
 voltada
 chegamos
 posgraduacao
-aula"
+aula
+nco
+significar
+oficial
+monografia
+compara
+pesquisadores
+recentemente"
 
 
 #AD HOC começam em -SERTAÇÃO-
