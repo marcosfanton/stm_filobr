@@ -1084,7 +1084,29 @@ oficial
 monografia
 compara
 pesquisadores
-recentemente"
+recentemente
+desempenha
+incluindo
+acompanha
+esforco
+aes
+disserta
+explora
+tornara
+histaria
+solu
+sco
+crotica
+perptua
+cioncia
+rela
+recorrendo
+questaes
+concep
+sculo
+reflexco
+concebem
+ramos"
 
 
 #AD HOC começam em -SERTAÇÃO-

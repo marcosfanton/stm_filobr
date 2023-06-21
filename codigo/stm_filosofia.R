@@ -54,11 +54,11 @@ filowords <- dados |>
   tidytext::unnest_tokens(output = word, # Tokenização de palavras do resumo
                           input = ds_resumo, 
                           drop = TRUE) |> # Exclusão da variável DS_RESUMO
-  anti_join(get_stopwords("pt"))|> # Stopwords em pt
-  anti_join(get_stopwords("en"))|> 
-  anti_join(filolixo) |> # Dicionário de stopwords personalizado no script filograms.R <===
-  filter(str_detect(word, "^si$|^fe$|...")) |> #remove todas palavras com menos de 3 caracteres (mantém 'si' e 'fe')
-  count(doc_id, nm_producao, word, an_base, g_orientador)    # Contagem da frequência absoluta de cada token
+  dplyr::anti_join(get_stopwords("pt"))|> # Stopwords em pt
+  dplyr::anti_join(get_stopwords("en"))|> 
+  dplyr::anti_join(filolixo) |> # Dicionário de stopwords personalizado no script filograms.R <===
+  dplyr::filter(str_detect(word, "^si$|^fe$|...")) |> #remove todas palavras com menos de 3 caracteres (mantém 'si' e 'fe')
+  dplyr::count(doc_id, nm_producao, word, an_base, g_orientador)    # Contagem da frequência absoluta de cada token
 
 # Preparação do banco em matriz esparsa
 filosparse <- filowords |> tidytext::cast_sparse(doc_id, word, n) #matriz para análise
@@ -68,7 +68,7 @@ covars <- dplyr::distinct(filowords, doc_id, an_base, g_orientador) #matriz de c
 # Modelo STM
 #Modelo simples####
 topic_model <- stm(filosparse,
-                   K = 76,
+                   K = 77,
                    prevalence = ~ g_orientador + s(an_base),
                    seed = 1987,
                    data = covars,
@@ -98,7 +98,6 @@ gamma_words <- tidygamma %>%
   mutate(topic = paste0("T", topic),
          topic = reorder(topic, gamma))
 
-
 gamma_words |> 
   top_n(100, gamma) |> 
   ggplot(aes(topic, gamma, label = terms, fill = topic)) +
@@ -114,7 +113,7 @@ gamma_words |>
         plot.subtitle = element_text(size = 12),
         text = element_text(size = 1)) +
   labs(x = NULL, y = expression(gamma),
-       title = "76 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
+       title = "77 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
        subtitle = "Elaboração: Os autores | Dados: Catálogo de Teses e Dissertações (CAPES)") 
 
 
@@ -138,7 +137,7 @@ findthoughts <- tidygamma |>
 
 #Efeitos#### 
 #Efeito ano####
-stm_prep_ano <- stm::estimateEffect(1:76 ~ an_base, 
+stm_prep_ano <- stm::estimateEffect(1:77 ~ an_base, 
                                stmobj = topic_model, 
                                metadata = covars, 
                                uncertainty = "Global")
@@ -164,7 +163,7 @@ ggplot(sig_effects_ano_tidy, aes(x = covariate.value, y = estimate,
   theme(legend.position = "none")
 
 #Efeito gênero de orientador####
-stm_prep_gender <- stm::estimateEffect(1:75 ~ g_orientador, 
+stm_prep_gender <- stm::estimateEffect(1:77 ~ g_orientador, 
                                   stmobj = topic_model, 
                                   metadata = covars, 
                                   uncertainty = "Global")
@@ -189,11 +188,10 @@ ggplot(sig_effects_gender_tidy, aes(x = covariate.value,
        y = "Estimativa") +
   theme(legend.position = "none")
 
-
 #Modelos Múltiplos (código de Julia Silge)####
 #Modelo com múltiplos K####
 plan(multisession)
-many_models <- tidyr::tibble(K = c(70, 72, 73, 74,75, 76, 77, 78, 79, 80)) |> #Teste de modelos com 40 a 80 Tópicos
+many_models <- tidyr::tibble(K = c(60, 63, 65, 70, 75, 76, 77, 78, 80, 83, 85, 90 )) |> #Teste de modelos com 40 a 80 Tópicos
   dplyr::mutate(topic_model = furrr::future_map(K, ~ stm::stm(filosparse, 
                                                               K = .,
                                                               prevalence = ~g_orientador + s(an_base),
@@ -229,22 +227,22 @@ k_result |>
   labs(x = "K (número de Tópicos)",
        y = NULL,
        title = "Diagnóstico do número de tópicos (K) para o modelo",
-       subtitle = "O intervalo entre 60 e 80 tópicos parece ser o mais apropriado | Elaboração: Os autores")
+       subtitle = "O intervalo entre 70 e 80 tópicos parece ser o mais apropriado | Elaboração: Os autores")
 
 #Gráfico Exclusividade x Coerência Semântica por tópicos
 k_result |>  
   select(K, exclusivity, semantic_coherence)  |> 
-  filter(K %in% c(70, 72, 73, 74,75, 76, 77, 78, 79, 80))  |> 
+  filter(K %in% c(60, 63, 65, 70, 75, 76, 77, 78, 80, 83, 85, 90 ))  |> 
   unnest(cols = c(exclusivity, semantic_coherence))  |> 
   mutate(K = as.factor(K)) |> 
   ggplot(aes(semantic_coherence, exclusivity, color = K)) +
   geom_point(size = 2.5, alpha = 0.9) +
   theme_minimal() +
-  scale_color_manual(values = met.brewer("Renoir", 10)) +
+  scale_color_manual(values = met.brewer("Renoir", 12)) +
   labs(x = "Coerência Semântica",
        y = "Exclusividade",
        title = "Comparação entre Coerência Semântica e Exclusividade",
-       subtitle = "O intervalo entre 60 e 80 tópicos parece ser o mais apropriado | Elaboração: Os autores")
+       subtitle = "O intervalo entre 65 e 80 tópicos parece ser o mais apropriado | Elaboração: Os autores")
 
 #Escolha do modelo com número adequado de tópicos
 topic_model <- k_result  |>  
@@ -293,9 +291,9 @@ docs_labels <- topic_labels %>%
 # Plot do UMAP
 juice(umap_prep)  |> 
   ggplot(aes(UMAP1, UMAP2, label = topic)) +
-  geom_point(aes(color = topic), alpha = 0.2, size = 20) +
+  geom_point(aes(color = topic), shape = 19, alpha = 0.2, size = 14) +
   geom_text(check_overlap = TRUE) + 
-  scale_color_manual(values = met.brewer("Cross", 76)) +
+  scale_color_manual(values = met.brewer("Cross", 77)) +
   theme_minimal() +
   theme(legend.position = "none")
 
