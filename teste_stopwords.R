@@ -1106,7 +1106,8 @@ concep
 sculo
 reflexco
 concebem
-ramos"
+ramos
+dissolver"
 
 
 #AD HOC começam em -SERTAÇÃO-
