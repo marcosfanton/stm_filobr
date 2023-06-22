@@ -121,7 +121,7 @@ gamma_words |>
 
 findallthoughts <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
-  left_join(dados,
+  left_join(filowords_stm,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma
   group_by(document) |> # Agrupa os valores gamma de cada tópico
   slice_max(order_by = gamma, n = 1) |> # Escolhe o tópico com maior gamma de cada documento
@@ -187,6 +187,22 @@ ggplot(sig_effects_gender_tidy, aes(x = covariate.value,
   labs(x = "Gênero",
        y = "Estimativa") +
   theme(legend.position = "none")
+
+# Rotulação de categorias ####
+# Ver arquivo XXXXXX
+categorias <- dplyr::tibble(
+  ~topic, ~category, 
+  list(3, 12, 17, 23, 26, 30, 34, 35, 39, 41, 53, 54, 55, 56, 57, 58, 68), "Filosofia Política",  
+  list(6, 33, 38, 45, 52, 44, 71, 73), "Fenomenologia e Hermenêutica",  
+  list(15, 32, 49, 2, 4, 25, 37, 65), "Filosofia da Mente e da Linguagem", 
+  list(8, 10, 18, 40, 50, 60, 61, 64), "Ética", 
+  list(7, 9, 19, 20, 24, 28, 46, 47, 51, 59, 77), "Metafísica",
+  list(42, 47, 62, 66, 63, 67, 70), "Teoria do conhecimento", 
+  list(5, 13, 14, 16, 27, 43, 48, 64, 72), "Estética", 
+  list(1, 11, 21,), "Filosofia da Ciência"
+  ) |>  
+  unnest(topic) |>  
+  mutate(topic = factor(topic))
 
 #Modelos Múltiplos (código de Julia Silge)####
 #Modelo com múltiplos K####
