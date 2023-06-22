@@ -27,8 +27,7 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
     !is.na(g_orientador), # -184 trabalhos sem identificação de gênero do orientador (n = 11743)
     !is.na(nm_producao)) |> # -1 trabalho sem título (n = 11742)
   dplyr::distinct(nm_producao, ds_resumo, .keep_all = TRUE) |> # -6 trabalhos repetidos (n = 11736)
-  dplyr::mutate(doc_id = row_number()) |> 
-  dplyr::select(doc_id, an_base, nm_producao, ds_resumo, ds_palavra_chave, g_orientador) # Seleção de variáveis para STM e outras análises
+  dplyr::mutate(doc_id = row_number()) 
 
 # ngrams e stopwords ####
 # Para não poluir esse script, a análise de ngrams e de stopwords foi realizada em script separado.
@@ -50,7 +49,9 @@ filolixo <- readr::read_lines("dados/filolixo")
 filolixo <- tibble(word = unlist(str_split(filolixo, "\n")))
 
 # Preparação do banco - Tokenização e exclusão de stopwords (n: 11736)
+
 filowords <- dados |> 
+  dplyr::select(doc_id, an_base, nm_producao, ds_resumo, ds_palavra_chave, g_orientador) |> # Seleção de variáveis para STM e outras análises
   tidytext::unnest_tokens(output = word, # Tokenização de palavras do resumo
                           input = ds_resumo, 
                           drop = TRUE) |> # Exclusão da variável DS_RESUMO
