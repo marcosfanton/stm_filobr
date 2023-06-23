@@ -78,6 +78,49 @@ ggplot(dados, aes(x = an_base, colour = nm_regiao)) +
         legend.key.width=unit(1, "cm")) +
   guides(colour = guide_legend(override.aes = list(size=2.5)))
 
+# Mapa Brasil | Regiões ####
+# Baixar mapa de regiões
+regiao <- geobr::read_region(year = 2020)
+# Sumarizar dados por região
+dados_regiao <- dados |> 
+  group_by(nm_regiao) |> 
+  summarize(trabalhos = n()) |> 
+  mutate(nm_regiao = recode(nm_regiao,
+         "centrooeste" = "Centro Oeste",
+         "nordeste" = "Nordeste",
+         "norte" = "Norte",
+         "sudeste" = "Sudeste",
+         "sul" = "Sul")) 
+# Unificar bancos
+regiao <- dplyr::left_join(regiao, 
+                           dados_regiao, 
+                           by = c("name_region" = "nm_regiao"))
 
+# Gráfico
+ggplot() +
+geom_sf(data = regiao, aes(fill=trabalhos), color = NA, size=.15) +
+  labs(title="Trabalhos defendidos na Pós-Graduação de Filosofia por região (1988-2021)", size=8) +
+  scale_fill_distiller(palette = "Blues", direction = 1, name="Trabalhos", limits = c(50,7000)) +
+  theme_minimal() 
 
+# Baixar mapa de Estados
+estados <- geobr::read_state(year = 2020)
+# Sumarizar dados por região
+dados_estado <- dados |> 
+  group_by(sg_uf_ies) |> 
+  summarize(trabalhos = n()) |> 
+  mutate(sg_uf_ies = str_to_upper(sg_uf_ies))
+
+# Unificar bancos
+estados <- dplyr::left_join(estados, 
+                           dados_estado, 
+                           by = c("abbrev_state" = "sg_uf_ies"))
+
+# Gráfico
+ggplot(estados) +
+  geom_sf(aes(fill=trabalhos), color = NA, size=.15) +
+  labs(title="Trabalhos defendidos na Pós-Graduação de Filosofia por Estado (1988-2021)", size=8) +
+  scale_fill_distiller(palette = "Blues", direction = 1, name="Trabalhos", limits = c(0,4000)) +
+  geom_sf_text(aes(label = trabalhos)) +
+  theme_minimal() 
 
