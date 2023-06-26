@@ -28,7 +28,7 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
     !is.na(nm_producao)) |> # -1 trabalho sem título (n = 11742)
   dplyr::distinct(nm_producao, ds_resumo, .keep_all = TRUE) |> # -6 trabalhos repetidos (n = 11736)
   dplyr::mutate(doc_id = row_number()) |> 
-  select(doc_id, an_base, nm_entidade_ensino, nm_regiao, nm_subtipo_producao, sg_uf_ies, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador, g_discente, g_oridis)
+  select(doc_id, an_base, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador)
 
 # ngrams e stopwords ####
 # Para não poluir esse script, a análise de ngrams e de stopwords foi realizada em script separado.
