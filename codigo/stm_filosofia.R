@@ -88,10 +88,6 @@ tidygamma <- tidytext::tidy(topic_model,
   arrange(topic, desc(gamma)) |> 
   mutate(topic = as_factor(topic))
 
-
-
-
-
 # Matriz Beta - Palavras mais frequentes de cada tópico 
 top_words <- tidybeta %>%
   arrange(desc(beta)) %>%
@@ -109,11 +105,21 @@ gamma_words <- tidygamma %>%
   mutate(topic = paste0("T", topic),
          topic = reorder(topic, gamma))
 
+# Matriz Gamma - Prevalência de tópicos com respectivos termos por década
+gamma_words <- tidygamma %>%
+  filter(an_base >= 2009 & an_base <= 2021) %>%
+  group_by(topic) %>%
+  summarise(gamma = mean(gamma)) %>%
+  arrange(desc(gamma)) %>%
+  left_join(top_words, by = "topic") %>%
+  mutate(topic = paste0("T", topic),
+         topic = reorder(topic, gamma))
+
 gamma_words |> 
-  top_n(100, gamma) |> 
+  top_n(25, gamma) |> 
   ggplot(aes(topic, gamma, label = terms, fill = topic)) +
   geom_col(show.legend = FALSE) +
-  geom_text(hjust = 0, nudge_y = 0.0001, size = 5) +
+  geom_text(hjust = 0, size = 5) +
   coord_flip() +
   scale_y_continuous(expand = c(0,0),
                      limits = c(0, 0.05),
@@ -124,9 +130,10 @@ gamma_words |>
         plot.subtitle = element_text(size = 12),
         text = element_text(size = 1)) +
   labs(x = NULL, y = expression(gamma),
-       title = "77 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
+       title = "25 Tópicos de Teses e Dissertações de Filosofia por década (2009 - 2021)",
        subtitle = "Elaboração: Os autores | Dados: Catálogo de Teses e Dissertações (CAPES)") 
 
+# title = "77 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
 
 # Findthoughts (STM) #### 
 
