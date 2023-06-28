@@ -28,7 +28,7 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
     !is.na(nm_producao)) |> # -1 trabalho sem título (n = 11742)
   dplyr::distinct(nm_producao, ds_resumo, .keep_all = TRUE) |> # -6 trabalhos repetidos (n = 11736)
   dplyr::mutate(doc_id = row_number()) |> 
-  select(doc_id, an_base, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador)
+  select(doc_id, an_base, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador)
 
 # ngrams e stopwords ####
 # Para não poluir esse script, a análise de ngrams e de stopwords foi realizada em script separado.
@@ -50,7 +50,6 @@ filolixo <- readr::read_lines("dados/filolixo")
 filolixo <- tibble(word = unlist(str_split(filolixo, "\n")))
 
 # Preparação do banco - Tokenização e exclusão de stopwords (n: 11736)
-
 filowords <- dados |> 
   dplyr::select(doc_id, an_base, nm_producao, ds_resumo, ds_palavra_chave, g_orientador) |> # Seleção de variáveis para STM e outras análises
   tidytext::unnest_tokens(output = word, # Tokenização de palavras do resumo
@@ -61,6 +60,17 @@ filowords <- dados |>
   dplyr::anti_join(filolixo) |> # Dicionário de stopwords personalizado no script filograms.R <===
   dplyr::filter(str_detect(word, "^si$|^fe$|...")) |> #remove todas palavras com menos de 3 caracteres (mantém 'si' e 'fe')
   dplyr::count(doc_id, nm_producao, word, an_base, g_orientador)    # Contagem da frequência absoluta de cada token
+
+# Remoção de palavras esparsas
+palavras_raras <- filowords |>  
+    count(doc_id, word) |> 
+    group_by(word) |> 
+    mutate(doc_freq = n_distinct(doc_id))  |> 
+    filter(doc_freq <= 1) |> # Exclusão de 36865 tokens que aparecem em 1 documento apenas 1 vez
+  select(word)
+
+filowords <- filowords |> 
+  dplyr::anti_join(palavras_raras)
 
 # Preparação do banco em matriz esparsa
 filosparse <- filowords |> tidytext::cast_sparse(doc_id, word, n) #matriz para análise
@@ -76,7 +86,7 @@ topic_model <- stm(filosparse,
                    data = covars,
                    init.type = "Spectral")
 
-# Extração de matrizes
+# Extração de matrizes####
 # Beta
 tidybeta <- tidytext::tidy(topic_model) |> 
   mutate(topic = as_factor(topic))
@@ -107,7 +117,6 @@ gamma_words <- tidygamma %>%
 
 # Matriz Gamma - Prevalência de tópicos com respectivos termos por década
 gamma_words <- tidygamma %>%
-  filter(an_base >= 2009 & an_base <= 2021) %>%
   group_by(topic) %>%
   summarise(gamma = mean(gamma)) %>%
   arrange(desc(gamma)) %>%
@@ -116,7 +125,7 @@ gamma_words <- tidygamma %>%
          topic = reorder(topic, gamma))
 
 gamma_words |> 
-  top_n(25, gamma) |> 
+  top_n(100, gamma) |> 
   ggplot(aes(topic, gamma, label = terms, fill = topic)) +
   geom_col(show.legend = FALSE) +
   geom_text(hjust = 0, size = 5) +
@@ -130,7 +139,7 @@ gamma_words |>
         plot.subtitle = element_text(size = 12),
         text = element_text(size = 1)) +
   labs(x = NULL, y = expression(gamma),
-       title = "25 Tópicos de Teses e Dissertações de Filosofia por década (2009 - 2021)",
+       title = "25 Tópicos de Teses e Dissertações de Filosofia por década (2009 - 2008)",
        subtitle = "Elaboração: Os autores | Dados: Catálogo de Teses e Dissertações (CAPES)") 
 
 # title = "77 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
@@ -392,7 +401,7 @@ juice(umap_prep)  |>
 #Modelos Múltiplos (código de Julia Silge)####
 #Modelo com múltiplos K####
 plan(multisession)
-many_models <- tidyr::tibble(K = c(60, 63, 65, 70, 75, 76, 77, 78, 80, 83, 85, 90 )) |> #Teste de modelos com 40 a 80 Tópicos
+many_models <- tidyr::tibble(K = c(50, 60, 65, 70, 75, 77, 80, 90, 100, 110)) |> #Teste de modelos com 40 a 80 Tópicos
   dplyr::mutate(topic_model = furrr::future_map(K, ~ stm::stm(filosparse, 
                                                               K = .,
                                                               prevalence = ~g_orientador + s(an_base),
@@ -400,7 +409,7 @@ many_models <- tidyr::tibble(K = c(60, 63, 65, 70, 75, 76, 77, 78, 80, 83, 85, 9
                                                               data = covars,
                                                               init.type = "Spectral"),
                                                 .options = furrr_options(seed = TRUE)))
-#Gráficos de diagnóstico dos modelos
+ #Gráficos de diagnóstico dos modelos
 heldout <- stm::make.heldout(filosparse) 
 k_result <- many_models |> # Cria banco com resultados de cada modelo
   dplyr::mutate(exclusivity = purrr::map(topic_model, exclusivity),
@@ -433,7 +442,7 @@ k_result |>
 #Gráfico Exclusividade x Coerência Semântica por tópicos
 k_result |>  
   select(K, exclusivity, semantic_coherence)  |> 
-  filter(K %in% c(60, 63, 65, 70, 75, 76, 77, 78, 80, 83, 85, 90 ))  |> 
+  filter(K %in% c(50, 60, 65, 70, 75, 77, 80, 85, 90, 95, 100, 110))  |> 
   unnest(cols = c(exclusivity, semantic_coherence))  |> 
   mutate(K = as.factor(K)) |> 
   ggplot(aes(semantic_coherence, exclusivity, color = K)) +
@@ -447,7 +456,7 @@ k_result |>
 
 #Escolha do modelo com número adequado de tópicos
 topic_model <- k_result  |>  
-  filter(K == 77) |> 
+  filter(K == 100) |> 
   pull(topic_model)  %>%   
   .[[1]]
 
