@@ -1105,9 +1105,11 @@ questaes
 concep
 sculo
 reflexco
-concebem
-ramos
-dissolver"
+iii
+rio
+ncia
+investigaremos
+pensamos"
 
 
 #AD HOC começam em -SERTAÇÃO-
