@@ -1,401 +1,401 @@
-A topic model with 80 topics, 11736 documents and a 21522 word dictionary.
+A topic model with 80 topics, 11733 documents and a 21520 word dictionary.
 Topic 1 Top Words:
- 	 Highest Prob: brasil, brasileira, paulo, brasileiro, forma, nacional, cidade 
- 	 FREX: brasileira, cores, paulo, nacional, brasil, janeiro, metaforas 
- 	 Lift: oscar, maine, cores, brasileira, barreto, tensional, prematuramente 
- 	 Score: brasileira, brasil, cores, paulo, nacional, brasileiro, metaforas 
+ 	 Highest Prob: forma, tempo, referidos, sentido, movimento, subjetivo, cores 
+ 	 FREX: referidos, pertencente, cores, deserto, henry, iluminar, gesto 
+ 	 Lift: maine, deserto, cores, tinta, falecimento, periferica, biran 
+ 	 Score: cores, referidos, deserto, pertencente, maine, gesto, paisagem 
 Topic 2 Top Words:
- 	 Highest Prob: ensino, escola, opostos, educacao, pratica, escolas, moderna 
- 	 FREX: ensino, opostos, questco, professores, escola, alunos, escolar 
- 	 Lift: filasofo, alm, filosafica, curriculares, magistro, possovel, pombalina 
- 	 Score: ensino, opostos, escola, professores, questco, anµlise, alunos 
+ 	 Highest Prob: ensino, campos, opostos, pratica, sentido, forma, brasil 
+ 	 FREX: ensino, opostos, campos, alunos, professores, denominar, mistico 
+ 	 Lift: filasofo, filosafica, possovel, anµlise, razco, ensino, opostos 
+ 	 Score: ensino, opostos, campos, alunos, anµlise, professores, solipsismo 
 Topic 3 Top Words:
  	 Highest Prob: adorno, esclarecimento, dialetica, horkheimer, razao, theodor, teoriacritica 
- 	 FREX: horkheimer, adorno, esclarecimento, theodor, industriacultural, dialeticanegativa, aufklarung 
- 	 Lift: frankfurtianos, semicultura, semiformacao, horkheimer, sohnrethel, maioridade, adorniano 
- 	 Score: adorno, horkheimer, theodor, esclarecimento, industriacultural, teoriacritica, dialeticanegativa 
+ 	 FREX: horkheimer, esclarecimento, adorno, theodor, industriacultural, aufklarung, teoriacritica 
+ 	 Lift: semicultura, semiformacao, frankfurtianos, horkheimer, administrado, industriacultural, maioridade 
+ 	 Score: adorno, horkheimer, esclarecimento, theodor, industriacultural, teoriacritica, marcuse 
 Topic 4 Top Words:
- 	 Highest Prob: traducao, escrita, romance, desconstrucao, derrida, literaria, narrativa 
- 	 FREX: romance, traducao, desconstrucao, literaria, derrida, literario, escrita 
- 	 Lift: desconstrutor, milan, kundera, derridianos, desconstrucionista, romance, romanesca 
- 	 Score: romance, traducao, derrida, desconstrucao, literaria, escrita, escritura 
+ 	 Highest Prob: traducao, romance, derrida, literaria, desconstrucao, linguagem, escrita 
+ 	 FREX: romance, traducao, estruturalista, literaria, portugues, desconstrucao, derrida 
+ 	 Lift: kundera, milan, romance, desconstrutor, estruturalista, romanesca, traducao 
+ 	 Score: romance, traducao, derrida, desconstrucao, literaria, portugues, lukacs 
 Topic 5 Top Words:
- 	 Highest Prob: tradicao, hermeneutica, gadamer, compreensao, hermeneuticafilosofica, hermeneutico, ocidental 
- 	 FREX: gadamer, hermeneutica, hermeneuticafilosofica, tradicao, hermeneutico, gadameriana, hansgeorg 
- 	 Lift: sprachlichkeit, gadameriano, gadameriana, linguisticidade, gadamer, wirkungsgeschichte, hansgeorg 
- 	 Score: gadamer, hermeneutica, tradicao, hermeneuticafilosofica, hermeneutico, gadameriana, hansgeorg 
+ 	 Highest Prob: tradicao, hermeneutica, gadamer, compreensao, hermeneuticafilosofica, ocidental, metodo 
+ 	 FREX: gadamer, hermeneuticafilosofica, hansgeorg, gadameriana, hermeneutica, tradicao, hermeneutico 
+ 	 Lift: gadameriana, gadameriano, hansgeorg, gadamer, sprachlichkeit, linguisticidade, hermeneuticafilosofica 
+ 	 Score: gadamer, tradicao, hermeneutica, hermeneuticafilosofica, gadameriana, hansgeorg, hermeneutico 
 Topic 6 Top Words:
- 	 Highest Prob: moral, liberdade, kant, moralidade, fundamentacao, razao, autonomia 
- 	 FREX: razaopratica, leimoral, moralidade, imperativocategorico, dever, costumes, moral 
- 	 Lift: crpr, deux, sources, fmc, gms, imperativocategorico, leimoral 
- 	 Score: moral, moralidade, kant, liberdade, razaopratica, leimoral, dever 
+ 	 Highest Prob: moral, moralidade, kant, liberdade, metafisica, fundamentacao, razao 
+ 	 FREX: leimoral, moralidade, razaopratica, dever, moral, costumes, imperativocategorico 
+ 	 Lift: deux, sources, crpr, leimoral, simetrico, boavontade, principiosupremo 
+ 	 Score: moral, moralidade, kant, leimoral, bergson, razaopratica, dever 
 Topic 7 Top Words:
- 	 Highest Prob: virtudes, macintyre, moral, etica, tradicoes, tradicao, smith 
- 	 FREX: macintyre, alasdair, virtudes, projecao, smith, radicado, tradicoes 
- 	 Lift: alasdair, macintyriana, rationality, macintyre, narrativismo, radicado, eua 
- 	 Score: macintyre, virtudes, alasdair, smith, escoces, eua, radicado 
+ 	 Highest Prob: virtudes, macintyre, tradicoes, etica, moral, tradicao, racionalidade 
+ 	 FREX: macintyre, alasdair, virtudes, projecao, tradicoes, radicado, eua 
+ 	 Lift: macintyriana, rationality, macintyre, alasdair, eua, radicado, projecao 
+ 	 Score: macintyre, virtudes, alasdair, tradicoes, projecao, radicado, eua 
 Topic 8 Top Words:
- 	 Highest Prob: conhecimento, ciencia, metafisica, metodo, natureza, ciencias, fisica 
- 	 FREX: conhecimento, ciencias, ciencia, metodo, metafisica, metafisico, fisica 
- 	 Lift: pappus, primeirosprincipiosmetafisicos, universalis, mathesis, inatismo, conhecimento, inobservavel 
- 	 Score: conhecimento, ciencia, metafisica, ciencias, metodo, fisica, newton 
+ 	 Highest Prob: ciencia, conhecimento, metafisica, natureza, ciencias, metodo, cientifica 
+ 	 FREX: ciencia, conhecimento, conhecimentocientifico, ciencias, potencia, mathesis, mecanica 
+ 	 Lift: primeirosprincipiosmetafisicos, naturata, universalis, mathesis, newtonianos, inobservavel, clausius 
+ 	 Score: ciencia, conhecimento, metafisica, matematica, conhecimentocientifico, cientifica, substancia 
 Topic 9 Top Words:
- 	 Highest Prob: significado, significacao, objeto, quine, riso, semantica, comicidade 
- 	 FREX: significado, riso, significacao, comicidade, quine, semantico, metafora 
- 	 Lift: object, word, extralinguisticas, riso, comicidade, significado, semiologia 
- 	 Score: significado, comicidade, riso, quine, significacao, semantica, semantico 
+ 	 Highest Prob: mulher, mulheres, freud, forma, paixoes, marcuse, civilizacao 
+ 	 FREX: mulheres, mulher, feminina, malestar, raiva, mitologia, feminilidade 
+ 	 Lift: ecofeministas, ecofeminista, homemmulher, raiva, inveja, monzani, ciume 
+ 	 Score: mulher, mulheres, freud, marcuse, paixoes, raiva, feminino 
 Topic 10 Top Words:
- 	 Highest Prob: mulher, genero, mulheres, butler, forma, paixoes, feminino 
- 	 FREX: mulher, butler, mulheres, beauvoir, feminismo, judith, feminista 
- 	 Lift: ecofeministas, ecofeminista, homemmulher, beauvoir, feminilidade, judith, mulher 
- 	 Score: mulher, mulheres, butler, feminismo, sexo, feminino, genero 
+ 	 Highest Prob: tradicao, adorno, modernidade, sentido, ocidental, forma, metafisica 
+ 	 FREX: judaismo, posmodernidade, cinismo, judaica, vattimo, lirica, rosenzweig 
+ 	 Lift: pitagorico, barbaros, lirica, embutidas, prestase, pascalianos, lituano 
+ 	 Score: adorno, tradicao, theodor, musica, judaismo, posmodernidade, adorniana 
 Topic 11 Top Words:
- 	 Highest Prob: tradicao, modernidade, vattimo, sentido, metafisica, ocidental, moderna 
- 	 FREX: vattimo, posmodernidade, gianni, posmoderna, judaismo, judaica, cinismo 
- 	 Lift: vattimo, gianni, theos, pitagorico, barbaros, embutidas, pascalianos 
- 	 Score: vattimo, posmodernidade, tradicao, gianni, judaismo, posmoderna, judaica 
-Topic 12 Top Words:
- 	 Highest Prob: deleuze, gilles, guattari, imanencia, acontecimento, sentido, criacao 
- 	 FREX: deleuze, guattari, gilles, deleuziana, felix, antiedipo, deleuziano 
- 	 Lift: deleuzeana, deleuziano, contraefetuacao, deleuzeano, preindividual, maquinica, intensivos 
+ 	 Highest Prob: deleuze, gilles, discurso, guattari, imanencia, imagem, sentido 
+ 	 FREX: guattari, deleuze, gilles, deleuziana, felix, antiedipo, deleuziano 
+ 	 Lift: deleuzeana, intensivos, deleuziano, contraefetuacao, esquizoanalise, maquinico, ritornelo 
  	 Score: deleuze, gilles, guattari, deleuziana, felix, antiedipo, imanencia 
+Topic 12 Top Words:
+ 	 Highest Prob: rousseau, religiao, educacao, natureza, estado, sociedade, liberdade 
+ 	 FREX: rousseau, jeanjacques, emilio, contratosocial, genebrino, religiao, desigualdade 
+ 	 Lift: caminhante, beaumont, saboiano, tracts, vigario, government, emilio 
+ 	 Score: rousseau, religiao, jeanjacques, educacao, contratosocial, emilio, tolerancia 
 Topic 13 Top Words:
- 	 Highest Prob: material, objetos, materia, causa, objeto, intelecto, poetica 
- 	 FREX: danca, material, mimeticas, poetico, especies, materia, uno 
- 	 Lift: mimeticas, hipostases, maupertius, michelangelo, danca, mousike, henologia 
- 	 Score: mimeticas, poetico, plotino, especies, poesia, intelecto, danca 
+ 	 Highest Prob: vida, sentido, existencia, morte, cultura, natureza, vidahumana 
+ 	 FREX: vida, absurdo, vital, velhice, revolta, vidahumana, camus 
+ 	 Lift: homemmassa, velhice, perturba, ortegaygasset, ortega, jonasiana, vitalismo 
+ 	 Score: vida, camus, velhice, ortega, absurdo, jonas, ortegaygasset 
 Topic 14 Top Words:
- 	 Highest Prob: rousseau, religiao, educacao, natureza, estado, sociedade, natural 
- 	 FREX: rousseau, jeanjacques, emilio, genebrino, contratosocial, religiao, desigualdade 
- 	 Lift: genebrino, jeanjacques, pitie, caminhante, beaumont, saboiano, government 
- 	 Score: rousseau, religiao, jeanjacques, contratosocial, emilio, tolerancia, educacao 
+ 	 Highest Prob: dialogo, retorica, socrates, dialetica, respeito, platao, discursos 
+ 	 FREX: dialogo, retorica, peste, carmides, menon, diderot, persuasao 
+ 	 Lift: arcesilau, sophrosyne, peste, eutifron, eristica, empeiria, aporetico 
+ 	 Score: dialogo, retorica, socrates, gorgias, platao, diderot, belo 
 Topic 15 Top Words:
- 	 Highest Prob: vida, sentido, existencia, vidahumana, vital, natureza, forma 
- 	 FREX: vida, vital, vidahumana, ortega, velhice, circunstancia, vivo 
- 	 Lift: homemmassa, orteguiana, orteguiano, perturba, velhice, ortega, ortegaygasset 
- 	 Score: vida, jonas, ortega, velhice, vital, ortegaygasset, vidahumana 
+ 	 Highest Prob: deus, liberdade, mal, kierkegaard, agostinho, fe, existencia 
+ 	 FREX: kierkegaard, agostinho, deus, fe, divina, santoagostinho, desespero 
+ 	 Lift: soberba, predestinacao, iustitia, livroxix, escatologica, ordine, presciencia 
+ 	 Score: deus, liberdade, agostinho, kierkegaard, fe, mal, divina 
 Topic 16 Top Words:
- 	 Highest Prob: dialogo, retorica, platao, socrates, gorgias, discurso, eros 
- 	 FREX: retorica, dialogo, banquete, gorgias, alcibiades, fedro, eros 
- 	 Lift: agatao, diotima, tucidides, isocrates, leontinos, perelmaniana, socratesdiotima 
- 	 Score: dialogo, retorica, socrates, platao, gorgias, eros, banquete 
+ 	 Highest Prob: funcoes, funcao, classe, conjunto, numeros, sistema, teorema 
+ 	 FREX: funcoes, recursivas, incompletude, continuum, numeros, classe, church 
+ 	 Lift: recursivas, church, oitava, recursao, transfinitos, intervalos, arquitas 
+ 	 Score: funcoes, classe, recursivas, teorema, numeros, church, intervalos 
 Topic 17 Top Words:
- 	 Highest Prob: deus, agostinho, mal, fe, kierkegaard, existencia, razao 
- 	 FREX: agostinho, santoagostinho, fe, kierkegaard, deus, hipona, santo 
- 	 Lift: iustitia, livroxix, sacra, escatologica, soberba, haufniensis, abraao 
- 	 Score: deus, agostinho, kierkegaard, fe, mal, santoagostinho, angustia 
+ 	 Highest Prob: epistemologia, popper, conhecimento, evolucao, epistemologico, quine, epistemologica 
+ 	 FREX: epistemologia, popper, selecaonatural, popperiana, piaget, darwin, quine 
+ 	 Lift: justificacionista, historicistas, moseaoss, falsificabilidade, dedutivismo, falseacionismo, justificacionismo 
+ 	 Score: popper, epistemologia, quine, popperiana, bachelard, selecaonatural, piaget 
 Topic 18 Top Words:
- 	 Highest Prob: funcoes, funcao, conjunto, classe, numeros, sistema, teorema 
- 	 FREX: funcoes, recursivas, numeros, intervalos, continuum, incompletude, church 
- 	 Lift: recursao, church, oitava, recursivas, intervalos, arquitas, medias 
- 	 Score: funcoes, recursivas, teorema, classe, church, numeros, aritmetica 
+ 	 Highest Prob: direito, estado, direitos, direitoshumanos, liberdade, juridica, lei 
+ 	 FREX: direitoshumanos, direito, pazperpetua, direitos, cosmopolita, direitonatural, juridico 
+ 	 Lift: pacifismo, federacao, posnacional, juridificacao, waldron, arbitrios, transnacional 
+ 	 Score: direito, direitoshumanos, direitos, juridica, juridico, paz, pazperpetua 
 Topic 19 Top Words:
- 	 Highest Prob: epistemologia, popper, evolucao, epistemologico, epistemologica, conhecimento, ciencia 
- 	 FREX: popper, epistemologia, selecaonatural, darwin, popperiana, piaget, bachelard 
- 	 Lift: justificacionista, historicistas, falsificabilidade, jay, falseacionismo, dedutivismo, justificacionismo 
- 	 Score: popper, epistemologia, popperiana, bachelard, selecaonatural, piaget, quine 
+ 	 Highest Prob: nietzsche, valores, moral, vontade, niilismo, vida, nietzschiana 
+ 	 FREX: niilismo, transvaloracao, nietzschiana, zaratustra, eternoretorno, nietzsche, valores 
+ 	 Lift: tresvaloracao, genealogie, extemporaneidade, meiodia, afirmador, ressentidos, dissertacoes 
+ 	 Score: nietzsche, niilismo, transvaloracao, valores, nietzschiana, vontade, eternoretorno 
 Topic 20 Top Words:
- 	 Highest Prob: direito, direitos, estado, direitoshumanos, juridica, estados, paz 
- 	 FREX: direitoshumanos, pazperpetua, direito, cosmopolita, direitos, direitonatural, internacional 
- 	 Lift: saintpierre, waldron, pacifismo, federacao, posnacional, juridificacao, comunicativamente 
- 	 Score: direito, direitoshumanos, direitos, juridica, pazperpetua, paz, direitonatural 
+ 	 Highest Prob: agamben, excecao, estado, politica, giorgio, schmitt, carl 
+ 	 FREX: agamben, vidanua, excecao, schmitt, giorgio, sacer, carl 
+ 	 Lift: schmittiano, formadevida, inoperosidade, vidanua, agamben, sacer, agambenianas 
+ 	 Score: agamben, schmitt, excecao, giorgio, vidanua, carl, biopolitica 
 Topic 21 Top Words:
- 	 Highest Prob: nietzsche, valores, moral, vontade, niilismo, nietzschiana, poder 
- 	 FREX: transvaloracao, niilismo, nietzschiana, zaratustra, eternoretorno, nietzsche, perspectivismo 
- 	 Lift: dissertacoes, afirmador, aller, tresvaloracao, interpretacaomoral, genealogie, extemporaneidade 
- 	 Score: nietzsche, niilismo, transvaloracao, nietzschiana, vontade, moral, eternoretorno 
+ 	 Highest Prob: discurso, mundo, tomas, aquino, intelecto, metafisica, conhecimento 
+ 	 FREX: tomas, aquino, tomista, intelecto, santotomas, averrois, summa 
+ 	 Lift: intelligit, singularis, averroista, gorgiano, averroistas, averrois, theologiae 
+ 	 Score: tomas, aquino, intelecto, discurso, tomista, averrois, mundo 
 Topic 22 Top Words:
- 	 Highest Prob: agamben, excecao, estado, politica, giorgio, schmitt, politico 
- 	 FREX: agamben, excecao, vidanua, schmitt, giorgio, sacer, carl 
- 	 Lift: schmittiana, agamben, vidanua, sacer, schmittiano, agambeniana, bando 
- 	 Score: agamben, schmitt, excecao, giorgio, vidanua, biopolitica, carl 
+ 	 Highest Prob: essencia, substancia, natureza, espinosa, existencia, tecnica, feuerbach 
+ 	 FREX: essencia, espinosa, feuerbach, substancia, espinosana, atributos, tecnicamoderna 
+ 	 Lift: espinosana, espinosismo, espinosano, panteismo, ellul, espinosa, feuerbachiano 
+ 	 Score: essencia, espinosa, feuerbach, substancia, espinosana, tecnicamoderna, tecnica 
 Topic 23 Top Words:
- 	 Highest Prob: discurso, tomas, mundo, aquino, realidade, real, suma 
- 	 FREX: tomas, aquino, discurso, tomista, santotomas, summa, suma 
- 	 Lift: gorgiano, tomasica, averroista, averroistas, tomas, aquino, theologiae 
- 	 Score: tomas, aquino, discurso, intelecto, santotomas, tomista, summa 
+ 	 Highest Prob: logicas, logica, sistemas, sistema, semantica, paraconsistentes, semanticas 
+ 	 FREX: logicas, paraconsistentes, paraconsistente, naoclassicas, traducoes, operadores, semanticas 
+ 	 Lift: lfis, decidibilidade, superiormente, fitch, lifs, multivaloradas, naoclassicas 
+ 	 Score: logicas, paraconsistentes, paraconsistente, logica, semanticas, sistemas, modais 
 Topic 24 Top Words:
- 	 Highest Prob: logica, logicas, sistemas, sistema, semantica, calculo, semanticas 
- 	 FREX: logicas, paraconsistentes, quantificadores, semanticas, paraconsistente, calculo, sequentes 
- 	 Lift: decidibilidade, superiormente, fitch, modulada, lifs, lfis, suszko 
- 	 Score: logicas, paraconsistentes, paraconsistente, logica, modais, semanticas, quantificadores 
+ 	 Highest Prob: pintura, movimento, arte, teatro, natureza, galileu, artista 
+ 	 FREX: pintura, manet, pintor, cezanne, galileu, expressionista, pecas 
+ 	 Lift: expressionista, orpheu, vincent, manet, impressionista, picasso, nuncius 
+ 	 Score: pintura, expressionista, galileu, cezanne, manet, artista, pintor 
 Topic 25 Top Words:
- 	 Highest Prob: essencia, substancia, espinosa, natureza, spinoza, leibniz, existencia 
- 	 FREX: substancia, espinosa, spinoza, feuerbach, essencia, leibniz, espinosana 
- 	 Lift: espinosismo, espinosano, clarke, espinosana, demonstrata, spinozana, substancia 
- 	 Score: substancia, espinosa, essencia, spinoza, feuerbach, leibniz, espinosana 
+ 	 Highest Prob: habermas, racionalidade, discurso, razao, fundamentacao, jurgen, etica 
+ 	 FREX: habermas, jurgen, apel, comunicativa, habermasiana, agircomunicativo, acaocomunicativa 
+ 	 Lift: interacaocomunicativa, offentlichkeit, apeliana, karlotto, semioticopragmatica, possecular, posconvencional 
+ 	 Score: habermas, apel, jurgen, habermasiana, agircomunicativo, comunicativa, acaocomunicativa 
 Topic 26 Top Words:
- 	 Highest Prob: pintura, movimento, teatro, galileu, pecas, natureza, genero 
- 	 FREX: manet, pecas, pintura, cezanne, galileu, caeiro, expressionista 
- 	 Lift: orpheu, expressionista, nuncius, sidereus, poesis, picasso, manet 
- 	 Score: pintura, teatro, cezanne, galileu, manet, pecas, caeiro 
+ 	 Highest Prob: logica, matematica, semantica, frege, sistema, logico, principio 
+ 	 FREX: frege, logica, newton, matematica, aritmetica, principia, silogistica 
+ 	 Lift: dedutivas, deenunciados, kaplan, lpt, logicista, alogica, begriffsschrift 
+ 	 Score: logica, frege, matematica, aritmetica, semantica, newton, russell 
 Topic 27 Top Words:
- 	 Highest Prob: habermas, discurso, racionalidade, fundamentacao, razao, jurgen, comunicacao 
- 	 FREX: jurgen, habermas, apel, agircomunicativo, comunicativa, habermasiana, discursiva 
- 	 Lift: apel, jurgen, faktizitat, posconvencional, interacaocomunicativa, agircomunicativo, apeliana 
- 	 Score: habermas, apel, jurgen, habermasiana, agircomunicativo, acaocomunicativa, comunicativa 
+ 	 Highest Prob: tempo, memoria, bergson, passado, materia, temporal, bergsoniana 
+ 	 FREX: memoria, bergsoniana, bergson, henri, lembrancas, repeticao, passado 
+ 	 Lift: lembrancas, memoria, espacializado, continuismo, memoire, matiere, lembranca 
+ 	 Score: memoria, bergson, bergsoniana, tempo, lembrancas, repeticao, henri 
 Topic 28 Top Words:
- 	 Highest Prob: logica, matematica, frege, russell, semantica, principio, logico 
- 	 FREX: frege, matematica, russell, matematico, geometria, logica, silogistica 
- 	 Lift: dedutivas, deenunciados, kaplan, begriffsschrift, portroyal, contrafatuais, russelliana 
- 	 Score: logica, frege, matematica, russell, aritmetica, newton, matematico 
+ 	 Highest Prob: objeto, representacao, husserl, objetos, intuicao, intencionalidade, psicologia 
+ 	 FREX: brentano, investigacoeslogicas, husserl, intencional, intencionalidade, intuicao, objeto 
+ 	 Lift: brentaniana, twardowski, brentano, lask, investigacoeslogicas, interpretante, evocado 
+ 	 Score: husserl, brentano, objeto, intencionalidade, intuicao, investigacoeslogicas, psicologia 
 Topic 29 Top Words:
- 	 Highest Prob: tempo, bergson, memoria, intuicao, consciencia, espaco, materia 
- 	 FREX: memoria, bergson, bergsoniana, henri, intuicao, bergsoniano, tempo 
- 	 Lift: bergsoniano, espacializado, retencao, bergsoniana, proustiano, mctaggart, bergsonianas 
- 	 Score: bergson, memoria, bergsoniana, intuicao, henri, tempo, temporalidade 
+ 	 Highest Prob: mundo, experiencia, merleauponty, corpo, sentido, percepcao, expressao 
+ 	 FREX: merleauponty, maurice, mcdowell, carne, perceptiva, vivido, corporeidade 
+ 	 Lift: silencios, merleaupontiana, perception, phenomenologie, comportement, merleauponty, maurice 
+ 	 Score: merleauponty, corpo, maurice, mcdowell, percepcao, experiencia, fenomenologia 
 Topic 30 Top Words:
- 	 Highest Prob: experiencia, mundo, merleauponty, corpo, sentido, percepcao, expressao 
- 	 FREX: merleauponty, maurice, experiencia, carne, corporeidade, mcdowell, perceptiva 
- 	 Lift: merleuponty, perception, comportement, merleaupontiana, silencios, phenomenologie, merleaupontiano 
- 	 Score: merleauponty, experiencia, corpo, maurice, percepcao, fenomenologia, mcdowell 
+ 	 Highest Prob: acao, maquiavel, politica, soberania, principe, poder, acoes 
+ 	 FREX: maquiavel, principe, virtu, acao, florentino, soberania, acaopolitica 
+ 	 Lift: maquiavelismo, ordenacoes, principados, polibio, bodin, virtu, vivere 
+ 	 Score: maquiavel, acao, soberania, principe, virtu, florentino, acaopolitica 
 Topic 31 Top Words:
- 	 Highest Prob: acao, maquiavel, politica, poder, politico, principe, povo 
- 	 FREX: maquiavel, principe, virtu, florentino, florenca, humores, acao 
- 	 Lift: maquiaveliano, maquiavel, polibio, vivere, principados, maquiavelismo, civile 
- 	 Score: maquiavel, principe, acao, virtu, florenca, florentino, republicana 
+ 	 Highest Prob: estrutura, objetos, sentido, mundo, natureza, estruturas, forma 
+ 	 FREX: estrutura, quantica, objetos, heisenberg, mecanicaquantica, parrhesia, indiscerniveis 
+ 	 Lift: maddy, quantica, logicomatematica, logicomatematicas, zfc, quanticas, quanticos 
+ 	 Score: estrutura, objetos, quantica, heisenberg, mecanicaquantica, entidades, parrhesia 
 Topic 32 Top Words:
- 	 Highest Prob: liberdade, mill, social, individuo, sociedade, forma, sen 
- 	 FREX: sen, berlin, mill, stuart, pobreza, amartya, liberdades 
- 	 Lift: capabilidades, isaiah, milliano, berlin, naodominacao, sen, amartya 
- 	 Score: liberdade, mill, sen, berlin, amartya, stuart, capabilidades 
+ 	 Highest Prob: liberdade, social, mill, individuo, sociedade, forma, negativa 
+ 	 FREX: sen, berlin, mill, pobreza, stuart, amartya, pettit 
+ 	 Lift: capabilidades, isaiah, naodominacao, milliano, berlin, amartya, sen 
+ 	 Score: liberdade, mill, sen, berlin, amartya, capabilidades, stuart 
 Topic 33 Top Words:
- 	 Highest Prob: estrutura, objetos, estruturas, estrutural, mundo, forma, sentido 
- 	 FREX: estrutura, quantica, estrutural, mecanicaquantica, parrhesia, estruturas, bruno 
- 	 Lift: quantica, estrutura, logicomatematica, logicomatematicas, quanticas, bruniana, regularista 
- 	 Score: estrutura, quantica, objetos, mecanicaquantica, entidades, heisenberg, parrhesia 
+ 	 Highest Prob: estado, democracia, politica, liberdade, politico, poder, povo 
+ 	 FREX: democracia, democratico, democratica, sociedadecivil, povo, tocqueville, democracias 
+ 	 Lift: umori, chantal, participativos, autodeterminacaopolitica, mouffe, politicoinstitucional, verita 
+ 	 Score: democracia, estado, democratico, liberdade, politica, governo, sociedadecivil 
 Topic 34 Top Words:
- 	 Highest Prob: consciencia, fenomenologia, husserl, objeto, intencionalidade, fenomenologica, psicologia 
- 	 FREX: husserl, ego, intencionalidade, intencional, fenomenologica, edmund, fenomenologico 
- 	 Lift: brentaniana, twardowski, brentano, investigacoeslogicas, mundodavida, husserl, husserlianas 
- 	 Score: husserl, fenomenologia, consciencia, intencionalidade, ego, fenomenologica, transcendental 
+ 	 Highest Prob: principio, morais, singer, etica, autonomia, principios, moral 
+ 	 FREX: singer, bioetica, animaisnaohumanos, regan, utilitarismo, beneficencia, peter 
+ 	 Lift: childress, principialismo, bemestarista, biotecnologico, pellegrino, thomasma, bemestarismo 
+ 	 Score: singer, bioetica, animaisnaohumanos, utilitarismo, regan, morais, beneficencia 
 Topic 35 Top Words:
- 	 Highest Prob: estado, democracia, politica, liberdade, politico, igualdade, democratico 
- 	 FREX: democracia, democratico, democratica, sociedadecivil, democracias, tocqueville, liberal 
- 	 Lift: participativos, autodeterminacaopolitica, chantal, mouffe, tocqueville, alexis, democracia 
- 	 Score: democracia, democratico, estado, politica, liberdade, democratica, sociedadecivil 
+ 	 Highest Prob: justificacao, crenca, conhecimento, crencas, epistemico, epistemologia, argumento 
+ 	 FREX: plantinga, justificacaoepistemica, justificacao, crenca, gettier, alvin, epistemico 
+ 	 Lift: infinitismo, perceiving, feldman, anulador, goldman, derose, god 
+ 	 Score: justificacao, crencas, crenca, plantinga, epistemico, justificacaoepistemica, gettier 
 Topic 36 Top Words:
- 	 Highest Prob: singer, principio, animais, morais, moral, medicina, utilitarismo 
- 	 FREX: singer, bioetica, regan, animaisnaohumanos, animais, medicina, utilitarismo 
- 	 Lift: distanasia, bioetico, childress, principialismo, naomaleficencia, fertilizacao, bemestarista 
- 	 Score: singer, animaisnaohumanos, bioetica, animais, utilitarismo, regan, medicina 
+ 	 Highest Prob: musica, nietzsche, musical, schopenhauer, arte, wagner, cultura 
+ 	 FREX: musica, wagner, musical, compositor, beethoven, musicais, jovem 
+ 	 Lift: wagneriano, bizet, bayreuth, hanslick, beethoven, tonal, filisteismo 
+ 	 Score: musica, musical, wagner, nietzsche, schopenhauer, arte, tragedia 
 Topic 37 Top Words:
- 	 Highest Prob: justificacao, crenca, crencas, conhecimento, epistemologia, epistemico, argumento 
- 	 FREX: justificacaoepistemica, gettier, justificacao, plantinga, crencas, crenca, fundacionismo 
- 	 Lift: derose, feldman, infinitismo, sosa, god, perceiving, anulador 
- 	 Score: crencas, justificacao, crenca, plantinga, gettier, justificacaoepistemica, epistemico 
+ 	 Highest Prob: arte, estetica, estetico, experiencia, artistica, forma, poetica 
+ 	 FREX: arte, danto, estetica, artemoderna, artistica, artisticas, artecontemporanea 
+ 	 Lift: duchamp, formatividade, greenberg, gravuras, dickie, ombre, realite 
+ 	 Score: arte, estetica, estetico, artistica, danto, artista, artecontemporanea 
 Topic 38 Top Words:
- 	 Highest Prob: musica, nietzsche, musical, wagner, cultura, arte, schopenhauer 
- 	 FREX: musica, wagner, musical, compositor, beethoven, musicais, genio 
- 	 Lift: tonal, tvam, filisteismo, wagneriano, beethoven, sonata, bizet 
- 	 Score: musica, musical, wagner, nietzsche, schopenhauer, musicais, beethoven 
+ 	 Highest Prob: contemporaneo, epicuro, ockham, sentido, comunidade, liberdade, partes 
+ 	 FREX: contemporaneo, epicuro, conotacao, epicurista, ockham, physiologia, epicureo 
+ 	 Lift: ockhamiano, venerabilis, conotacao, kane, physiologia, vaticanas, contemporaneo 
+ 	 Score: contemporaneo, epicuro, ockham, epicurista, conotacao, guilherme, physiologia 
 Topic 39 Top Words:
- 	 Highest Prob: arte, estetica, estetico, artistica, artes, artista, producao 
- 	 FREX: arte, estetica, artistica, danto, artisticas, artista, artemoderna 
- 	 Lift: duchamp, ombre, realite, formatividade, warhol, dickie, noel 
- 	 Score: arte, estetica, artistica, artista, estetico, danto, artes 
+ 	 Highest Prob: foucault, poder, michel, sujeito, si, praticas, loucura 
+ 	 FREX: foucault, foucaultiana, loucura, michel, governamentalidade, arqueologia, pastoral 
+ 	 Lift: microfisico, biopoderes, indocilidade, contraconduta, normalizadora, pastoral, courage 
+ 	 Score: foucault, michel, loucura, biopolitica, governamentalidade, poder, foucaultiana 
 Topic 40 Top Words:
- 	 Highest Prob: contemporaneo, epicuro, natureza, ockham, liberdade, sentido, epicurista 
- 	 FREX: epicuro, contemporaneo, epicurista, physiologia, dominium, conotacao, ockham 
- 	 Lift: meneceu, ockhamiano, vaticanas, physiologia, imperturbabilidade, dominium, epicuro 
- 	 Score: contemporaneo, epicuro, ockham, epicurista, physiologia, dominium, epicureo 
+ 	 Highest Prob: pessoa, identidade, experiencia, identidadepessoal, tempo, embate, natureza 
+ 	 FREX: pessoa, identidadepessoal, goodman, embate, identidade, parfit, serias 
+ 	 Lift: identidadeipse, parfit, pessoa, serias, goodman, postscriptum, gestaltica 
+ 	 Score: pessoa, identidadepessoal, identidade, goodman, embate, parfit, serias 
 Topic 41 Top Words:
- 	 Highest Prob: foucault, poder, michel, sujeito, si, praticas, cuidado 
- 	 FREX: foucault, foucaultiana, loucura, michel, subjetivacao, arqueologia, parresia 
- 	 Lift: hospitais, vigiar, arqueologicos, microfisico, defendre, faut, assujeitado 
- 	 Score: foucault, michel, loucura, biopolitica, governamentalidade, foucaultiana, biopoder 
+ 	 Highest Prob: mente, mental, argumentos, argumento, mentais, consciencia, searle 
+ 	 FREX: mental, dennett, causacao, mentais, estadosmentais, mentecorpo, searle 
+ 	 Lift: zumbi, conceptibilidade, fisicalistas, zumbis, individuals, consciousness, qualia 
+ 	 Score: mental, mente, searle, mentais, dennett, estadosmentais, mentecorpo 
 Topic 42 Top Words:
- 	 Highest Prob: pessoa, valor, valores, realismo, scheler, identidade, idealismo 
- 	 FREX: pessoa, scheler, valor, goodman, realismo, pessoahumana, personalismo 
- 	 Lift: scheler, scheleriano, scheleriana, personalista, personalismo, pessoa, goodman 
- 	 Score: pessoa, scheler, realismo, goodman, valor, identidadepessoal, valores 
+ 	 Highest Prob: sujeito, outro, subjetividade, alteridade, levinas, desejo, lacan 
+ 	 FREX: sujeito, lacan, alteridade, butler, subjetividade, levinas, badiou 
+ 	 Lift: desconstrutora, sexogenero, diacronia, badiou, mataras, alain, serparaooutro 
+ 	 Score: sujeito, levinas, subjetividade, alteridade, lacan, butler, outro 
 Topic 43 Top Words:
- 	 Highest Prob: mente, consciencia, mental, argumentos, argumento, mentais, explicacao 
- 	 FREX: mental, mentais, dennett, mentecorpo, strawson, estadosmentais, searle 
- 	 Lift: individuals, damente, zumbi, fisicalistas, conceptibilidade, consciousness, zumbis 
- 	 Score: mental, mente, searle, mentais, dennett, estadosmentais, strawson 
+ 	 Highest Prob: moral, morais, animais, etica, erro, moralidade, emocoes 
+ 	 FREX: animais, metaetica, erro, morais, williams, teoriamoral, emocoes 
+ 	 Lift: brink, gemea, blackburn, joyce, fatovalor, mackie, naocognitivistas 
+ 	 Score: moral, morais, animais, rorty, moralidade, metaetica, emocoes 
 Topic 44 Top Words:
- 	 Highest Prob: moral, morais, moralidade, emocoes, forma, acoes, posicao 
- 	 FREX: juizosmorais, metaetica, teoriamoral, morais, emocoes, williams, sorte 
- 	 Lift: brink, naocognitivistas, gemea, blackburn, naocognitivismo, fatovalor, metaetica 
- 	 Score: moral, morais, emocoes, moralidade, metaetica, teoriamoral, juizosmorais 
+ 	 Highest Prob: kripke, modelo, regra, modalidades, significado, paradoxo, wittgenstein 
+ 	 FREX: kripke, antica, essencialismo, modalidades, ogica, modal, nomesproprios 
+ 	 Lift: antica, naming, private, ogica, brian, pms, rules 
+ 	 Score: kripke, antica, nomesproprios, ogica, modal, essencialismo, wittgenstein 
 Topic 45 Top Words:
- 	 Highest Prob: sujeito, outro, subjetividade, levinas, alteridade, sentido, desejo 
- 	 FREX: levinas, alteridade, sujeito, rosto, emmanuel, subjetividade, levinasiana 
- 	 Lift: diacronia, essence, emmanuellevinas, desconstrutora, totalite, audela, autrement 
- 	 Score: levinas, sujeito, alteridade, subjetividade, rosto, emmanuel, lacan 
+ 	 Highest Prob: direito, juridica, regras, hart, juridico, dworkin, juridicas 
+ 	 FREX: hart, finnis, dworkin, positivismojuridico, juridicos, juridicas, judicial 
+ 	 Lift: hart, juspositivismo, penumbra, discricionario, finnis, cases, discricionariedade 
+ 	 Score: direito, hart, dworkin, juridica, finnis, kelsen, positivismojuridico 
 Topic 46 Top Words:
- 	 Highest Prob: kripke, propriedades, modelo, regra, modalidades, modal, paradoxo 
- 	 FREX: kripke, antica, essencialismo, modal, saul, mundospossiveis, modalidades 
- 	 Lift: naming, brian, antica, ellis, private, saul, ogica 
- 	 Score: kripke, antica, modal, essencialismo, ogica, propriedades, saul 
+ 	 Highest Prob: hobbes, estado, natureza, poder, homens, thomas, vico 
+ 	 FREX: hobbes, vico, leviata, hobbesiana, soberano, hobbesiano, thomas 
+ 	 Lift: nostri, temporis, verumfactum, convertuntur, napolitano, corpore, viquiano 
+ 	 Score: hobbes, vico, leviata, hobbesiana, thomas, soberano, civil 
 Topic 47 Top Words:
- 	 Highest Prob: direito, juridica, regras, kelsen, justica, hart, juridico 
- 	 FREX: hart, kelsen, dworkin, finnis, positivismojuridico, juridicas, juridicos 
- 	 Lift: discricionario, kelseniana, penumbra, jusfilosofo, juspositivismo, kelseniano, finnis 
- 	 Score: direito, hart, kelsen, dworkin, juridica, finnis, positivismojuridico 
+ 	 Highest Prob: guerra, montaigne, mundial, historia, forma, sociedade, maquina 
+ 	 FREX: montaigne, guerra, mundial, guerras, militar, grotius, maquina 
+ 	 Lift: geologica, sebond, guerrear, montaigneana, montaigne, bellum, desmontagem 
+ 	 Score: guerra, montaigne, mundial, guerras, amizade, maquina, militar 
 Topic 48 Top Words:
- 	 Highest Prob: hobbes, estado, natureza, locke, poder, homens, thomas 
- 	 FREX: hobbes, hobbesiana, leviata, vico, locke, soberano, contrato 
- 	 Lift: hobbesianos, antiquissima, hobbesianas, cive, nostri, temporis, verumfactum 
- 	 Score: hobbes, vico, locke, leviata, hobbesiana, civil, soberano 
-Topic 49 Top Words:
- 	 Highest Prob: imagem, guerra, montaigne, imagens, amizade, mundial, sociedade 
- 	 FREX: montaigne, guerra, imagem, militar, mundial, boetie, maquina 
- 	 Lift: sebond, montaigniano, montaigneana, conference, montaigne, montaigniana, raymond 
- 	 Score: guerra, montaigne, imagem, amizade, militar, mundial, maquina 
-Topic 50 Top Words:
  	 Highest Prob: arendt, politica, hannah, acao, mundo, liberdade, autora 
- 	 FREX: arendt, hannah, totalitarismo, arendtiana, autora, espacopublico, pluralidade 
- 	 Lift: arendtiana, eichmann, laborans, arendtianas, arendtianos, paria, school 
- 	 Score: arendt, hannah, politica, totalitarismo, arendtiana, espacopublico, arendtiano 
-Topic 51 Top Words:
- 	 Highest Prob: marx, capital, producao, social, forma, alienacao, marxismo 
- 	 FREX: marx, capital, marxismo, marxiana, capitalista, lukacs, marxista 
- 	 Lift: althusseriana, entfremdung, superproducao, salario, brumario, fetichistas, materialismohistoricodialetico 
- 	 Score: marx, capital, capitalista, marxiana, lukacs, marxismo, alienacao 
-Topic 52 Top Words:
- 	 Highest Prob: violencia, cinema, politica, weil, sentido, estado, razao 
+ 	 FREX: arendt, hannah, totalitarismo, autora, arendtiana, espacopublico, pluralidade 
+ 	 Lift: arendtianos, eichmann, laborans, paria, sombrios, arendtianas, superfluidade 
+ 	 Score: arendt, hannah, politica, totalitarismo, arendtiana, autora, espacopublico 
+Topic 49 Top Words:
+ 	 Highest Prob: marx, social, capital, producao, forma, karl, sociedade 
+ 	 FREX: marx, capital, marxiana, capitalista, manuscritos, marxismo, economiapolitica 
+ 	 Lift: valortrabalho, superproducao, salario, fetichistas, maisvalor, estranhado, economicofilosoficos 
+ 	 Score: marx, capital, marxiana, capitalista, alienacao, lukacs, marxismo 
+Topic 50 Top Words:
+ 	 Highest Prob: violencia, cinema, weil, politica, imagem, sentido, razao 
  	 FREX: weil, cinema, eric, ciclo, filme, violencia, filmes 
- 	 Lift: glauber, weiliano, weiliana, weil, eric, cineasta, filmes 
- 	 Score: weil, cinema, violencia, filme, eric, ciclo, filmes 
+ 	 Lift: cineasta, glauber, weil, weiliano, eric, cinematograficos, weiliana 
+ 	 Score: cinema, weil, violencia, filme, eric, ciclo, filmes 
+Topic 51 Top Words:
+ 	 Highest Prob: sagrado, mito, forma, cassirer, poder, religiao, marsilio 
+ 	 FREX: sagrado, marsilio, cassirer, simbolicas, eliade, padua, profano 
+ 	 Lift: mircea, paduano, sagrado, cassireriana, profano, eliade, pacis 
+ 	 Score: sagrado, marsilio, cassirer, mito, eliade, padua, profano 
+Topic 52 Top Words:
+ 	 Highest Prob: etica, etico, outro, levinas, eticas, responsabilidade, sentido 
+ 	 FREX: etica, etico, rosto, dussel, levinas, eticas, levinasiana 
+ 	 Lift: cientificotecnologica, eupraxia, faceaface, paraooutro, outroeu, outramente, dussel 
+ 	 Score: etica, levinas, etico, rosto, eticas, dussel, responsabilidade 
 Topic 53 Top Words:
- 	 Highest Prob: sagrado, poder, mito, forma, religiao, cassirer, marsilio 
- 	 FREX: sagrado, marsilio, simbolicas, eliade, padua, cassirer, profano 
- 	 Lift: mircea, paduano, sagrado, hierocracia, cassireriana, eliade, padua 
- 	 Score: sagrado, marsilio, cassirer, padua, eliade, mito, profano 
+ 	 Highest Prob: reflexao, responsabilidade, jonas, hans, principio, etica, tecnica 
+ 	 FREX: jonas, hans, reflexao, responsabilidade, imperativo, tecnologico, tecnologica 
+ 	 Lift: desacorrentado, antropocentrico, jonasiano, jonas, indiscriminado, lucida, dera 
+ 	 Score: jonas, reflexao, responsabilidade, hans, etica, imperativo, tecnologico 
 Topic 54 Top Words:
- 	 Highest Prob: etica, etico, responsabilidade, eticas, eticos, jonas, agir 
- 	 FREX: etico, etica, eticas, eticos, dussel, responsabilidade, jonas 
- 	 Lift: eupraxia, cientificotecnologica, etico, etica, dussel, solicitude, antropocentrico 
- 	 Score: etica, etico, responsabilidade, jonas, eticas, dussel, eticos 
+ 	 Highest Prob: hegel, espirito, fenomenologia, husserl, absoluto, consciencia, experiencia 
+ 	 FREX: hegel, espirito, hegeliana, fenomenologia, hegeliano, absoluto, husserl 
+ 	 Lift: ivo, primeiridade, suprassumir, ibri, segundidade, mundodavida, sistemahegeliano 
+ 	 Score: hegel, fenomenologia, espirito, husserl, peirce, hegeliana, consciencia 
 Topic 55 Top Words:
- 	 Highest Prob: reflexao, ricoeur, paul, simbolos, responsabilidade, mal, sentido 
- 	 FREX: reflexao, simbolos, ricoeuriana, leopardi, ricoeur, imperativo, simbolo 
- 	 Lift: ricoeurianos, leopardi, neant, reflexao, ricoeuriana, dera, humanismos 
- 	 Score: reflexao, ricoeur, jonas, leopardi, ricoeuriana, simbolos, hans 
+ 	 Highest Prob: benjamin, walter, experiencia, historia, arte, modernidade, tempo 
+ 	 FREX: benjamin, walter, baudelaire, aura, benjaminiana, dramabarroco, benjaminiano 
+ 	 Lift: colecionador, auratica, trauerspiels, passagenwerk, fuchs, chockerlebnis, deutschen 
+ 	 Score: benjamin, walter, arte, baudelaire, benjaminiana, dramabarroco, aura 
 Topic 56 Top Words:
- 	 Highest Prob: hegel, espirito, absoluto, fenomenologia, hegeliana, consciencia, logica 
- 	 FREX: hegel, hegeliana, espirito, absoluto, hegeliano, schelling, efetividade 
- 	 Lift: suprassumir, ivo, suprassumida, sistemahegeliano, suprassuncao, vaziana, hegel 
- 	 Score: hegel, espirito, hegeliana, fenomenologia, hegeliano, absoluto, peirce 
+ 	 Highest Prob: hume, descartes, ceticismo, naturezahumana, david, causalidade, cartesiana 
+ 	 FREX: hume, humeana, descartes, david, ceticismo, meditacoes, causalidade 
+ 	 Lift: associativos, reidiana, powers, hume, humeano, milagres, humeana 
+ 	 Score: hume, ceticismo, descartes, humeana, david, causalidade, naturezahumana 
 Topic 57 Top Words:
- 	 Highest Prob: benjamin, walter, experiencia, historia, modernidade, imagens, forma 
- 	 FREX: benjamin, walter, benjaminiana, baudelaire, dramabarroco, aura, benjaminiano 
- 	 Lift: fotografo, passagenwerk, refuncionalizacao, constelacional, colecionador, brechtiana, dramabarroco 
- 	 Score: benjamin, walter, baudelaire, benjaminiana, dramabarroco, aura, fuchs 
+ 	 Highest Prob: justica, reconhecimento, hegel, honneth, lei, social, kant 
+ 	 FREX: honneth, punicao, fraser, pena, axel, eticidade, reconhecimento 
+ 	 Lift: restaurativa, fraser, delitos, retributiva, autoconfianca, sitten, redistribuicao 
+ 	 Score: justica, honneth, hegel, reconhecimento, punicao, fraser, eticidade 
 Topic 58 Top Words:
- 	 Highest Prob: hume, descartes, ceticismo, cartesiana, naturezahumana, david, cartesiano 
- 	 FREX: hume, descartes, humeana, cartesiano, cartesiana, ceticismo, cetica 
- 	 Lift: associativos, reidiana, powers, pirronicos, epokhe, malebranche, hume 
- 	 Score: hume, descartes, ceticismo, cartesiana, humeana, david, cetica 
+ 	 Highest Prob: aristoteles, percepcao, sensacao, natureza, forma, aristotelica, sentidos 
+ 	 FREX: sensacao, aristoteles, berkeley, percepcao, anima, phantasia, inteleccao 
+ 	 Lift: molyneux, naturae, imaterialismo, percipi, caelo, phantasia, fantasmas 
+ 	 Score: aristoteles, percepcao, sensacao, berkeley, phantasia, anima, aristotelica 
 Topic 59 Top Words:
- 	 Highest Prob: justica, reconhecimento, honneth, social, sociais, justo, luta 
- 	 FREX: honneth, reconhecimento, axel, punicao, fraser, injustica, pena 
- 	 Lift: restaurativa, honnethiana, autoconfianca, honneth, dikaiosyne, axel, redistribuicao 
- 	 Score: justica, honneth, reconhecimento, axel, punicao, justo, fraser 
+ 	 Highest Prob: corpo, imaginacao, mente, bachelard, violencia, spinoza, conhecimento 
+ 	 FREX: imaginacao, corpo, bachelard, gaston, agressividade, corporais, bachelardiana 
+ 	 Lift: grotesco, agressividade, imaginativo, neurobiologica, adaequatio, mascarar, dinamizada 
+ 	 Score: corpo, imaginacao, bachelard, grotesco, mente, spinoza, gaston 
 Topic 60 Top Words:
- 	 Highest Prob: aristoteles, percepcao, sensacao, aristotelica, sentidos, ato, forma 
- 	 FREX: sensacao, percepcao, anima, aristoteles, phantasia, sensacoes, berkeley 
- 	 Lift: imaterialismo, caelo, molyneux, parva, hilemorfica, epagoge, percipi 
- 	 Score: aristoteles, percepcao, sensacao, anima, phantasia, berkeley, aristotelica 
+ 	 Highest Prob: virtude, felicidade, alma, aristoteles, bem, virtudes, eudaimonia 
+ 	 FREX: eudaimonia, seneca, felicidade, virtude, estoicismo, virtuoso, virtudemoral 
+ 	 Lift: senequiana, epistulae, morales, aneu, lucilio, ergon, mediedade 
+ 	 Score: felicidade, alma, eudaimonia, virtude, amizade, virtudes, seneca 
 Topic 61 Top Words:
- 	 Highest Prob: felicidade, virtude, aristoteles, bem, alma, virtudes, eudaimonia 
- 	 FREX: felicidade, virtude, eudaimonia, seneca, nicomaco, amizade, virtuoso 
- 	 Lift: aneu, senequiana, teoreticas, ergon, epistulae, morales, kalon 
- 	 Score: felicidade, virtude, eudaimonia, aristoteles, virtudes, amizade, alma 
+ 	 Highest Prob: nietzsche, tragedia, arte, vida, tragico, mundo, tragica 
+ 	 FREX: tragica, dionisiaco, tragedia, tragico, dioniso, pathos, apolineo 
+ 	 Lift: dioniso, mascaras, preplatonicos, apolineo, dionisiaco, hamlet, embriaguez 
+ 	 Score: nietzsche, tragedia, tragico, tragica, dionisiaco, arte, dioniso 
 Topic 62 Top Words:
- 	 Highest Prob: nietzsche, tragedia, tragico, tragica, mundo, nascimento, arte 
- 	 FREX: tragica, tragico, dionisiaco, tragedia, ironia, dioniso, artetragica 
- 	 Lift: dioniso, preplatonicos, unoprimordial, apolineo, dionisiaco, coro, dionisiaca 
- 	 Score: nietzsche, tragedia, tragico, tragica, dionisiaco, dioniso, dionisiaca 
+ 	 Highest Prob: estetica, belo, juizo, sublime, beleza, schiller, natureza 
+ 	 FREX: sublime, schiller, beleza, belo, gosto, educacaoestetica, juizo 
+ 	 Lift: schilleriano, schilleriana, augustenburg, cfj, feio, sublime, mimeticas 
+ 	 Score: belo, sublime, schiller, beleza, estetica, gosto, juizo 
 Topic 63 Top Words:
- 	 Highest Prob: corpo, imaginacao, mente, corpos, alma, razao, violencia 
- 	 FREX: corpo, imaginacao, res, corporais, agressividade, corporal, grotesco 
- 	 Lift: grotesco, passions, agressividade, imaginativo, desprezadores, adaequatio, neurobiologica 
- 	 Score: corpo, imaginacao, grotesco, agressividade, corporais, mente, violencia 
+ 	 Highest Prob: si, ricoeur, paul, hermeneutica, narrativa, processo, sentido 
+ 	 FREX: ricoeur, paul, si, ipseidade, simesmo, ricoeuriana, narrativa 
+ 	 Lift: hipocrisia, soimeme, culpabilite, ricoeur, atestacao, comme, ricoeuriano 
+ 	 Score: ricoeur, paul, si, hermeneutica, narrativa, hipocrisia, simesmo 
 Topic 64 Top Words:
- 	 Highest Prob: belo, juizo, estetica, sublime, beleza, natureza, kant 
- 	 FREX: sublime, belo, beleza, gosto, schiller, juizo, educacaoestetica 
- 	 Lift: augustenburg, schilleriana, schilleriano, cfj, hiperion, eremita, sublime 
- 	 Score: belo, sublime, schiller, beleza, estetica, juizo, gosto 
+ 	 Highest Prob: ciencia, cientifica, kuhn, popper, cientificas, feyerabend, cientifico 
+ 	 FREX: feyerabend, bacon, racionalidadecientifica, carnap, kuhn, laudan, demarcacao 
+ 	 Lift: feyerabendiana, feyerabendiano, astrologia, brahe, tycho, observacionalismo, posicionaram 
+ 	 Score: ciencia, kuhn, feyerabend, popper, carnap, bacon, racionalidadecientifica 
 Topic 65 Top Words:
- 	 Highest Prob: si, liberdade, sartre, consciencia, nada, ricoeur, existencia 
- 	 FREX: sartre, mafe, si, jeanpaul, parasi, nada, sartriana 
- 	 Lift: soimeme, hipocrisia, mafe, realidadehumana, historializacao, sartrianos, sartreana 
- 	 Score: sartre, si, ricoeur, liberdade, parasi, consciencia, nada 
+ 	 Highest Prob: metodo, platao, parmenides, medicina, coisas, naoser, descartes 
+ 	 FREX: parmenides, naoser, medicina, metodo, medica, sofista, poema 
+ 	 Lift: eleatica, diairesis, eleia, eleata, leontino, parmenidica, hipocrates 
+ 	 Score: metodo, parmenides, medicina, naoser, sofista, platao, poema 
 Topic 66 Top Words:
- 	 Highest Prob: ciencia, cientifica, kuhn, cientificas, empirismo, cientifico, thomas 
- 	 FREX: feyerabend, kuhn, incomensurabilidade, lacey, bacon, racionalidadecientifica, revolucoescientificas 
- 	 Lift: observacionalismo, duhemiana, feyerabendiana, kuhniano, tycho, feyerabendiano, antirrealismocientifico 
- 	 Score: kuhn, ciencia, feyerabend, popper, carnap, cientifica, bacon 
+ 	 Highest Prob: wittgenstein, linguagem, proposicoes, proposicao, tractatus, logica, sentido 
+ 	 FREX: tractatus, wittgenstein, proposicoes, tractatuslogicophilosophicus, proposicao, investigacoesfilosoficas, jogos 
+ 	 Lift: tractariana, roscelino, nominalistas, suppositio, intellectibus, calar, tractatus 
+ 	 Score: wittgenstein, tractatus, proposicoes, ockham, tractatuslogicophilosophicus, linguagem, investigacoesfilosoficas 
 Topic 67 Top Words:
- 	 Highest Prob: platao, republica, dialogos, socrates, platonica, parmenides, dialogo 
- 	 FREX: dialogos, parmenides, platao, platonica, sofista, protagoras, republica 
- 	 Lift: criton, solon, diairesis, abdera, oraculo, filebo, eleatica 
- 	 Score: platao, dialogos, republica, socrates, parmenides, platonica, sofista 
+ 	 Highest Prob: historia, historica, historico, ciencia, progresso, kuhn, cientifica 
+ 	 FREX: historia, kuhn, historica, historiografia, historicos, incomensurabilidade, dilthey 
+ 	 Lift: fleck, historia, fundou, bruni, geschichte, droysen, remotas 
+ 	 Score: historia, kuhn, progresso, ciencia, incomensurabilidade, historica, historico 
 Topic 68 Top Words:
- 	 Highest Prob: linguagem, wittgenstein, proposicoes, tractatus, sentido, proposicao, mundo 
- 	 FREX: tractatus, linguagem, wittgenstein, tractatuslogicophilosophicus, proposicoes, investigacoesfilosoficas, jogos 
- 	 Lift: nominalistas, tractatuslogicophilosophicus, tractariana, calar, suppositio, roscelino, wittgensteiniano 
- 	 Score: linguagem, wittgenstein, tractatus, tractatuslogicophilosophicus, ockham, proposicoes, investigacoesfilosoficas 
+ 	 Highest Prob: platao, socrates, republica, dialogos, cidade, dialogo, platonica 
+ 	 FREX: dialogos, platao, republica, platonica, socrates, banquete, trasimaco 
+ 	 Lift: orficos, paideutica, reifilosofo, imitadores, kallipolis, criton, glaucon 
+ 	 Score: platao, socrates, republica, dialogos, cidade, platonica, justica 
 Topic 69 Top Words:
- 	 Highest Prob: historia, historica, historico, progresso, historicos, ideia, processo 
- 	 FREX: historia, historica, historico, historicos, historiografia, progresso, historicas 
- 	 Lift: fleck, historia, geschichte, fundou, fukuyama, historica, whewell 
- 	 Score: historia, historica, historico, progresso, historiografia, historicos, canguilhem 
-Topic 70 Top Words:
  	 Highest Prob: justica, rawls, principios, sociedade, equidade, bem, social 
- 	 FREX: rawls, equidade, liberalismopolitico, rawlsiana, taylor, posicaooriginal, justica 
- 	 Lift: sidgwick, beneficiem, concepcoesmodelos, position, bemordenada, liberalism, decentes 
+ 	 FREX: rawls, equidade, liberalismopolitico, posicaooriginal, justica, rawlsiana, taylor 
+ 	 Lift: sidgwick, beneficiem, concepcoesmodelos, position, equitativo, liberalism, decentes 
  	 Score: rawls, justica, equidade, liberalismopolitico, rawlsiana, posicaooriginal, taylor 
+Topic 70 Top Words:
+ 	 Highest Prob: linguagem, kant, razao, kantiana, transcendental, razaopura, priori 
+ 	 FREX: razaopura, kant, kantiana, priori, transcendental, kantiano, linguagem 
+ 	 Lift: receptiva, dialeticatranscendental, dilucidatio, introducoes, zeljko, moralpratico, sensificacao 
+ 	 Score: kant, linguagem, razaopura, transcendental, kantiana, kantiano, priori 
 Topic 71 Top Words:
- 	 Highest Prob: kant, razao, kantiana, transcendental, razaopura, priori, kantiano 
- 	 FREX: razaopura, priori, kant, kantiana, deducao, deducaotranscendental, kantiano 
- 	 Lift: receptiva, dilucidatio, moralpratico, dialeticatranscendental, reinhold, criticotranscendental, sensificacao 
- 	 Score: kant, razaopura, transcendental, kantiana, deducao, kantiano, deducaotranscendental 
+ 	 Highest Prob: verdade, rorty, sentido, conhecimento, significado, criterio, verdadeiro 
+ 	 FREX: verdade, tarski, rorty, davidson, academicos, adequacao, falsidade 
+ 	 Lift: referencialismo, indicativas, verdade, tarskiana, truth, etchemendy, tarski 
+ 	 Score: verdade, rorty, tarski, davidson, semantica, sentencas, quaseverdade 
 Topic 72 Top Words:
- 	 Highest Prob: verdade, rorty, sentido, identidade, verdadeiro, correspondencia, tarski 
- 	 FREX: verdade, rorty, tarski, falsidade, ficcionais, adequacao, academicos 
- 	 Lift: pragmatic, wahrheitstheorien, verdade, rortyano, neopragmatismo, tarskiana, etchemendy 
- 	 Score: verdade, rorty, tarski, davidson, pragmatismo, consequencialogica, quaseverdade 
+ 	 Highest Prob: freud, psicanalise, psicologia, inconsciente, freudiana, pulsao, freudiano 
+ 	 FREX: freudiano, freudiana, pulsao, metapsicologia, aparelhopsiquico, psicanalise, teoriafreudiana 
+ 	 Lift: breuer, fliess, hipnose, psicopatologicos, etiologicas, psicotico, aparelhopsiquico 
+ 	 Score: freud, psicanalise, inconsciente, psicologia, freudiana, pulsao, freudiano 
 Topic 73 Top Words:
- 	 Highest Prob: freud, psicanalise, psicologia, inconsciente, freudiana, lacan, pulsao 
- 	 FREX: freudiano, freudiana, psicanalise, freud, metapsicologia, pulsao, teoriafreudiana 
- 	 Lift: breuer, charcot, totem, metapsicologico, fliess, superego, neurose 
- 	 Score: freud, psicanalise, inconsciente, freudiana, pulsao, lacan, metapsicologia 
+ 	 Highest Prob: heidegger, tempo, sentido, dasein, compreensao, martin, metafisica 
+ 	 FREX: dasein, heidegger, martin, serai, heideggeriana, analiticaexistencial, heideggeriano 
+ 	 Lift: medard, inderweltsein, ekstatica, projetivo, cotidianidademediana, ereignis, vorhandenheit 
+ 	 Score: heidegger, dasein, martin, ente, serai, heideggeriana, analiticaexistencial 
 Topic 74 Top Words:
- 	 Highest Prob: heidegger, tempo, sentido, dasein, martin, ente, mundo 
- 	 FREX: dasein, heidegger, analiticaexistencial, serai, martin, heideggeriano, heideggeriana 
- 	 Lift: analiticaexistencial, velamento, dasein, poderser, seinundzeit, acontecimentoapropriacao, existencialidade 
- 	 Score: heidegger, dasein, martin, serai, heideggeriana, ente, analiticaexistencial 
+ 	 Highest Prob: modelo, informacao, processos, modelos, tecnologia, processo, autoorganizacao 
+ 	 FREX: autoorganizacao, informacao, redes, tecnologias, informacional, tecnologia, cienciacognitiva 
+ 	 Lift: ashby, kohonen, fake, news, affordances, agenteambiente, abducao 
+ 	 Score: informacao, autoorganizacao, cienciacognitiva, tecnologia, peirce, tecnologias, redes 
 Topic 75 Top Words:
- 	 Highest Prob: modelo, informacao, peirce, processos, modelos, tecnologia, processo 
- 	 FREX: informacao, semiotica, autoorganizacao, informacional, peirce, redes, tecnologia 
- 	 Lift: ashby, kohonen, affordances, abducao, agenteambiente, fake, news 
- 	 Score: peirce, informacao, autoorganizacao, tecnologia, cienciacognitiva, tecnologias, redes 
+ 	 Highest Prob: alma, mundo, morte, conhecimento, plotino, deus, intelecto 
+ 	 FREX: plotino, eckhart, imortalidade, uno, inteligivel, alma, plotiniana 
+ 	 Lift: temer, sufismo, alexandria, origenes, gassendi, plotiniana, epistrophe 
+ 	 Score: alma, plotino, morte, eckhart, intelecto, deus, inteligivel 
 Topic 76 Top Words:
- 	 Highest Prob: alma, morte, mundo, mistica, deus, logos, imortalidade 
- 	 FREX: eckhart, mistica, imortalidade, alma, morte, timeu, corpoalma 
- 	 Lift: sufismo, heraclitica, temer, abgeschiedenheit, epistrophe, eckhart, gassendi 
- 	 Score: alma, morte, eckhart, mistica, plotino, imortalidade, fedon 
+ 	 Highest Prob: sistemas, mente, sistema, linguagem, cognicao, searle, maquinas 
+ 	 FREX: inteligenciaartificial, turing, maquinas, computacional, sistemas, searle, representacoesmentais 
+ 	 Lift: computador, haselager, luhmann, niklas, ciborgues, poshumanismo, cerebros 
+ 	 Score: mente, sistemas, searle, inteligenciaartificial, turing, cienciacognitiva, maquinas 
 Topic 77 Top Words:
- 	 Highest Prob: mente, sistemas, sistema, cognicao, maquinas, modelos, cienciacognitiva 
- 	 FREX: inteligenciaartificial, maquinas, turing, cognicao, computacional, computacao, representacoesmentais 
- 	 Lift: haselager, niklas, luhmann, ciborgues, poshumanismo, computador, varela 
- 	 Score: mente, cienciacognitiva, cognicao, turing, inteligenciaartificial, sistemas, maquinas 
+ 	 Highest Prob: sociedade, social, marcuse, sociais, valor, forma, sociedades 
+ 	 FREX: ator, marcuse, consumo, espetaculo, sociedadeindustrial, riqueza, debord 
+ 	 Lift: luxo, socialhistorico, feenberg, afluentes, cornelius, mass, industriais 
+ 	 Score: marcuse, sociedade, smith, ator, social, castoriadis, consumo 
 Topic 78 Top Words:
- 	 Highest Prob: sociedade, social, marcuse, civilizacao, sociais, herbert, forma 
- 	 FREX: marcuse, herbert, sociedadeindustrial, unidimensional, civilizacao, avancada, ator 
- 	 Lift: socialhistorico, luxo, feenberg, dessublimacao, marcuseana, unidimensional, marcusiano 
- 	 Score: marcuse, sociedade, herbert, civilizacao, teoriacritica, social, sociedadeindustrial 
+ 	 Highest Prob: vontade, amor, schopenhauer, mundo, conhecimento, representacao, metafisica 
+ 	 FREX: amor, schopenhauer, vontade, schopenhaueriana, arthur, amar, compaixao 
+ 	 Lift: diaboli, arbitrii, libertate, eudemonologia, voluntas, amor, identificao 
+ 	 Score: vontade, schopenhauer, amor, schopenhaueriana, arthur, compaixao, amar 
 Topic 79 Top Words:
- 	 Highest Prob: vontade, schopenhauer, amor, mundo, representacao, metafisica, liberdade 
- 	 FREX: schopenhauer, amor, vontade, schopenhaueriana, compaixao, arthur, amar 
- 	 Lift: arbitrii, libertate, schopenhauerianos, diaboli, eudemonologia, concupiscencia, voluntas 
- 	 Score: schopenhauer, vontade, amor, schopenhaueriana, arthur, compaixao, livrearbitrio 
+ 	 Highest Prob: consciencia, sartre, realidade, mundo, nada, liberdade, si 
+ 	 FREX: sartre, parasi, mafe, consciencia, jeanpaul, sartriana, emsi 
+ 	 Lift: lego, naotetica, lucido, historializacao, sartrianos, mafe, sartreana 
+ 	 Score: consciencia, sartre, parasi, mafe, jeanpaul, ego, sartriana 
 Topic 80 Top Words:
- 	 Highest Prob: realidade, compreensao, limites, sonho, possiveis, humana, ideal 
- 	 FREX: realidade, sonho, lucido, limites, possiveis, onirica, tornam 
- 	 Lift: lucido, realidade, autocontrole, possibilitariam, sonho, rodeia, simulacoes 
- 	 Score: realidade, sonho, lucido, autocontrole, onirica, limites, simulacoes 
+ 	 Highest Prob: possibilidades, sentido, mundo, constituicao, possiveis, direcao, imagem 
+ 	 FREX: possibilidades, somatica, direcao, referese, interpretado, possiveis, constituicao 
+ 	 Lift: somatica, instintivos, instintiva, perceptivos, somatico, jamesiana, percepto 
+ 	 Score: somatica, possibilidades, percepcao, direcao, imagem, constituicao, sentido 

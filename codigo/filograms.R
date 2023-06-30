@@ -1419,9 +1419,11 @@ questaes
 concep
 sculo
 reflexco
-concebem
-ramos
-dissolver"
+iii
+rio
+ncia
+investigaremos
+pensamos"
 
 # Salvar vetor para uso em stm_filosofia.R####
 readr::write_lines(filolixo, "dados/filolixo")

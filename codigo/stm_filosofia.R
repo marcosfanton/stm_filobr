@@ -28,7 +28,7 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
     !is.na(nm_producao)) |> # -1 trabalho sem título (n = 11742)
   dplyr::distinct(nm_producao, ds_resumo, .keep_all = TRUE) |> # -6 trabalhos repetidos (n = 11736)
   dplyr::mutate(doc_id = row_number()) |> 
-  dplyr::filter(!doc_id %in% c(7854, 7849, 8205)) |># -3 trabalhos com palavras repetidas (n = 11733)
+  dplyr::filter(!doc_id %in% c(7854, 7849, 8205)) |># - 3 trabalhos com palavras repetidas (n = 11733)
   select(doc_id, an_base, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador)
 
 # ngrams e stopwords ####
@@ -52,7 +52,6 @@ filolixo <- tibble(word = unlist(str_split(filolixo, "\n")))
 
 # Preparação do banco - Tokenização e exclusão de stopwords (n: 11736)
 filowords <- dados |> 
-  dplyr::select(doc_id, an_base, nm_producao, ds_resumo, ds_palavra_chave, g_orientador) |> # Seleção de variáveis para STM e outras análises
   tidytext::unnest_tokens(output = word, # Tokenização de palavras do resumo
                           input = ds_resumo, 
                           drop = TRUE) |> # Exclusão da variável DS_RESUMO
@@ -63,14 +62,20 @@ filowords <- dados |>
   dplyr::count(doc_id, nm_producao, word, an_base, g_orientador)    # Contagem da frequência absoluta de cada token
 
 # Remoção de palavras esparsas
+# Contagem
 palavras_raras <- filowords |>  
     count(doc_id, word) |> 
     group_by(word) |> 
     mutate(doc_freq = n_distinct(doc_id))  |> 
     filter(doc_freq <= 2) |> # Exclusão de 53527 tokens que aparecem em 1 documento apenas 1 vez
   select(word)
+# Remoção em filowords
 filowords <- filowords |> 
   dplyr::anti_join(palavras_raras)
+
+# Salvar banco para análise
+filowords |> 
+  readr::write_csv("dados/filowords_stm.csv")
 
 # Preparação do banco em matriz esparsa
 filosparse <- filowords |> tidytext::cast_sparse(doc_id, word, n) #matriz para análise
@@ -80,7 +85,7 @@ covars <- dplyr::distinct(filowords, doc_id, an_base, g_orientador) #matriz de c
 # Modelo STM
 #Modelo simples####
 topic_model <- stm(filosparse,
-                   K = 78,
+                   K = 80,
                    prevalence = ~ g_orientador + s(an_base),
                    seed = 1987,
                    data = covars,
@@ -145,7 +150,7 @@ gamma_words |>
 # title = "77 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
 
 # Findthoughts (STM) #### 
-findallthoughts_m78 <- tidygamma |> 
+findallthoughts_m80 <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
   left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma
@@ -153,7 +158,7 @@ findallthoughts_m78 <- tidygamma |>
   slice_max(order_by = gamma, n = 1) |> # Escolhe o tópico com maior gamma de cada documento
   select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
 
-findthoughts_m78 <- tidygamma |> 
+findthoughts_m80 <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
   left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma 
@@ -162,18 +167,18 @@ findthoughts_m78 <- tidygamma |>
   select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
 
 #Salvar modelos em .txt e .csv
-findthoughts_m78 |> 
-  readr::write_csv("dados/findthoughts_m78.csv")
+findallthoughts_m80 |> 
+  readr::write_csv("dados/findallthoughts_m80.csv")
 
 #Salvar resultados em .txt
-sink('dados/summary_topicmodel78.txt')
+sink('dados/summary_topicmodel80.txt')
 print(summary(topic_model))
 sink()
 
 
 #Efeitos#### 
 #Efeito ano####
-stm_prep_ano <- stm::estimateEffect(1:77 ~ an_base, 
+stm_prep_ano <- stm::estimateEffect(1:80 ~ an_base, 
                                     stmobj = topic_model, 
                                     metadata = covars, 
                                     uncertainty = "Global")
@@ -199,7 +204,7 @@ ggplot(sig_effects_ano_tidy, aes(x = covariate.value, y = estimate,
   theme(legend.position = "none")
 
 #Efeito gênero de orientador####
-stm_prep_gender <- stm::estimateEffect(1:77 ~ g_orientador, 
+stm_prep_gender <- stm::estimateEffect(1:80 ~ g_orientador, 
                                        stmobj = topic_model, 
                                        metadata = covars, 
                                        uncertainty = "Global")
@@ -410,7 +415,7 @@ juice(umap_prep)  |>
 #Modelos Múltiplos (código de Julia Silge)####
 #Modelo com múltiplos K####
 plan(multisession)
-many_models <- tidyr::tibble(K = c(30, 40, 50, 60, 70, 75, 77, 78, 79, 80, 90, 100)) |> #Teste de modelos com 40 a 80 Tópicos
+many_models <- tidyr::tibble(K = c(75, 77, 78, 79, 80, 85)) |> #Teste de modelos com 40 a 80 Tópicos
   dplyr::mutate(topic_model = furrr::future_map(K, ~ stm::stm(filosparse, 
                                                               K = .,
                                                               prevalence = ~g_orientador + s(an_base),
@@ -465,7 +470,7 @@ k_result |>
 
 #Escolha do modelo com número adequado de tópicos
 topic_model <- k_result  |>  
-  filter(K == 78) |> 
+  filter(K == 85) |> 
   pull(topic_model)  %>%   
   .[[1]]
 
