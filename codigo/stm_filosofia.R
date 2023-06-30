@@ -28,6 +28,7 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
     !is.na(nm_producao)) |> # -1 trabalho sem título (n = 11742)
   dplyr::distinct(nm_producao, ds_resumo, .keep_all = TRUE) |> # -6 trabalhos repetidos (n = 11736)
   dplyr::mutate(doc_id = row_number()) |> 
+  dplyr::filter(!doc_id %in% c(7854, 7849, 8205)) |># -3 trabalhos com palavras repetidas (n = 11733)
   select(doc_id, an_base, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador)
 
 # ngrams e stopwords ####
@@ -58,7 +59,7 @@ filowords <- dados |>
   dplyr::anti_join(get_stopwords("pt"))|> # Stopwords em pt
   dplyr::anti_join(get_stopwords("en"))|> 
   dplyr::anti_join(filolixo) |> # Dicionário de stopwords personalizado no script filograms.R <===
-  dplyr::filter(str_detect(word, "^si$|^fe$|...")) |> #remove todas palavras com menos de 3 caracteres (mantém 'si' e 'fe')
+  dplyr::filter(str_detect(word, "^si$|^fe$|...")) |> #remove todas palavras com menos de 3 caracteres (mantém 'si' e 'fe') 
   dplyr::count(doc_id, nm_producao, word, an_base, g_orientador)    # Contagem da frequência absoluta de cada token
 
 # Remoção de palavras esparsas
@@ -66,9 +67,8 @@ palavras_raras <- filowords |>
     count(doc_id, word) |> 
     group_by(word) |> 
     mutate(doc_freq = n_distinct(doc_id))  |> 
-    filter(doc_freq <= 1) |> # Exclusão de 36865 tokens que aparecem em 1 documento apenas 1 vez
+    filter(doc_freq <= 2) |> # Exclusão de 53527 tokens que aparecem em 1 documento apenas 1 vez
   select(word)
-
 filowords <- filowords |> 
   dplyr::anti_join(palavras_raras)
 
@@ -80,7 +80,7 @@ covars <- dplyr::distinct(filowords, doc_id, an_base, g_orientador) #matriz de c
 # Modelo STM
 #Modelo simples####
 topic_model <- stm(filosparse,
-                   K = 77,
+                   K = 78,
                    prevalence = ~ g_orientador + s(an_base),
                    seed = 1987,
                    data = covars,
@@ -145,22 +145,31 @@ gamma_words |>
 # title = "77 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
 
 # Findthoughts (STM) #### 
-
-findallthoughts <- tidygamma |> 
+findallthoughts_m78 <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
-  left_join(filowords_stm,
+  left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma
   group_by(document) |> # Agrupa os valores gamma de cada tópico
   slice_max(order_by = gamma, n = 1) |> # Escolhe o tópico com maior gamma de cada documento
   select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
 
-findthoughts <- tidygamma |> 
+findthoughts_m78 <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
   left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma 
   group_by(topic) |> 
   slice_max(order_by = gamma, n = 5) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
   select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
+
+#Salvar modelos em .txt e .csv
+findthoughts_m78 |> 
+  readr::write_csv("dados/findthoughts_m78.csv")
+
+#Salvar resultados em .txt
+sink('dados/summary_topicmodel78.txt')
+print(summary(topic_model))
+sink()
+
 
 #Efeitos#### 
 #Efeito ano####
@@ -401,7 +410,7 @@ juice(umap_prep)  |>
 #Modelos Múltiplos (código de Julia Silge)####
 #Modelo com múltiplos K####
 plan(multisession)
-many_models <- tidyr::tibble(K = c(50, 60, 65, 70, 75, 77, 80, 90, 100, 110)) |> #Teste de modelos com 40 a 80 Tópicos
+many_models <- tidyr::tibble(K = c(30, 40, 50, 60, 70, 75, 77, 78, 79, 80, 90, 100)) |> #Teste de modelos com 40 a 80 Tópicos
   dplyr::mutate(topic_model = furrr::future_map(K, ~ stm::stm(filosparse, 
                                                               K = .,
                                                               prevalence = ~g_orientador + s(an_base),
@@ -442,7 +451,7 @@ k_result |>
 #Gráfico Exclusividade x Coerência Semântica por tópicos
 k_result |>  
   select(K, exclusivity, semantic_coherence)  |> 
-  filter(K %in% c(50, 60, 65, 70, 75, 77, 80, 85, 90, 95, 100, 110))  |> 
+  filter(K %in% c(30, 40, 50, 60, 70, 75, 77, 78, 79, 80, 90, 100))  |> 
   unnest(cols = c(exclusivity, semantic_coherence))  |> 
   mutate(K = as.factor(K)) |> 
   ggplot(aes(semantic_coherence, exclusivity, color = K)) +
@@ -456,7 +465,7 @@ k_result |>
 
 #Escolha do modelo com número adequado de tópicos
 topic_model <- k_result  |>  
-  filter(K == 100) |> 
+  filter(K == 78) |> 
   pull(topic_model)  %>%   
   .[[1]]
 
