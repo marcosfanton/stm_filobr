@@ -89,16 +89,11 @@ catalogo8721 <- catalogo8721  |>
 
 #Variáveis derivadas####
 #Gênero de orientadores, orientandos e orientador-orientando com o pacote @GenderBR####
-catalogo8721 <- catalogo8721 %>% 
+catalogo8721 <- catalogo8721  |>  
   mutate(
     g_orientador = genderBR::get_gender(nm_orientador),
-    g_discente = genderBR::get_gender(nm_discente), 
-    g_oridis = factor(case_when(
-      g_orientador == "Male" & g_discente == "Male" ~ "MM",
-      g_orientador == "Male" & g_discente == "Female" ~ "MF",
-      g_orientador == "Female" & g_discente == "Male" ~ "FM",
-      g_orientador == "Female" & g_discente == "Female" ~ "FF")
-    ))
+    g_discente = genderBR::get_gender(nm_discente)
+  )
 
 #O pacote genderBR não consegue atribuir gênero a alguns nomes de orientadores. 
 #Para não enviesar a amostra (excluir todos trabalhos orientados por determinador professor),
@@ -125,12 +120,22 @@ homens <- semgenero %>%
   pull() # Extrai vetor de nomes
 
 #Atribuição de gênero para os casos correspondentes no restante do banco
-catalogo8721 <- catalogo8721 %>%
+catalogo8721 <- catalogo8721 |> 
   mutate(g_orientador = case_when(
     nm_orientador %in% mulheres ~ "Female", 
     nm_orientador %in% homens ~ "Male", 
     TRUE ~ g_orientador # Preserva os valores correspondentes nos demais casos
   ))
+
+# Criação da variável gênero de orientador-orientando
+catalogo8721 <- catalogo8721 |> 
+  mutate(g_oridis = factor(case_when(
+  g_orientador == "Male" & g_discente == "Male" ~ "MM",
+  g_orientador == "Male" & g_discente == "Female" ~ "MF",
+  g_orientador == "Female" & g_discente == "Male" ~ "FM",
+  g_orientador == "Female" & g_discente == "Female" ~ "FF")
+  ))
+
 #Banco limpo####
 #Salvar banco limpo
 catalogo8721 |>

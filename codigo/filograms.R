@@ -1423,7 +1423,8 @@ iii
 rio
 ncia
 investigaremos
-pensamos"
+pensamos
+referidos"
 
 # Salvar vetor para uso em stm_filosofia.R####
 readr::write_lines(filolixo, "dados/filolixo")
