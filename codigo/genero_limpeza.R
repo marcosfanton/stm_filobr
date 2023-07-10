@@ -27,6 +27,9 @@ banco1321 <- purrr::map_dfr(list.files(path = "dados/catalogo/capes1321",
 # Variáveis dos Bancos de 1987-2012 - Ver Metadados do Catálogo
 vars8712 <- c("AnoBase",
               "NomeIes",
+              "GrandeAreaDescricao",
+              "AreaConhecimento",
+              "AreaAvaliacao",
               "CodigoPrograma",
               "TituloTese",
               "Nivel", 
@@ -40,7 +43,10 @@ vars8712 <- c("AnoBase",
 
 # Variáveis dos Bancos de 2013-2021 - Ver Metadados do Catálogo
 vars1321 <- c("AN_BASE",
-              "NM_ENTIDADE_ENSINO", 
+              "NM_ENTIDADE_ENSINO",
+              "NM_GRANDE_AREA_CONHECIMENTO",
+              "NM_AREA_CONHECIMENTO",
+              "NM_AREA_AVALIACAO",
               "CD_PROGRAMA",
               "NM_PRODUCAO", 
               "NM_SUBTIPO_PRODUCAO", 
@@ -72,7 +78,10 @@ catalogo9121 <- catalogo9121  |>
                   x <- stringi::stri_trans_general(x, "Latin-ASCII") # Transforma todo texto em Latin-ASCII ou expressões equivalente
                   x <- stringr::str_squish(x) # Remove espaços consecutivos
                   x
-                })) |> 
+                }),
+                NM_SUBTIPO_PRODUCAO = str_replace_all(NM_SUBTIPO_PRODUCAO, # Padronização dos valores das variáveis
+                                        pattern = c("mestrado" = "dissertacao", 
+                                                    "doutorado" = "tese"))) |> 
   dplyr::rename_all(tolower)
 
 # Variáveis derivadas####
@@ -81,12 +90,12 @@ catalogo9121 <- catalogo9121  |>
   dplyr::mutate(
     g_orientador = genderBR::get_gender(nm_orientador),
     g_discente = genderBR::get_gender(nm_discente),
-    mutate(g_oridis = factor(case_when(
+    g_oridis = factor(case_when(
       g_orientador == "Male" & g_discente == "Male" ~ "MM",
       g_orientador == "Male" & g_discente == "Female" ~ "MF",
       g_orientador == "Female" & g_discente == "Male" ~ "FM",
       g_orientador == "Female" & g_discente == "Female" ~ "FF")
-    )))
+    ))
 
 # Banco limpo####
 # Salvar banco limpo
