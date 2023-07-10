@@ -1426,6 +1426,7 @@ investigaremos
 pensamos
 referidos"
 
+
 # Salvar vetor para uso em stm_filosofia.R####
 readr::write_lines(filolixo, "dados/filolixo")
 # Transformação em tibble para uso no anti_join####

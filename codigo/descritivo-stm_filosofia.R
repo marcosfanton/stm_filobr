@@ -144,7 +144,6 @@ dados_estado <- dados |>
   mutate(sg_uf_ies = str_to_upper(sg_uf_ies))
 
 # Cálculo densidade Estados
-
 densidade_estados <- dplyr::left_join(populacao_estado, 
                                      dados_estado, 
                                      by = c("territorio" = "sg_uf_ies")) |> 
@@ -155,7 +154,6 @@ estados <- dplyr::left_join(estados,
                            dados_estado, 
                            by = c("abbrev_state" = "sg_uf_ies"))
 
-fill = "red" 
 # Gráfico - Estados
 ggplot(estados) +
   geom_sf(aes(fill=trabalhos)) +
@@ -270,7 +268,6 @@ dados |>
                     size = 7,
                     fill = NA), 
                 stat = "unique")
-
 
 # Proporção de gênero (década) ####
 # Tabela de proporção entre décadas

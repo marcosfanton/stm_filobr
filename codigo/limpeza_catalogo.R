@@ -1,8 +1,19 @@
 ####Pacotes####
 library(tidyverse)
-library(here) 
-library(stringi) #limpeza de texto
-library(genderBR) #rotulação de gênero com base no primeiro nome
+library(here)
+library(skimr)
+library(genderBR) # Dicionário de nomes e gênero
+library(stringi)
+library(textclean)
+library(MetBrewer)
+library(ggforce)
+library(ggridges)
+library(extrafont)
+library(ggtext)
+library(ggstream)
+library(janitor)
+library(epiR)
+library(gt)
 
 #Unificação dos bancos de 1987-2021####
 #Todos os bancos foram baixados em CSV na página da CAPES - Dados Abertos 
@@ -121,7 +132,8 @@ homens <- semgenero %>%
 
 #Atribuição de gênero para os casos correspondentes no restante do banco
 catalogo8721 <- catalogo8721 |> 
-  mutate(g_orientador = case_when(
+  mutate(
+    g_orientador = case_when(
     nm_orientador %in% mulheres ~ "Female", 
     nm_orientador %in% homens ~ "Male", 
     TRUE ~ g_orientador # Preserva os valores correspondentes nos demais casos
