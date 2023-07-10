@@ -79,9 +79,10 @@ catalogo9121 <- catalogo9121  |>
                   x <- stringr::str_squish(x) # Remove espaços consecutivos
                   x
                 }),
-                NM_GRAU_ACADEMICO = case_when(
+                NM_GRAU_ACADEMICO = case_when( # Atribui titulação com base na variável nm_subtipo_producao
                     AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "mestrado" ~ "mestrado",
                     AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "doutorado" ~ "doutorado",
+                    AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "profissionalizante" ~ "mestrado profissional",
                     TRUE ~ as.character(NM_GRAU_ACADEMICO)
                   )) |> 
   dplyr::rename_all(tolower)
@@ -99,8 +100,13 @@ catalogo9121 <- catalogo9121  |>
       g_orientador == "Female" & g_discente == "Female" ~ "FF")
     ))
 
+# Exclui NA's de variáveis da análise
+catalogo9121 <- catalogo9121 |> 
+  drop_na(nm_grau_academico, 
+          g_oridis) # Automaticamente exclui NAs de g_orientador e g_discente (104324|0.924)
+
+
 # Banco limpo####
-# Salvar banco limpo
 # Salvar arquivo RAW -- CSV 
 catalogo9121 |>
   readr::write_csv("dados/catalogo/catalogo9121_raw.csv")
