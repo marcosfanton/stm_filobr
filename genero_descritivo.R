@@ -16,6 +16,22 @@ library(janitor)
 # Banco 
 dados <- read.csv("dados/catalogo/catalogo9121_raw.csv")
 
+# Transforma variáveis de interesse em fator
+fatores <- c("an_base", 
+             "nm_grande_area_conhecimento", 
+             "nm_area_avaliacao", 
+             "nm_subtipo_producao", 
+             "nm_grau_academico", 
+             "nm_regiao", 
+             "sg_uf_ies", 
+             "g_orientador", 
+             "g_discente", 
+             "g_oridis")
+
+dados <- dados  |> 
+  mutate(across(all_of(fatores), as.factor))
+
+
 # Evolução da pós-graduação no Brasil - 1991-2021####
 theme_set(theme_minimal(base_family = "Roboto"))
 # Gráfico de evolução de todo universo#### 
@@ -39,12 +55,11 @@ dados |>
 
 #Gráfico Total por Gênero PROFESSOR
 dados |> 
-  drop_na(g_orientador) |> 
-  ggplot(aes(x = an_base, fill = nm_subtipo_producao)) +
+  ggplot(aes(x = an_base, color = nm_grau_academico)) +
   geom_line(stat = "count", linewidth = 1.2) +
   scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
   scale_y_continuous( position = "right") +
-  scale_colour_manual(values = met.brewer("Nizami", 2)) +
+  scale_colour_manual(values = met.brewer("Nizami", 4)) +
   labs(title = "Evolução da defesa de trabalhos na Pós-Graduação",
        subtitle = " Trabalhos orientados por pesquisadores <span style= 'color:#1d4497; font-size:24pt; font-weight: bold;'>Homens</span> e <span style= 'color:#b83326;font-size:24pt;'>Mulheres</span> entre 1991 e 2020",
        caption = "Elaboração: Dataphilo | Dados: CAPES", 
@@ -70,7 +85,7 @@ dados |>
        y = "") +
   scale_fill_manual(values = met.brewer("Nizami", 2)) +
   scale_x_continuous(limits = c(1991, 2021), expand = c(0, 0)) +
-  scale_y_continuous(labels = NULL) +
+  #scale_y_continuous(labels = NULL) +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5),  #letra do título
         plot.subtitle = element_markdown(hjust = 0.5),
         plot.caption = element_markdown(margin = margin(t = 0), hjust = 0.975),

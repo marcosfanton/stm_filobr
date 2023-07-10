@@ -79,9 +79,11 @@ catalogo9121 <- catalogo9121  |>
                   x <- stringr::str_squish(x) # Remove espaços consecutivos
                   x
                 }),
-                NM_SUBTIPO_PRODUCAO = str_replace_all(NM_SUBTIPO_PRODUCAO, # Padronização dos valores das variáveis
-                                        pattern = c("mestrado" = "dissertacao", 
-                                                    "doutorado" = "tese"))) |> 
+                NM_GRAU_ACADEMICO = case_when(
+                    AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "mestrado" ~ "mestrado",
+                    AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "doutorado" ~ "doutorado",
+                    TRUE ~ as.character(NM_GRAU_ACADEMICO)
+                  )) |> 
   dplyr::rename_all(tolower)
 
 # Variáveis derivadas####
