@@ -102,6 +102,7 @@ catalogo9121 <- catalogo9121  |>
 
 # Exclui NA's de variáveis da análise
 catalogo9121 <- catalogo9121 |> 
+  filter(nm_grau_academico == "doutorado profissional") |>  # Exclusão de 38 observações
   drop_na(nm_grau_academico, 
           g_oridis) # Automaticamente exclui NAs de g_orientador e g_discente (104324|0.924)
 
