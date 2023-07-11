@@ -17,10 +17,8 @@ library(janitor)
 dados <- read.csv("dados/catalogo/catalogo9121_raw.csv")
 
 # Transforma variáveis de interesse em fator
-fatores <- c("an_base", 
-             "nm_grande_area_conhecimento", 
+fatores <- c("nm_grande_area_conhecimento", 
              "nm_area_avaliacao", 
-             "nm_subtipo_producao", 
              "nm_grau_academico", 
              "nm_regiao", 
              "sg_uf_ies", 
@@ -30,7 +28,6 @@ fatores <- c("an_base",
 
 dados <- dados  |> 
   mutate(across(all_of(fatores), as.factor))
-
 
 # Evolução da pós-graduação no Brasil - 1991-2021####
 theme_set(theme_minimal(base_family = "Roboto"))
@@ -44,7 +41,7 @@ dados |>
   scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
   scale_y_continuous(limits = c(0, 100000), position = "right") +
   labs(title = "Evolução da defesa de trabalhos na Pós-Graduação brasileira",
-       subtitle = "Teses e Dissertações defendidas entre 1991-2021 | N: 1.374.371 trabalhos",
+       subtitle = "Teses e Dissertações defendidas entre 1991-2021 | n: 1.270.0009 trabalhos",
        caption = "Elaboração: Os autores | Dados: CAPES", 
        x = "",
        y = "") +
@@ -59,7 +56,7 @@ dados |>
   geom_line(stat = "count", linewidth = 1.2) +
   scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
   scale_y_continuous( position = "right") +
-  scale_colour_manual(values = met.brewer("Nizami", 4)) +
+  scale_colour_manual(values = met.brewer("Nizami", 3)) +
   labs(title = "Evolução da defesa de trabalhos na Pós-Graduação",
        subtitle = " Trabalhos orientados por pesquisadores <span style= 'color:#1d4497; font-size:24pt; font-weight: bold;'>Homens</span> e <span style= 'color:#b83326;font-size:24pt;'>Mulheres</span> entre 1991 e 2020",
        caption = "Elaboração: Dataphilo | Dados: CAPES", 
@@ -68,8 +65,7 @@ dados |>
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
         plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
         plot.caption = element_markdown(margin = margin(t = 3)),
-        legend.position = "none",
-        text = element_text(size = 35)) + 
+        text = element_text(size = 20)) + 
   coord_cartesian(clip = 'off') 
 
 #Gráfico Total por Gênero do PROFESSOR - BARRA
