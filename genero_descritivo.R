@@ -16,6 +16,14 @@ library(janitor)
 # Banco 
 dados <- read.csv("dados/catalogo/catalogo9121_raw.csv")
 
+# Recodificação dos níveis da filosofia e teologia
+dados <- dados  |> 
+  mutate(nm_area_avaliacao = recode(nm_area_avaliacao, 
+                                     "filosofia teologiasubcomissao filosofia" = "filosofia", 
+                                    "filosofiateologiasubcomissao filosofia" = "filosofia",
+                                    "filosofiateologiasubcomissao teologia" = "teologia",
+                                    "ciencias da religiao e teologia" = "teologia"))
+
 # Transforma variáveis de interesse em fator
 fatores <- c("nm_grande_area_conhecimento", 
              "nm_area_avaliacao", 
@@ -29,12 +37,82 @@ fatores <- c("nm_grande_area_conhecimento",
 dados <- dados  |> 
   mutate(across(all_of(fatores), as.factor))
 
+# Tabela 1 ####
+# Cálculo por área
+dados_areas <- dados |> 
+  group_by(nm_grande_area_conhecimento) |> 
+  summarize(total = n()) |> 
+  mutate(frequencia = round(total/sum(total)*100,2))
+
+# Cálculo por orientador
+dados_gorientador <- dados |> 
+  group_by(nm_grande_area_conhecimento, g_orientador) |> 
+  reframe(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
+
+dados_gorientador <- dados_gorientador |> 
+  pivot_wider(
+    names_from = g_orientador,
+    values_from = c(total_o, frequencia_o))
+
+# Cálculo por discente
+dados_g_discente <- dados |> 
+  group_by(nm_grande_area_conhecimento, g_discente) |> 
+  reframe(total_d = n()) |> 
+  mutate(frequencia_d = round(total_d/sum(total_d)*100,2))
+
+dados_g_discente <- dados_g_discente |> 
+  pivot_wider(
+    names_from = g_discente,
+    values_from = c(total_d, frequencia_d))
+
+# Cálculo por oridis
+dados_g_oridis <- dados |> 
+  group_by(nm_grande_area_conhecimento, g_oridis) |> 
+  reframe(total_od = n()) |> 
+  mutate(frequencia_od = round(total_od/sum(total_od)*100,2))
+
+dados_g_oridis <- dados_g_oridis |> 
+  pivot_wider(
+    names_from = g_oridis,
+    values_from = c(total_od, frequencia_od))
+
+lista_dados <- list(dados_areas, 
+                    dados_gorientador, 
+                    dados_g_discente, 
+                    dados_g_oridis)
+
+tab <- purrr::reduce(lista_dados, 
+                              left_join, 
+                              by = "nm_grande_area_conhecimento")
+
+tab |> 
+  gt() |> 
+  cols_merge(
+    columns = c(total, frequencia),
+    pattern = "{1}({2}%)") |> 
+  cols_merge(
+    columns = c(total_o_Male, frequencia_o_Male),
+    pattern = "{1}({2}%)") |> 
+  cols_merge(
+    columns = c(total_o_Female, frequencia_o_Female),
+    pattern = "{1}({2}%)") |> 
+  cols_label(
+    total = "Trabalhos n(%)",
+    total_o_Male = "Homens n(%)",
+    total_o_Female = "Mulheres n(%)"
+  ) |> 
+  cols_align(
+    align = "center")
+
+
+
+
+
+
 # Evolução da pós-graduação no Brasil - 1991-2021####
 theme_set(theme_minimal(base_family = "Roboto"))
-# Gráfico de evolução de todo universo#### 
-tabyl(dados, an_base)
-
-# Gráfico
+# Gráfico 
 dados |> 
   ggplot(aes(x = an_base)) +
   geom_freqpoly(binwidth = 1, linewidth = 1.2) +
@@ -71,8 +149,8 @@ dados |>
 #Gráfico Total por Gênero do PROFESSOR - BARRA
 dados |> 
   drop_na(g_orientador) |> 
-  ggplot(aes(x = an_base, fill = g_orientador)) +
-  geom_bar(position = "fill") +
+  ggplot(aes(x = g_orientador, y = an_base, fill = nm_grau_academico)) +
+  geom_bar(stat = "identity", position = "dodge") +
   theme_minimal() +
   labs(title = "Desigualdade de gênero na Pós-Graduação do Brasil | Grande Área",
        subtitle = "Proporção de trabalhos *orientados* por <span style= 'color:#1d4497; font-size:32pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:32pt;'>**Mulheres**</span> (1987-2020)",
