@@ -38,7 +38,7 @@ dados <- dados  |>
   mutate(across(all_of(fatores), as.factor))
 
 # Tabela 1 ####
-# Cálculo por área
+# Cálculo por Grande Área####
 dados_areas <- dados |> 
   group_by(nm_grande_area_conhecimento) |> 
   summarize(total = n()) |> 
@@ -47,7 +47,7 @@ dados_areas <- dados |>
 # Cálculo por orientador
 dados_gorientador <- dados |> 
   group_by(nm_grande_area_conhecimento, g_orientador) |> 
-  reframe(total_o = n()) |> 
+  summarize(total_o = n()) |> 
   mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
 
 dados_gorientador <- dados_gorientador |> 
@@ -58,7 +58,7 @@ dados_gorientador <- dados_gorientador |>
 # Cálculo por discente
 dados_g_discente <- dados |> 
   group_by(nm_grande_area_conhecimento, g_discente) |> 
-  reframe(total_d = n()) |> 
+  summarize(total_d = n()) |> 
   mutate(frequencia_d = round(total_d/sum(total_d)*100,2))
 
 dados_g_discente <- dados_g_discente |> 
@@ -69,7 +69,7 @@ dados_g_discente <- dados_g_discente |>
 # Cálculo por oridis
 dados_g_oridis <- dados |> 
   group_by(nm_grande_area_conhecimento, g_oridis) |> 
-  reframe(total_od = n()) |> 
+  summarize(total_od = n()) |> 
   mutate(frequencia_od = round(total_od/sum(total_od)*100,2))
 
 dados_g_oridis <- dados_g_oridis |> 
@@ -77,59 +77,148 @@ dados_g_oridis <- dados_g_oridis |>
     names_from = g_oridis,
     values_from = c(total_od, frequencia_od))
 
-lista_dados <- list(dados_areas, 
-                    dados_gorientador, 
-                    dados_g_discente, 
-                    dados_g_oridis)
+# Agrupamento em um dataframe
+lista_grande_area <- list(dados_areas, 
+                          dados_gorientador, 
+                          dados_g_discente, 
+                          dados_g_oridis)
 
-tab <- purrr::reduce(lista_dados, 
-                              left_join, 
-                              by = "nm_grande_area_conhecimento")
+tab_grande_area <- purrr::reduce(lista_dados, 
+                                 left_join, 
+                                 by = "nm_grande_area_conhecimento") |> 
+  mutate(nm_grande_area_conhecimento = stringr::str_to_title(nm_grande_area_conhecimento),
+         nm_grande_area_conhecimento = stringr::str_replace(nm_grande_area_conhecimento, "Ciencias", "Ciências"),
+         nm_grande_area_conhecimento = stringr::str_replace(nm_grande_area_conhecimento, "Biologicas", "Biológicas"),
+         nm_grande_area_conhecimento = stringr::str_replace(nm_grande_area_conhecimento, "Saude", "Saúde"),
+         nm_grande_area_conhecimento = stringr::str_replace(nm_grande_area_conhecimento, "Linguistica", "Linguística,"),
+         descritor = "Grande Área") |> 
+  rename("areas" = "nm_grande_area_conhecimento")
 
+# Cálculo por Humanas ####
+dados_humanas <- dados |> 
+  filter(nm_grande_area_conhecimento == "ciencias humanas") |> 
+  mutate(nm_area_avaliacao = droplevels(nm_area_avaliacao))
+
+# Cálculo Total
+dados_humanas_total <- dados_humanas |> 
+  group_by(nm_area_avaliacao) |> 
+  summarize(total = n()) |> 
+  mutate(frequencia = round(total/sum(total)*100,2))
+
+# Cálculo por orientador
+dados_humanas_gorientador <- dados_humanas |> 
+  group_by(nm_area_avaliacao, g_orientador) |> 
+  summarize(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
+
+dados_humanas_gorientador <- dados_humanas_gorientador |> 
+  pivot_wider(
+    names_from = g_orientador,
+    values_from = c(total_o, frequencia_o))
+
+# Cálculo por discente
+dados_humanas_g_discente <- dados_humanas |> 
+  group_by(nm_area_avaliacao, g_discente) |> 
+  summarize(total_d = n()) |> 
+  mutate(frequencia_d = round(total_d/sum(total_d)*100,2))
+
+dados_humanas_g_discente <- dados_humanas_g_discente |> 
+  pivot_wider(
+    names_from = g_discente,
+    values_from = c(total_d, frequencia_d))
+
+# Cálculo por Orientador-Discente
+dados_humanas_g_oridis <- dados_humanas |> 
+  group_by(nm_area_avaliacao, g_oridis) |> 
+  summarize(total_od = n()) |> 
+  mutate(frequencia_od = round(total_od/sum(total_od)*100,2))
+
+dados_humanas_g_oridis <- dados_humanas_g_oridis |> 
+  pivot_wider(
+    names_from = g_oridis,
+    values_from = c(total_od, frequencia_od))
+
+# Agrupamento em um dataframe
+lista_humanas <- list(dados_humanas_total, 
+                          dados_humanas_gorientador, 
+                          dados_humanas_g_discente, 
+                          dados_humanas_g_oridis)
+
+tab_humanas <- purrr::reduce(lista_humanas, 
+                                 left_join, 
+                                 by = "nm_area_avaliacao") |> 
+  mutate(nm_area_avaliacao = stringr::str_to_title(nm_area_avaliacao),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Ciencia Politica E Relacoes Internacionais", "Ciência Política E RI"),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Antropologia Arqueologia", "Antropologia E Arqueologia"),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Educacao", "Educação"),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Historia", "História"),
+         descritor = "Ciências Humanas")|> 
+  rename("areas" = "nm_area_avaliacao")
+
+# União dos tabs - tab_grande_area + tab_humanas
+
+tab <- bind_rows(tab_grande_area, tab_humanas)
+
+# TABELA 01####                                                             
 tab |> 
-  gt() |> 
+  gt(rowname_col = "areas",
+     groupname_col = "descritor") |>
   cols_merge(
     columns = c(total, frequencia), # Total
-    pattern = "{1}({2}%)") |> 
+    pattern = "{1} ({2}%)") |> 
   cols_merge(
     columns = c(total_o_Male, frequencia_o_Male), # Orientadores Homens
-    pattern = "{1}({2}%)") |> 
+    pattern = "{1} ({2}%)") |> 
   cols_merge(
     columns = c(total_o_Female, frequencia_o_Female), # Orientadoras Mulheres
-    pattern = "{1}({2}%)") |> 
+    pattern = "{1} ({2}%)") |> 
   cols_merge(
     columns = c(total_d_Male, frequencia_d_Male), # Discentes Homens
-    pattern = "{1}({2}%)") |> 
+    pattern = "{1} ({2}%)") |> 
   cols_merge(
     columns = c(total_d_Female, frequencia_d_Female), # Discentes Mulheres
-    pattern = "{1}({2}%)") |>
+    pattern = "{1} ({2}%)") |>
   cols_merge(
     columns = c(total_od_FF, frequencia_od_FF), # Mulher-Mulher
-    pattern = "{1}({2}%)") |>
+    pattern = "{1} ({2}%)") |>
   cols_merge(
     columns = c(total_od_FM, frequencia_od_FM), # Mulher-Homem
-    pattern = "{1}({2}%)") |>
+    pattern = "{1} ({2}%)") |>
   cols_merge(
     columns = c(total_od_MF, frequencia_od_MF), # Homem-Mulher
-    pattern = "{1}({2}%)") |>
+    pattern = "{1} ({2}%)") |>
   cols_merge(
     columns = c(total_od_MM, frequencia_od_MM), # Homem-Homem
-    pattern = "{1}({2}%)") |>
+    pattern = "{1} ({2}%)") |>
+  tab_spanner(   # Títulos
+    label = "Orientador(a)",  
+    columns = c(total_o_Male, total_o_Female)) |>
+  tab_spanner(
+    label = "Discente",
+    columns = c(total_d_Male, total_d_Female)) |> 
+  tab_spanner(
+    label = "Orientador(a)/Discente",
+    columns = c(total_od_FF, total_od_FM, total_od_MF,total_od_MM)) |> 
   cols_label(
-    total = "Trabalhos n(%)",
+    total = "Trabalhos",
     total_o_Male = "Homem",
     total_o_Female = "Mulher",
     total_d_Female = "Mulher",
     total_d_Male = "Homem",
-    total_od_FF = "Mulher-Mulher",
-    total_od_FM 
+    total_od_FF = "Mulher/Mulher",
+    total_od_FM = "Mulher/Homem",
+    total_od_MF = "Homem/Mulher",
+    total_od_MM = "Homem/Homem",
+  ) |> 
+  tab_header(
+    title = "Tabela 1. Descrição do gênero de orientadores e discentes das teses e dissertações defendidas no Brasil entre 1991-2021 de acordo com as Grandes Áreas da CAPES"
   ) |> 
   cols_align(
-    align = "center")
-
-
-
-
+    align = "center") |> 
+  fmt_number(
+    drop_trailing_zeros = TRUE,
+    decimals = 2,
+    sep_mark = ".") 
 
 
 # Evolução da pós-graduação no Brasil - 1991-2021####
