@@ -89,18 +89,40 @@ tab <- purrr::reduce(lista_dados,
 tab |> 
   gt() |> 
   cols_merge(
-    columns = c(total, frequencia),
+    columns = c(total, frequencia), # Total
     pattern = "{1}({2}%)") |> 
   cols_merge(
-    columns = c(total_o_Male, frequencia_o_Male),
+    columns = c(total_o_Male, frequencia_o_Male), # Orientadores Homens
     pattern = "{1}({2}%)") |> 
   cols_merge(
-    columns = c(total_o_Female, frequencia_o_Female),
+    columns = c(total_o_Female, frequencia_o_Female), # Orientadoras Mulheres
     pattern = "{1}({2}%)") |> 
+  cols_merge(
+    columns = c(total_d_Male, frequencia_d_Male), # Discentes Homens
+    pattern = "{1}({2}%)") |> 
+  cols_merge(
+    columns = c(total_d_Female, frequencia_d_Female), # Discentes Mulheres
+    pattern = "{1}({2}%)") |>
+  cols_merge(
+    columns = c(total_od_FF, frequencia_od_FF), # Mulher-Mulher
+    pattern = "{1}({2}%)") |>
+  cols_merge(
+    columns = c(total_od_FM, frequencia_od_FM), # Mulher-Homem
+    pattern = "{1}({2}%)") |>
+  cols_merge(
+    columns = c(total_od_MF, frequencia_od_MF), # Homem-Mulher
+    pattern = "{1}({2}%)") |>
+  cols_merge(
+    columns = c(total_od_MM, frequencia_od_MM), # Homem-Homem
+    pattern = "{1}({2}%)") |>
   cols_label(
     total = "Trabalhos n(%)",
-    total_o_Male = "Homens n(%)",
-    total_o_Female = "Mulheres n(%)"
+    total_o_Male = "Homem",
+    total_o_Female = "Mulher",
+    total_d_Female = "Mulher",
+    total_d_Male = "Homem",
+    total_od_FF = "Mulher-Mulher",
+    total_od_FM 
   ) |> 
   cols_align(
     align = "center")
