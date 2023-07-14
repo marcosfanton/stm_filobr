@@ -69,7 +69,7 @@ vars1321 <- c("AN_BASE",
 catalogo8721 <- dplyr::bind_rows(
   banco8712 |> dplyr::select(all_of(vars8712)) |> 
     dplyr::rename_with(.cols = all_of(vars8712), 
-                       ~vars1321[vars1321 != "NM_GRAU_ACADEMICO"]), #Essa variável não se encontra nos bancos anteriores a 2013
+                       ~vars1321[vars1321 != "NM_GRAU_ACADEMICO"]), # Essa variável não se encontra nos bancos anteriores a 2013
   banco1321) |> 
   dplyr::select(all_of(vars1321)) |> 
   dplyr::filter(CD_AREA_CONHECIMENTO == "70100004") #Inclusão apenas de trabalhos na área da filosofia
@@ -78,7 +78,7 @@ catalogo8721 <- dplyr::bind_rows(
 catalogo8721 |>
   readr::write_csv("dados/catalogo_raw.csv")
 
-#Limpeza do texto e padronização de variáveis
+# Limpeza do texto e padronização de variáveis
 catalogo8721 <- catalogo8721  |> 
   dplyr::mutate(CD_PROGRAMA = as.factor(CD_PROGRAMA), # Torna variável como fator para não ser desconfigurada
                 dplyr::across(where(is.character), ~ { # Modifica apenas variáveis do tipo character
@@ -89,14 +89,17 @@ catalogo8721 <- catalogo8721  |>
                   x <- stringr::str_squish(x) # Remove espaços consecutivos
                   x
                   }),
-                NM_SUBTIPO_PRODUCAO = str_replace_all(NM_SUBTIPO_PRODUCAO, # Padronização dos valores das variáveis
-                                        pattern = c("mestrado" = "dissertacao", 
-                                                    "doutorado" = "tese")),
+                NM_GRAU_ACADEMICO = case_when( # Atribui titulação com base na variável nm_subtipo_producao
+                  AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "mestrado" ~ "mestrado",
+                  AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "doutorado" ~ "doutorado",
+                  TRUE ~ as.character(NM_GRAU_ACADEMICO)
+                ),
                 NM_ENTIDADE_ENSINO = str_replace_all(NM_ENTIDADE_ENSINO, 
-                                       pattern = c("universidade federal da paraiba.*" = "universidade federal da paraiba",
-                                                   "universidade estadual do parana reitoria" = "universidade estadual do parana",
-                                                   ".*mesquita.*" = "universidade estadual paulista"))) |> 
-                dplyr::rename_all(tolower)
+                                                     pattern = c("universidade federal da paraiba.*" = "universidade federal da paraiba",
+                                                                 "universidade estadual do parana reitoria" = "universidade estadual do parana",
+                                                                 ".*mesquita.*" = "universidade estadual paulista"))) |> 
+  dplyr::rename_all(tolower)
+
 
 #Variáveis derivadas####
 #Gênero de orientadores, orientandos e orientador-orientando com o pacote @GenderBR####

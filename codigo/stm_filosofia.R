@@ -17,7 +17,7 @@ library(recipes) # UMAP
 # Importação do banco limpo em "limpeza_catalogo.R"
 dados <- read.csv("dados/catalogo.csv")
 
-dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filosofia (N = 12525)
+dados_ <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filosofia (N = 12525)
   dplyr::mutate(g_orientador = as.factor(g_orientador), # Tranforma em fator variável gênero
                 lang = textcat::textcat(ds_resumo)) |> # Cria identificar de idioma com base nos resumos
   dplyr::filter(

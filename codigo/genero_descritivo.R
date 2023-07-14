@@ -221,7 +221,6 @@ tab |>
     sep_mark = ".") 
 
 # Tabela 2 | Os 10 piores####
-# Cálculo por Caquedo (10 piores) por Área de Avaliação ####
 
 # Cálculo por discente
 dados_piores_gd <- dados |> 
@@ -410,7 +409,6 @@ dados |>
 
 #Gráfico Total por Gênero do ALUNO - LINHA
 dados |> 
-  drop_na(g_discente) |> 
   ggplot(aes(x = an_base, color = g_discente)) +
   geom_line(stat = "count", size = 1.2) +
   scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
