@@ -14,7 +14,7 @@ library(gt)
 library(janitor)
 
 # Banco 
-dados <- read.csv("dados/catalogo/catalogo9121_raw.csv")
+dados <- read.csv("dados/catalogo/catalogo9121_raw.csv") 
 
 # Recodificação das áreas de avaliação da filosofia e teologia
 dados <- dados  |> 
@@ -22,12 +22,14 @@ dados <- dados  |>
                                      "filosofia teologiasubcomissao filosofia" = "filosofia", 
                                     "filosofiateologiasubcomissao filosofia" = "filosofia",
                                     "filosofiateologiasubcomissao teologia" = "teologia",
-                                    "ciencias da religiao e teologia" = "teologia"))
+                                    "ciencias da religiao e teologia" = "teologia",
+                                    "administracao publica e de empresas ciencias contabeis e turismo" = "administracao ciencias contabeis e turismo"))
 
 # Transforma variáveis de interesse em categóricas
 fatores <- c("nm_grande_area_conhecimento", 
              "nm_area_avaliacao", 
-             "nm_grau_academico", 
+             "nm_grau_academico",
+             "nm_entidade_ensino",
              "nm_regiao", 
              "sg_uf_ies", 
              "g_orientador", 
@@ -83,7 +85,7 @@ lista_grande_area <- list(dados_areas,
                           dados_g_discente, 
                           dados_g_oridis)
 
-tab_grande_area <- purrr::reduce(lista_dados, 
+tab_grande_area <- purrr::reduce(lista_grande_area, 
                                  left_join, 
                                  by = "nm_grande_area_conhecimento") |> 
   mutate(nm_grande_area_conhecimento = stringr::str_to_title(nm_grande_area_conhecimento),
@@ -349,6 +351,7 @@ tab_piores |>
     decimals = 2,
     sep_mark = ".") 
 
+# GRÁFICOS#### 
 # Evolução da pós-graduação no Brasil - 1991-2021####
 theme_set(theme_minimal(base_family = "Roboto"))
 # Gráfico 
@@ -460,17 +463,15 @@ nomes_grandearea <- c("ciencias agrarias" = "Ciências Agrárias",
                       "linguistica letras e artes" = "Linguística, Letras e Artes",
                       "multidisciplinar" = "Multidisciplinar")
 
-#Gráfico de grande área PROFESSOR - LINHA
+# Gráfico de grande área PROFESSOR - LINHA
 dados |> 
-  drop_na(g_orientador) |> 
-  filter(grandearea != "") |> 
-  ggplot(aes(x = ano, group = g_orientador, color = g_orientador)) + 
+  ggplot(aes(x = an_base, group = g_orientador, color = g_orientador)) + 
   geom_line(stat = "count") +
   scale_x_continuous(limits = c(1990, 2021), breaks = seq(1990, 2020, 5)) +
   scale_y_continuous( position = "right") +
   scale_colour_manual(values = met.brewer("Nizami", 2)) +
   theme_minimal() +
-  facet_wrap(~grandearea, labeller = as_labeller(nomes_grandearea)) +
+  facet_wrap(~nm_grande_area_conhecimento, labeller = as_labeller(nomes_grandearea)) +
   labs(title = "Evolução da defesa de trabalhos na Pós-Graduação por Grande Área",
        subtitle = "Trabalhos orientados por pesquisadores <span style= 'color:#1d4497; font-size:24pt; font-weight: bold;'>Homens</span> e <span style= 'color:#b83326;font-size:24pt;'>Mulheres</span> entre 1990 e 2020",
        caption = "Elaboração: Dataphilo | Dados: CAPES", 
@@ -483,20 +484,18 @@ dados |>
         text = element_text(size = 35)) + 
   coord_cartesian(clip = 'off') 
 
-#Gráfico Grande Área por Gênero do PROFESSOR - BARRA
+# Gráfico Grande Área por Gênero do PROFESSOR - BARRA
 dados |> 
-  filter(grandearea != "") |> 
-  drop_na(gorientador) |> 
-  ggplot(aes(x = ano, fill = gorientador)) +
+  ggplot(aes(x = an_base, fill = g_orientador)) +
   geom_bar(position = "fill") +
   theme_minimal() +
   labs(title = "Desigualdade de gênero na Pós-Graduação do Brasil",
-       subtitle = "Proporção de trabalhos *orientados* por <span style= 'color:#1d4497; font-size:35pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:35pt;'>**Mulheres**</span> (1987-2020)",
+       subtitle = "Proporção de trabalhos *orientados* por <span style= 'color:#1d4497; font-size:35pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:35pt;'>**Mulheres**</span> (1991-2021)",
        caption = "Dados: CAPES | Elaboração: Dataphilo", 
        x = "",
        y = "") +
   scale_fill_manual(values = met.brewer("Nizami", 2)) +
-  #scale_x_continuous(limits = c(1991, 2021)) +
+  scale_x_continuous(limits = c(1991, 2022)) +
   scale_y_continuous(labels = NULL) +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5),  #letra do título
         plot.subtitle = element_markdown(hjust = 0.5),
@@ -505,22 +504,19 @@ dados |>
         plot.margin = margin(1,1,1.5,1.2, "cm"),
         axis.text.y=element_blank(),
         text = element_text(size = 35)) +
-  facet_wrap(~grandearea, labeller = as_labeller(nomes_grandearea)) 
+  facet_wrap(~nm_grande_area_conhecimento, labeller = as_labeller(nomes_grandearea)) 
 
-
-#Gráfico Grande área por ALUNO - LINHA
+# Gráfico Grande área por ALUNO - LINHA
 dados |> 
-  filter(grandearea != "") |> 
-  drop_na(galuno) |> 
-  ggplot(aes(x = ano, group = galuno, color = galuno)) + 
+  ggplot(aes(x = an_base, group = g_discente, color = g_discente)) + 
   geom_line(stat = "count") +
-  scale_x_continuous(limits = c(1987, 2020), breaks = seq(1990, 2020, 5)) +
+  scale_x_continuous(limits = c(1990, 2022), breaks = seq(1990, 2020, 5)) +
   scale_y_continuous( position = "right") +
   scale_colour_manual(values = met.brewer("Nizami", 2)) +
   theme_minimal() +
-  facet_wrap(~grandearea, labeller = as_labeller(nomes_grandearea)) +
+  facet_wrap(~nm_grande_area_conhecimento, labeller = as_labeller(nomes_grandearea)) +
   labs(title = "Evolução da defesa de trabalhos na Pós-Graduação por Grande Área",
-       subtitle = "Trabalhos defendidos por pesquisadores <span style= 'color:#1d4497; font-size:24pt; font-weight: bold;'>Homens</span> e <span style= 'color:#b83326;font-size:24pt;'>Mulheres</span> entre 1987 e 2020",
+       subtitle = "Trabalhos defendidos por pesquisadores <span style= 'color:#1d4497; font-size:24pt; font-weight: bold;'>Homens</span> e <span style= 'color:#b83326;font-size:24pt;'>Mulheres</span> entre 1991 e 2021",
        caption = "Elaboração: Dataphilo | Dados: CAPES", 
        x = "",
        y = "") +
@@ -534,18 +530,16 @@ dados |>
 
 #Gráfico Grande Área por Gênero do ALUNO - BARRA
 dados |> 
-  filter(grandearea != "") |> 
-  drop_na(galuno) |> 
-  ggplot(aes(x = ano, fill = galuno)) +
+  ggplot(aes(x = an_base, fill = g_discente)) +
   geom_bar(position = "fill") +
   theme_minimal() +
   labs(title = "Desigualdade de gênero na Pós-Graduação do Brasil | Grande Área",
-       subtitle = "Proporção de trabalhos *defendidos* por <span style= 'color:#1d4497; font-size:35pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:35pt;'>**Mulheres**</span> (1987-2020)",
+       subtitle = "Proporção de trabalhos *defendidos* por <span style= 'color:#1d4497; font-size:35pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:35pt;'>**Mulheres**</span> (1991-2021)",
        caption = "Dados: CAPES | Elaboração: Dataphilo", 
        x = "",
        y = "") +
   scale_fill_manual(values = met.brewer("Nizami", 2)) +
-  #scale_x_continuous(limits = c(1990, 2021)) +
+  scale_x_continuous(limits = c(1990, 2022)) +
   scale_y_continuous(labels = NULL) +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5),  #letra do título
         plot.subtitle = element_markdown(hjust = 0.5),
@@ -554,74 +548,23 @@ dados |>
         plot.margin = margin(1,1,1.5,1.2, "cm"),
         axis.text.y=element_blank(),
         text = element_text(size = 35)) +
-  facet_wrap(~grandearea, labeller = as_labeller(nomes_grandearea)) 
+  facet_wrap(~nm_grande_area_conhecimento, labeller = as_labeller(nomes_grandearea)) 
 
-#Percentual em todas áreas específicas para orientador####
-areas_desiguais <- dados |> 
-  group_by(codigoarea) |> 
-  filter(n() > 1500) |>  #Com mais de 1500 trabalhos
-  tabyl(codigoarea, gorientador, show_na = FALSE) |>  #NAs da variável gorientador vai diminuir o n. de observações
-  adorn_totals(c("row", "col")) |> 
-  adorn_percentages() |> 
-  adorn_ns() |> 
-  arrange(Female)
-
-#Vinte piores de desigualdade para orientador
-nomes_20piores <- c(#"30400007" = "Engenharia Elétrica",
-  #"40102009" = "Cirurgia",
-  "30500001" = "Engenharia Mecânica",
-  #"31200001" = "Engenharia Aeroespacial",
-  "10500006" = "Física",
-  "60300000" = "Economia",
-  #"50200003" = "Engenharia Florestal",
-  "50300008" = "Engenharia Agrícola",
-  "71000003" = "Teologia",
-  #"30800005" = "Engenharia de Produção",
-  "70100004" = "Filosofia",
-  "10100008" = "Matemática",
-  "30300002" = "Engenharia Metalúrgica",
-  "30100003" = "Engenharia Civil",
-  #"10700005" = "Geociências",
-  #"31000002" = "Engenharia Transportes",
-  "10300007" = "Ciências da Computação",
-  #"90300009" = "Biotecnologia",
-  "50100009" = "Agronomia",
-  "60100001" = "Direito")
-vinte_piores <- c(#30400007, #Engenharia Elétrica
-  #40102009, #Cirurgia
-  30500001, #E Mecânica
-  #31200001, #E Aeroespacial
-  10500006, #Física
-  60300000, #Economia
-  #50200003, #E Florestal
-  50300008, #E Agrícola
-  71000003, #Teologia
-  #30800005, #E de Produção
-  70100004, #Filosofia
-  10100008, #Matemática
-  30300002, #E Metalúrgica
-  30100003, #E Civil
-  #10700005, #Geociências
-  #31000002, #E Transportes
-  10300007, #C da Computação
-  #90300009, #Biotecnologia
-  50100009, #Agronomia
-  60100001)
+#10 piores de desigualdade para orientador####
 
 #Gráfico PIORES ÁREAS  por Gênero do PROFESSOR - BARRA
-dados1 |> 
-  filter(codigoarea %in% vinte_piores) |>  
-  drop_na(gorientador) |> 
-  ggplot(aes(x = ano, fill = gorientador)) +
+dados |> 
+  filter(nm_area_avaliacao %in% lista_piores) |>  
+  ggplot(aes(x = an_base, fill = g_orientador)) +
   geom_bar(position = "fill") +
   theme_minimal() +
-  labs(title = "12 Áreas de Avaliação com Alta Desigualdade de Gênero",
-       subtitle = "Proporção de trabalhos *orientados* por <span style= 'color:#1d4497; font-size:30pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:30pt;'>**Mulheres**</span> (1995-2020)",
+  labs(title = "10 Áreas de Avaliação com Alta Desigualdade de Gênero",
+       subtitle = "Proporção de trabalhos *orientados* por <span style= 'color:#1d4497; font-size:30pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:30pt;'>**Mulheres**</span> (1991-2021)",
        caption = "Dados: CAPES | Elaboração: Dataphilo", 
        x = "",
        y = "") +
   scale_fill_manual(values = met.brewer("Nizami", 2)) +
-  scale_x_continuous(limits = c(1995, 2021), labels = NULL) +
+  scale_x_continuous(limits = c(1990, 2022), labels = NULL) +
   scale_y_continuous(labels = NULL) +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5),  #letra do título
         plot.subtitle = element_markdown(hjust = 0.5),
@@ -630,45 +573,21 @@ dados1 |>
         plot.margin = margin(1,1,1.5,1.2, "cm"),
         axis.text.y=element_blank(),
         text = element_text(size = 35)) +
-  facet_wrap(~codigoarea, labeller = as_labeller(nomes_20piores), ncol = 3) 
+  facet_wrap(~nm_area_avaliacao, ncol = 2) 
 
 #Gráfico PIORES ÁREAS por gênero do ALUNO - LINHA
 dados |> 
-  filter(codigoarea %in% vinte_piores) |>  
-  drop_na(galuno) |> 
-  ggplot(aes(x = ano, color = galuno)) + 
-  geom_line(stat = "count") +
-  scale_x_continuous(limits = c(1995, 2020), breaks = seq(1995, 2020, 5)) +
-  scale_y_continuous( position = "right") +
-  scale_colour_manual(values = met.brewer("Nizami", 2)) +
-  theme_minimal() +
-  facet_wrap(~codigoarea, labeller = as_labeller(nomes_20piores)) +
-  labs(title = "As 16 Áreas de Avaliação com Maior Desigualdade de Gênero",
-       subtitle = "Trabalhos orientados por pesquisadores <span style= 'color:#1d4497; font-size:24pt; font-weight: bold;'>Homens</span> e <span style= 'color:#b83326;font-size:24pt;'>Mulheres</span> entre 1987 e 2020",
-       caption = "Elaboração: Dataphilo | Dados: CAPES", 
-       x = "",
-       y = "") +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
-        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
-        plot.caption = element_markdown(margin = margin(t = 3)),
-        legend.position = "none",
-        text = element_text(size = 20)) + 
-  coord_cartesian(clip = 'off') 
-
-#Gráfico PIORES ÁREAS por gênero do ALUNO - BARRA
-dados |> 
-  filter(codigoarea %in% vinte_piores) |>  
-  drop_na(galuno) |> 
-  ggplot(aes(x = ano, fill = galuno)) +
+  filter(nm_area_avaliacao %in% lista_piores) |>  
+  ggplot(aes(x = an_base, fill = g_discente)) +
   geom_bar(position = "fill") +
   theme_minimal() +
-  labs(title = "As 16 Áreas de Avaliação com Maior Desigualdade de Gênero",
-       subtitle = "Proporção de trabalhos defendidos por <span style= 'color:#1d4497; font-size:32pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:32pt;'>**Mulheres**</span> (1991-2020)",
+  labs(title = "10 Áreas de Avaliação com Alta Desigualdade de Gênero",
+       subtitle = "Proporção de trabalhos defendidos por <span style= 'color:#1d4497; font-size:32pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:32pt;'>**Mulheres**</span> (1991-2021)",
        caption = "Dados: CAPES | Elaboração: Dataphilo", 
        x = "",
        y = "") +
   scale_fill_manual(values = met.brewer("Nizami", 2)) +
-  scale_x_continuous(limits = c(1995, 2021), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1990, 2022), labels = NULL) +
   scale_y_continuous(labels = NULL) +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5),  #letra do título
         plot.subtitle = element_markdown(hjust = 0.5),
@@ -676,39 +595,13 @@ dados |>
         legend.position = "none",
         plot.margin = margin(1,1,1.5,1.2, "cm"),
         axis.text.y=element_blank(),
-        text = element_text(size = 20)) +
-  facet_wrap(~codigoarea, labeller = as_labeller(nomes_20piores)) 
-
-#Ciências Humanas#### 
-#Nomes das Ciências Humanas
-nomes_humanidades <- c("70900000" = "Ciência Política",
-                       "70700001" = "Psicologia",
-                       "70600007" = "Geografia",
-                       "70800006" = "Educação",
-                       "70500002" = "História",
-                       #"70400008" = "Arqueologia",
-                       "70300003" = "Antropologia",
-                       "70200009" = "Sociologia",
-                       "71000003" = "Teologia",
-                       "70100004" = "Filosofia") 
-
-#Áreas Específicas das Ciências Humanas
-humanidades_codigo  <-  c(70900000, #Ciência Política
-                          70800006, #Educação
-                          70700001, #Psicologia
-                          70600007, #Geografia
-                          70500002, #História
-                          #70400008, #Arqueologia
-                          70300003, #Antropologia
-                          70200009, #Sociologia
-                          71000003, #Teologia
-                          70100004)   #Filosofia  
+        text = element_text(size = 35)) +
+  facet_wrap(~nm_area_avaliacao, ncol = 2) 
 
 #Gráfico HUMANAS por Gênero do PROFESSOR - BARRA
 dados |> 
-  filter(codigoarea %in% humanidades_codigo) |>  
-  drop_na(gorientador) |> 
-  ggplot(aes(x = ano, fill = gorientador)) +
+  filter(nm_grande_area_conhecimento == "ciencias humanas") |>  
+  ggplot(aes(x = an_base, fill = g_orientador)) +
   geom_bar(position = "fill") +
   theme_minimal() +
   labs(title = "Desigualdade de gênero na Pós-Graduação do Brasil | Ciências Humanas",
@@ -717,7 +610,7 @@ dados |>
        x = "",
        y = "") +
   scale_fill_manual(values = met.brewer("Nizami", 2)) +
-  scale_x_continuous(limits = c(1987, 2020), expand = c(0.02, 0.02)) +
+  scale_x_continuous(limits = c(1990, 2022), expand = c(0.02, 0.02)) +
   scale_y_continuous(labels = NULL) +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5),  #letra do título
         plot.subtitle = element_markdown(hjust = 0.5),
@@ -726,73 +619,23 @@ dados |>
         plot.margin = margin(1,1,1.5,1.2, "cm"),
         axis.text.y=element_blank(),
         text = element_text(size = 35)) +
-  facet_wrap(~codigoarea, labeller = as_labeller(nomes_humanidades)) 
+  facet_wrap(~nm_area_avaliacao) 
 
 
-#Gráfico das HUMANAS por ALUNO - LINHA
+# Gráficos Relação Professor-Aluno####
+# Total
 dados |> 
-  filter(codigoarea %in% humanidades_codigo) |>  
-  drop_na(galuno) |> 
-  ggplot(aes(x = ano, color = galuno)) + 
-  geom_line(stat = "count") +
-  scale_x_continuous(limits = c(1990, 2020), breaks = seq(1990, 2020, 5)) +
-  scale_y_continuous( position = "right") +
-  scale_colour_manual(values = met.brewer("Nizami", 2)) +
-  theme_minimal() +
-  facet_wrap(~codigoarea, labeller = as_labeller(nomes_humanidades)) +
-  labs(title = "Ciências Humanas e a Desigualdade de Gênero",
-       subtitle = "Trabalhos defendidos por pesquisadores <span style= 'color:#1d4497; font-size:14pt; font-weight: bold;'>Homens</span> e <span style= 'color:#b83326;font-size:14pt;'>Mulheres</span> entre 1987 e 2020",
-       caption = "Elaboração: Dataphilo | Dados: CAPES", 
-       x = "",
-       y = "") +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
-        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
-        plot.caption = element_markdown(margin = margin(t = 3)),
-        plot.margin = margin(1,1,1.5,1.2, "cm"),
-        legend.position = "none",
-        text = element_text(size = 14)) + 
-  coord_cartesian(clip = 'off') 
-
-#Gráfico das HUMANAS por ALUNO - BARRA
-dados |> 
-  filter(codigoarea %in% humanidades_codigo) |>  
-  drop_na(galuno) |> 
-  ggplot(aes(x = ano, fill = galuno)) +
-  geom_bar(position = "fill") +
-  theme_minimal() +
-  labs(title = "Desigualdade de gênero na Pós-Graduação do Brasil | Ciências Humanas",
-       subtitle = "Proporção de trabalhos *defendidos* por <span style= 'color:#1d4497; font-size:35pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:35pt;'>**Mulheres**</span> (1987-2020)",
-       caption = "Dados: CAPES | Elaboração: Dataphilo", 
-       x = "",
-       y = "") +
-  scale_fill_manual(values = met.brewer("Nizami", 2)) +
-  scale_x_continuous(limits = c(1987, 2021), expand = c(0, 0)) +
-  scale_y_continuous(labels = NULL) +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.5),  #letra do título
-        plot.subtitle = element_markdown(hjust = 0.5),
-        plot.caption = element_markdown(margin = margin(t = 3), hjust = 0.975),
-        legend.position = "none",
-        plot.margin = margin(1,1,1.5,1.2, "cm"),
-        axis.text.y=element_blank(),
-        text = element_text(size = 35)) +
-  facet_wrap(~codigoarea, labeller = as_labeller(nomes_humanidades)) 
-
-#Gráficos Relação Professor-Aluno####
-#Total
-dados |> 
-  drop_na(goga) |> 
-  filter(ano > 1990) |> 
-  ggplot(aes(x = ano, 
-             fill = factor(goga, levels = c("Mulher/Mulher", "Mulher/Homem", "Homem/Mulher", "Homem/Homem")))) +
+  ggplot(aes(x = an_base, 
+             fill = g_oridis)) +
   geom_bar(position = "fill") +
   labs(title = "Desigualdade de gênero na Pós-Graduação",
-       subtitle = "Proporção de trabalhos defendidos conforme relação Professor/Aluno (1991-2020)",
+       subtitle = "Proporção de trabalhos defendidos conforme relação Professor/Aluno (1991-2021)",
        caption = "Elaboração: Dataphilo | Dados: CAPES", 
        x = "",
        y = "",
        fill = "Professor/Aluno") +
   scale_fill_manual(values = met.brewer("Java", 4)) +
-  scale_x_continuous(limits = c(1989, 2021), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1990, 2022), expand = c(0, 0)) +
   scale_y_continuous(labels=scales::percent, position = "right") +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5), #letra do título
         plot.subtitle = element_markdown(size = 25, hjust = 0.5),
@@ -804,22 +647,19 @@ dados |>
         legend.text = element_text(size = 15),
         text = element_text(size = 30))
 
-#Relação Professor-Aluno Grandes Áreas
+# Relação Professor-Aluno Grandes Áreas
 dados |> 
-  drop_na(goga) |> 
-  filter(grandearea != "") |> 
-  filter(ano > 1990) |> 
-  ggplot(aes(x = ano, 
-             fill = factor(goga, levels = c("Mulher/Mulher", "Mulher/Homem", "Homem/Mulher", "Homem/Homem")))) +
+  ggplot(aes(x = an_base, 
+             fill = g_oridis)) +
   geom_bar(position = "fill") +
   labs(title = "Desigualdade de gênero na Pós-Graduação",
-       subtitle = "Proporção de trabalhos defendidos conforme relação Professor/Aluno (1991-2020)",
+       subtitle = "Proporção de trabalhos defendidos conforme relação Professor/Aluno (1991-2021)",
        caption = "Elaboração: Dataphilo | Dados: CAPES", 
        x = "",
        y = "",
        fill = "Professor/Aluno") +
   scale_fill_manual(values = met.brewer("Java", 4)) +
-  scale_x_continuous(limits = c(1989, 2021), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1990, 2022), expand = c(0, 0)) +
   scale_y_continuous(labels=scales::percent, position = "right") +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5), #letra do título
         plot.subtitle = element_markdown(size = 25, hjust = 0.5),
@@ -830,23 +670,22 @@ dados |>
         legend.title=element_text(size=20), 
         legend.text = element_text(size = 15),
         text = element_text(size = 30)) +
-  facet_wrap(~grandearea, labeller = as_labeller(nomes_grandearea)) 
+  facet_wrap(~nm_grande_area_conhecimento) 
 
-#Relação Professor-Aluno Humanidades
+# Relação Professor-Aluno Humanidades
 dados |> 
-  drop_na(goga) |> 
-  filter(codigoarea %in% humanidades_codigo) |>  
-  ggplot(aes(x = ano, 
-             fill = factor(goga, levels = c("Mulher/Mulher", "Mulher/Homem", "Homem/Mulher", "Homem/Homem")))) +
+  filter(nm_grande_area_conhecimento == "ciencias humanas") |>  
+  ggplot(aes(x = an_base, 
+             fill = g_oridis)) +
   geom_bar(position = "fill") +
   labs(title = "Desigualdade de gênero na Pós-Graduação das Ciências Humanas",
-       subtitle = "Proporção de trabalhos defendidos conforme relação Professor/Aluno (1990-2020)",
+       subtitle = "Proporção de trabalhos defendidos conforme relação Professor/Aluno (1991-2021)",
        caption = "Elaboração: Dataphilo | Dados: CAPES", 
        x = "",
        y = "",
        fill = "Professor/Aluno") +
   scale_fill_manual(values = met.brewer("Java", 4)) +
-  scale_x_continuous(limits = c(1990, 2021)) +
+  scale_x_continuous(limits = c(1990, 2022)) +
   scale_y_continuous(labels=NULL, position = "right") +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5), #letra do título
         plot.subtitle = element_markdown(size = 25, hjust = 0.5),
@@ -857,14 +696,13 @@ dados |>
         axis.text.y = element_text(size = 15),
         legend.title=element_text(size=20), 
         legend.text = element_text(size = 15)) +
-  facet_wrap(~codigoarea, labeller = as_labeller(nomes_humanidades)) 
+  facet_wrap(~nm_area_avaliacao) 
 
-#Relação Professor-Aluno 20 Piores
+# Relação Professor-Aluno 10 Piores
 dados |> 
-  drop_na(goga) |> 
-  filter(codigoarea %in% vinte_piores) |>  
-  ggplot(aes(x = ano, 
-             fill = factor(goga, levels = c("Mulher/Mulher", "Mulher/Homem", "Homem/Mulher", "Homem/Homem")))) +
+  filter(nm_area_avaliacao %in% lista_piores) |>  
+  ggplot(aes(x = an_base, 
+             fill = g_oridis)) +
   geom_bar(position = "fill") +
   labs(title = "Desigualdade de gênero na Pós-Graduação das Ciências Humanas",
        subtitle = "Proporção de trabalhos defendidos conforme relação Professor/Aluno (1990-2020)",
@@ -873,7 +711,7 @@ dados |>
        y = "",
        fill = "Professor/Aluno") +
   scale_fill_manual(values = met.brewer("Java", 4)) +
-  scale_x_continuous(limits = c(1990, 2021)) +
+  scale_x_continuous(limits = c(1990, 2022)) +
   scale_y_continuous(labels=NULL, position = "right") +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5), #letra do título
         plot.subtitle = element_markdown(size = 25, hjust = 0.5),
@@ -884,10 +722,10 @@ dados |>
         axis.text.y = element_text(size = 15),
         legend.title=element_text(size=20), 
         legend.text = element_text(size = 15)) +
-  facet_wrap(~codigoarea, labeller = as_labeller(nomes_20piores)) 
+  facet_wrap(~nm_area_avaliacao) 
 
 
-#Tabelas#### 
+#RAZÃO DE PREVALÊNCIA#### 
 tab <- function(dataset, var){
   dataset  |> 
     group_by({{var}})  |>
@@ -926,12 +764,6 @@ epi.2by2(dat = doismilvinte, method = "cross.sectional",
          conf.level = 0.95, units = 100, outcome = "as.columns")
 
 
-
-
-
-
-
-
 dadosreg <- dados |>  
   group_by(ano) |> 
   summarize(naluno = sum(galuno, na.rm = TRUE),
@@ -952,89 +784,143 @@ mergedados <-
 
 model <- lm(naluno ~ nprofe, data = dadosreg)  
 
+# FILOSOFIA #### 
+# Uso do catálogo específico da Filosofia 
+dadosfi <- readr::read_csv("dados/catalogo.csv") |> 
+  drop_na(g_oridis)
 
-#GRÁFICO GÊNERO BANCO13_20####
-dadosprofi <- banco1320 |> 
-  filter(CD_AREA_CONHECIMENTO == 70100004) |> 
-  select(AN_BASE, NM_GRAU_ACADEMICO, NM_ORIENTADOR, NM_DISCENTE)
+# Transforma variáveis de interesse em categóricas
+fatores <- c("nm_grau_academico",
+             "nm_entidade_ensino",
+             "nm_regiao", 
+             "sg_uf_ies", 
+             "g_orientador", 
+             "g_discente", 
+             "g_oridis")
 
-dadosprofi <- dadosprofi |> 
-  mutate(
-    gorientador = get_gender(NM_ORIENTADOR),
-    galuno = get_gender(NM_DISCENTE), 
-    goga = factor(case_when(
-      (gorientador == "Male" & galuno == "Male") ~ "Homem/Homem",
-      (gorientador == "Male" & galuno == "Female") ~ "Homem/Mulher",
-      (gorientador == "Female" & galuno == "Male") ~ "Mulher/Homem",
-      (gorientador == "Female" & galuno == "Female") ~ "Mulher/Mulher"),
-      levels = c("Mulher/Mulher", "Mulher/Homem", "Homem/Mulher", "Homem/Homem"))
-  )
+dadosfi <- dadosfi  |> 
+  mutate(across(all_of(fatores), as.factor))
 
-#Gráfico das HUMANAS por ALUNO - BARRA
-dadosprofi |> 
-  drop_na(galuno) |> 
-  ggplot(aes(x = AN_BASE, fill = galuno)) +
-  geom_bar(position = "fill") +
-  theme_minimal() +
-  labs(title = "Desigualdade de Gênero na Pós-Graduaçaõ em Filosofia",
-       subtitle = "Proporção de trabalhos defendidos por <span style= 'color:#1d4497; font-size:32pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:32pt;'>**Mulheres**</span> (2012-2020)",
-       caption = "Dados: CAPES | Elaboração: Dataphilo", 
-       x = "",
-       y = "") +
-  scale_fill_manual(values = met.brewer("Nizami", 2)) +
-  scale_x_continuous(limits = c(2012, 2021), expand = c(0, 0)) +
-  scale_y_continuous(labels = NULL) +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.5),  #letra do título
-        plot.subtitle = element_markdown(hjust = 0.5),
-        plot.caption = element_markdown(margin = margin(t = 3), hjust = 0.975),
-        legend.position = "none",
-        plot.margin = margin(1,1,1.5,1.2, "cm"),
-        axis.text.y=element_blank(),
-        text = element_text(size = 20)) +
-  facet_wrap(~NM_GRAU_ACADEMICO) 
+# Tabela 3 | Universidades####
 
-dadosprofi |> 
-  drop_na(galuno) |> 
-  filter(galuno == "Female") |> 
-  ggplot(aes(x = AN_BASE, color = NM_GRAU_ACADEMICO)) +
-  geom_line(stat = "count", size = 1.2) +
-  scale_x_continuous(limits = c(2012, 2020)) +
-  scale_y_continuous( position = "right") +
-  scale_colour_manual(values = met.brewer("Nizami", 3)) +
-  labs(title = "Evolução da defesa de trabalhos na Pós-Graduação",
-       caption = "Elaboração: Dataphilo | Dados: CAPES", 
-       x = "",
-       y = "") +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
-        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
-        plot.caption = element_markdown(margin = margin(t = 3)))+
-  coord_cartesian(clip = 'off') 
+# Organização e extração dos 10 piores cursos
+# Cálculo Total
+dados_ies <- dadosfi |> 
+  group_by(nm_entidade_ensino) |> 
+  summarize(total = n()) |> 
+  mutate(frequencia = round(total/sum(total)*100,2)) |> 
+  slice_max(total, n = 15)
 
+# Lista para filtrar os dados
+lista_ies <- levels(dados_ies$nm_entidade_ensino)
 
-#Salvar gráfico#####
-ggsave(
-  "prop_12piores.png",
-  bg = "white",
-  width = 22,
-  height = 22,
-  dpi = 900,
-  plot = last_plot())
+# Cálculo por discente
+dados_ies_d <- dadosfi |> 
+  filter(nm_entidade_ensino %in% lista_ies) |> 
+  group_by(nm_entidade_ensino, g_discente) |> 
+  summarize(total_d = n()) |> 
+  mutate(frequencia_d = round(total_d/sum(total_d)*100,2)) |> 
+  ungroup()
 
-dados |> 
-  drop_na(ano, goga) |> 
-  filter(ano >= 2010) |> 
-  tabyl(ano, goga) |> 
-  adorn_totals("row") |>
-  adorn_percentages() |> 
-  adorn_pct_formatting() |> 
-  adorn_ns() |> 
-  gt() 
+dados_ies_d <- dados_ies_d |> 
+  pivot_wider(
+    names_from = g_discente,
+    values_from = c(total_d, frequencia_d)) 
 
-dados |> 
-  count(ano, nivel) |> 
-  gt()
+# Cálculo por orientador
+dados_ies_o <- dadosfi |> 
+  filter(nm_entidade_ensino %in% lista_ies) |> 
+  group_by(nm_entidade_ensino, g_orientador) |> 
+  summarize(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
 
-dadosfil 
+dados_ies_o <- dados_ies_o |> 
+  pivot_wider(
+    names_from = g_orientador,
+    values_from = c(total_o, frequencia_o)) 
 
+# Cálculo por Orientador-Discente
+dados_ies_god <- dadosfi |> 
+  filter(nm_entidade_ensino %in% lista_ies) |> 
+  group_by(nm_entidade_ensino, g_oridis) |> 
+  summarize(total_od = n()) |> 
+  mutate(frequencia_od = round(total_od/sum(total_od)*100,2))
+
+dados_ies_god <- dados_ies_god |> 
+  pivot_wider(
+    names_from = g_oridis,
+    values_from = c(total_od, frequencia_od))
+
+# Tabela 3 | Agrupamento em um dataframe ####
+lista_ies_df <- list(dados_ies, 
+                        dados_ies_o, 
+                        dados_ies_d, 
+                        dados_ies_god)
+
+tab_ies <- purrr::reduce(lista_ies_df, 
+                            left_join, 
+                            by = "nm_entidade_ensino") |> 
+  mutate(nm_entidade_ensino = stringr::str_to_title(nm_entidade_ensino)) |> 
+  mutate_all(~replace_na(.,0)) |> 
+  rename("IES" = "nm_entidade_ensino") 
+
+# TABELA 3 ####
+tab_ies |> 
+  gt() |> 
+  cols_merge(
+    columns = c(total, frequencia), # Total
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_o_Male, frequencia_o_Male), # Orientadores Homens
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_o_Female, frequencia_o_Female), # Orientadoras Mulheres
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_d_Male, frequencia_d_Male), # Discentes Homens
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_d_Female, frequencia_d_Female), # Discentes Mulheres
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_FF, frequencia_od_FF), # Mulher-Mulher
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_FM, frequencia_od_FM), # Mulher-Homem
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_MF, frequencia_od_MF), # Homem-Mulher
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_MM, frequencia_od_MM), # Homem-Homem
+    pattern = "{1} ({2}%)") |>
+  tab_spanner(   # Títulos
+    label = "Orientador(a)",  
+    columns = c(total_o_Male, total_o_Female)) |>
+  tab_spanner(
+    label = "Discente",
+    columns = c(total_d_Male, total_d_Female)) |> 
+  tab_spanner(
+    label = "Orientador(a)/Discente",
+    columns = c(total_od_FF, total_od_FM, total_od_MF,total_od_MM)) |> 
+  cols_label(
+    total = "Trabalhos",
+    total_o_Male = "Homem",
+    total_o_Female = "Mulher",
+    total_d_Female = "Mulher",
+    total_d_Male = "Homem",
+    total_od_FF = "Mulher/Mulher",
+    total_od_FM = "Mulher/Homem",
+    total_od_MF = "Homem/Mulher",
+    total_od_MM = "Homem/Homem",
+  ) |> 
+  tab_header(
+    title = "Tabela 3. Descrição do gênero de orientadores e discentes das teses e dissertações defendidas nas 10 IES mais produtivas no Brasil entre 1991-2021") |> 
+  cols_align(
+    align = "center") |> 
+  fmt_number(
+    drop_trailing_zeros = TRUE,
+    decimals = 2,
+    sep_mark = ".") 
 
 
