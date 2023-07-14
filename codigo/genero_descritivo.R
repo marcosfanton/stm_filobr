@@ -16,7 +16,7 @@ library(janitor)
 # Banco 
 dados <- read.csv("dados/catalogo/catalogo9121_raw.csv")
 
-# Recodificação dos níveis da filosofia e teologia
+# Recodificação das áreas de avaliação da filosofia e teologia
 dados <- dados  |> 
   mutate(nm_area_avaliacao = recode(nm_area_avaliacao, 
                                      "filosofia teologiasubcomissao filosofia" = "filosofia", 
@@ -24,7 +24,7 @@ dados <- dados  |>
                                     "filosofiateologiasubcomissao teologia" = "teologia",
                                     "ciencias da religiao e teologia" = "teologia"))
 
-# Transforma variáveis de interesse em fator
+# Transforma variáveis de interesse em categóricas
 fatores <- c("nm_grande_area_conhecimento", 
              "nm_area_avaliacao", 
              "nm_grau_academico", 
@@ -37,7 +37,7 @@ fatores <- c("nm_grande_area_conhecimento",
 dados <- dados  |> 
   mutate(across(all_of(fatores), as.factor))
 
-# Tabela 1 ####
+# Tabela 1 | Grande área e Humanas ####
 # Cálculo por Grande Área####
 dados_areas <- dados |> 
   group_by(nm_grande_area_conhecimento) |> 
@@ -77,7 +77,7 @@ dados_g_oridis <- dados_g_oridis |>
     names_from = g_oridis,
     values_from = c(total_od, frequencia_od))
 
-# Agrupamento em um dataframe
+# Tabela 1 | Agrupamento Grande Área####
 lista_grande_area <- list(dados_areas, 
                           dados_gorientador, 
                           dados_g_discente, 
@@ -94,7 +94,7 @@ tab_grande_area <- purrr::reduce(lista_dados,
          descritor = "Grande Área") |> 
   rename("areas" = "nm_grande_area_conhecimento")
 
-# Cálculo por Humanas ####
+# Tabela 1 | Cálculo por Humanas ####
 dados_humanas <- dados |> 
   filter(nm_grande_area_conhecimento == "ciencias humanas") |> 
   mutate(nm_area_avaliacao = droplevels(nm_area_avaliacao))
@@ -138,7 +138,7 @@ dados_humanas_g_oridis <- dados_humanas_g_oridis |>
     names_from = g_oridis,
     values_from = c(total_od, frequencia_od))
 
-# Agrupamento em um dataframe
+# Tabela 1 | Agrupamento Humanas ####
 lista_humanas <- list(dados_humanas_total, 
                           dados_humanas_gorientador, 
                           dados_humanas_g_discente, 
@@ -155,7 +155,7 @@ tab_humanas <- purrr::reduce(lista_humanas,
          descritor = "Ciências Humanas")|> 
   rename("areas" = "nm_area_avaliacao")
 
-# União dos tabs - tab_grande_area + tab_humanas
+# Tabela 1 | União tab_grande_area + tab_humanas####
 
 tab <- bind_rows(tab_grande_area, tab_humanas)
 
@@ -220,6 +220,135 @@ tab |>
     decimals = 2,
     sep_mark = ".") 
 
+# Tabela 2 | Os 10 piores####
+# Cálculo por Caquedo (10 piores) por Área de Avaliação ####
+
+# Cálculo por discente
+dados_piores_gd <- dados |> 
+  group_by(nm_area_avaliacao, g_discente) |> 
+  summarize(total_d = n()) |> 
+  mutate(frequencia_d = round(total_d/sum(total_d)*100,2)) |> 
+  ungroup()
+
+# Organização e extração dos 10 piores cursos
+dados_piores_gd <- dados_piores_gd |> 
+  pivot_wider(
+    names_from = g_discente,
+    values_from = c(total_d, frequencia_d)) |> 
+  slice_min(frequencia_d_Female, n = 10) |> 
+  mutate(nm_area_avaliacao = droplevels(nm_area_avaliacao)) 
+
+# Lista para filtrar os dados
+lista_piores <- levels(dados_piores_gd$nm_area_avaliacao)
+
+# Cálculo Total
+dados_piores <- dados |> 
+  filter(nm_area_avaliacao %in% lista_piores) |> 
+  group_by(nm_area_avaliacao) |> 
+  summarize(total = n()) |> 
+  mutate(frequencia = round(total/sum(total)*100,2))
+
+# Cálculo por orientador
+dados_piores_go <- dados |> 
+  filter(nm_area_avaliacao %in% lista_piores) |> 
+  group_by(nm_area_avaliacao, g_orientador) |> 
+  summarize(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
+
+dados_piores_go <- dados_piores_go |> 
+  pivot_wider(
+    names_from = g_orientador,
+    values_from = c(total_o, frequencia_o)) 
+
+# Cálculo por Orientador-Discente
+dados_piores_god <- dados |> 
+  filter(nm_area_avaliacao %in% lista_piores) |> 
+  group_by(nm_area_avaliacao, g_oridis) |> 
+  summarize(total_od = n()) |> 
+  mutate(frequencia_od = round(total_od/sum(total_od)*100,2))
+
+dados_piores_god <- dados_piores_god |> 
+  pivot_wider(
+    names_from = g_oridis,
+    values_from = c(total_od, frequencia_od))
+
+# Tabela 2 | Agrupamento em um dataframe ####
+lista_piores_df <- list(dados_piores, 
+                      dados_piores_go, 
+                      dados_piores_gd, 
+                      dados_piores_god)
+
+tab_piores <- purrr::reduce(lista_piores_df, 
+                             left_join, 
+                             by = "nm_area_avaliacao") |> 
+  arrange(frequencia_d_Female) |> 
+  mutate(nm_area_avaliacao = stringr::str_to_title(nm_area_avaliacao), 
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Iv", "IV"),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Ciencia Da Computacao", "Ciência da Computação"),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Fisica", "Física"),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Iii", "III"),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Matematica Probabilidade E Estatistica", "Matemática, Probabilidade E Estatística"),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Administracao Ciencias Contabeis E Turismo", "Administração, Ciências Contábeis E Turismo"),
+         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Geociencias", "Geociências")) |> 
+  rename("Áreas de Avaliação" = "nm_area_avaliacao")
+
+# TABELA 2 ####
+tab_piores |> 
+  gt() |> 
+  cols_hide(c(total, frequencia)) |> 
+  cols_merge(
+    columns = c(total_o_Male, frequencia_o_Male), # Orientadores Homens
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_o_Female, frequencia_o_Female), # Orientadoras Mulheres
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_d_Male, frequencia_d_Male), # Discentes Homens
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_d_Female, frequencia_d_Female), # Discentes Mulheres
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_FF, frequencia_od_FF), # Mulher-Mulher
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_FM, frequencia_od_FM), # Mulher-Homem
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_MF, frequencia_od_MF), # Homem-Mulher
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_MM, frequencia_od_MM), # Homem-Homem
+    pattern = "{1} ({2}%)") |>
+  tab_spanner(   # Títulos
+    label = "Orientador(a)",  
+    columns = c(total_o_Male, total_o_Female)) |>
+  tab_spanner(
+    label = "Discente",
+    columns = c(total_d_Male, total_d_Female)) |> 
+  tab_spanner(
+    label = "Orientador(a)/Discente",
+    columns = c(total_od_FF, total_od_FM, total_od_MF,total_od_MM)) |> 
+  cols_label(
+    total = "Trabalhos",
+    total_o_Male = "Homem",
+    total_o_Female = "Mulher",
+    total_d_Female = "Mulher",
+    total_d_Male = "Homem",
+    total_od_FF = "Mulher/Mulher",
+    total_od_FM = "Mulher/Homem",
+    total_od_MF = "Homem/Mulher",
+    total_od_MM = "Homem/Homem",
+  ) |> 
+  tab_header(
+    title = "Tabela 2. Descrição das 10 áreas de avaliação com menor prevalência de teses e dissertações defendidas por mulheres discentes no Brasil entre 1991-2021"
+  ) |> 
+  cols_align(
+    align = "center") |> 
+  fmt_number(
+    drop_trailing_zeros = TRUE,
+    decimals = 2,
+    sep_mark = ".") 
 
 # Evolução da pós-graduação no Brasil - 1991-2021####
 theme_set(theme_minimal(base_family = "Roboto"))
