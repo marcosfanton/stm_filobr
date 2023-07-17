@@ -39,12 +39,15 @@ fatores <- c("nm_grande_area_conhecimento",
 dados <- dados  |> 
   mutate(across(all_of(fatores), as.factor))
 
+dados |>
+  readr::write_csv("dados/catalogo/catalogo9121_genero.csv")
+
 # Tabela 1 | Grande área e Humanas ####
 # Cálculo por Grande Área####
 dados_areas <- dados |> 
   group_by(nm_grande_area_conhecimento) |> 
   summarize(total = n()) |> 
-  mutate(frequencia = round(total/sum(total)*100,2))
+  mutate(frequencia = round(total/sum(total)*100,2)) 
 
 # Cálculo por orientador
 dados_gorientador <- dados |> 
@@ -351,6 +354,128 @@ tab_piores |>
     decimals = 2,
     sep_mark = ".") 
 
+# Tabela 3 | Universidades####
+
+# Organização e extração dos 10 piores cursos
+# Cálculo Total
+dados_ies <- dadosfi |> 
+  group_by(nm_entidade_ensino) |> 
+  summarize(total = n()) |> 
+  mutate(frequencia = round(total/sum(total)*100,2)) |> 
+  slice_max(total, n = 15)
+
+# Lista para filtrar os dados
+lista_ies <- levels(dados_ies$nm_entidade_ensino)
+
+# Cálculo por discente
+dados_ies_d <- dadosfi |> 
+  filter(nm_entidade_ensino %in% lista_ies) |> 
+  group_by(nm_entidade_ensino, g_discente) |> 
+  summarize(total_d = n()) |> 
+  mutate(frequencia_d = round(total_d/sum(total_d)*100,2)) |> 
+  ungroup()
+
+dados_ies_d <- dados_ies_d |> 
+  pivot_wider(
+    names_from = g_discente,
+    values_from = c(total_d, frequencia_d)) 
+
+# Cálculo por orientador
+dados_ies_o <- dadosfi |> 
+  filter(nm_entidade_ensino %in% lista_ies) |> 
+  group_by(nm_entidade_ensino, g_orientador) |> 
+  summarize(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
+
+dados_ies_o <- dados_ies_o |> 
+  pivot_wider(
+    names_from = g_orientador,
+    values_from = c(total_o, frequencia_o)) 
+
+# Cálculo por Orientador-Discente
+dados_ies_god <- dadosfi |> 
+  filter(nm_entidade_ensino %in% lista_ies) |> 
+  group_by(nm_entidade_ensino, g_oridis) |> 
+  summarize(total_od = n()) |> 
+  mutate(frequencia_od = round(total_od/sum(total_od)*100,2))
+
+dados_ies_god <- dados_ies_god |> 
+  pivot_wider(
+    names_from = g_oridis,
+    values_from = c(total_od, frequencia_od))
+
+# Tabela 3 | Agrupamento em um dataframe ####
+lista_ies_df <- list(dados_ies, 
+                     dados_ies_o, 
+                     dados_ies_d, 
+                     dados_ies_god)
+
+tab_ies <- purrr::reduce(lista_ies_df, 
+                         left_join, 
+                         by = "nm_entidade_ensino") |> 
+  mutate(nm_entidade_ensino = stringr::str_to_title(nm_entidade_ensino)) |> 
+  mutate_all(~replace_na(.,0)) |> 
+  rename("IES" = "nm_entidade_ensino") 
+
+# TABELA 3 ####
+tab_ies |> 
+  gt() |> 
+  cols_merge(
+    columns = c(total, frequencia), # Total
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_o_Male, frequencia_o_Male), # Orientadores Homens
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_o_Female, frequencia_o_Female), # Orientadoras Mulheres
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_d_Male, frequencia_d_Male), # Discentes Homens
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_d_Female, frequencia_d_Female), # Discentes Mulheres
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_FF, frequencia_od_FF), # Mulher-Mulher
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_FM, frequencia_od_FM), # Mulher-Homem
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_MF, frequencia_od_MF), # Homem-Mulher
+    pattern = "{1} ({2}%)") |>
+  cols_merge(
+    columns = c(total_od_MM, frequencia_od_MM), # Homem-Homem
+    pattern = "{1} ({2}%)") |>
+  tab_spanner(   # Títulos
+    label = "Orientador(a)",  
+    columns = c(total_o_Male, total_o_Female)) |>
+  tab_spanner(
+    label = "Discente",
+    columns = c(total_d_Male, total_d_Female)) |> 
+  tab_spanner(
+    label = "Orientador(a)/Discente",
+    columns = c(total_od_FF, total_od_FM, total_od_MF,total_od_MM)) |> 
+  cols_label(
+    total = "Trabalhos",
+    total_o_Male = "Homem",
+    total_o_Female = "Mulher",
+    total_d_Female = "Mulher",
+    total_d_Male = "Homem",
+    total_od_FF = "Mulher/Mulher",
+    total_od_FM = "Mulher/Homem",
+    total_od_MF = "Homem/Mulher",
+    total_od_MM = "Homem/Homem",
+  ) |> 
+  tab_header(
+    title = "Tabela 3. Descrição do gênero de orientadores e discentes das teses e dissertações defendidas nas 10 IES mais produtivas no Brasil entre 1991-2021") |> 
+  cols_align(
+    align = "center") |> 
+  fmt_number(
+    drop_trailing_zeros = TRUE,
+    decimals = 2,
+    sep_mark = ".") 
+
 # GRÁFICOS#### 
 # Evolução da pós-graduação no Brasil - 1991-2021####
 theme_set(theme_minimal(base_family = "Roboto"))
@@ -370,7 +495,7 @@ dados |>
         text = element_text(size = 20)) + 
   coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
 
-#Gráfico Total por Gênero PROFESSOR
+#Gráfico | Total | PROFESSOR - LINHA #### 
 dados |> 
   ggplot(aes(x = an_base, color = nm_grau_academico)) +
   geom_line(stat = "count", linewidth = 1.2) +
@@ -388,7 +513,7 @@ dados |>
         text = element_text(size = 20)) + 
   coord_cartesian(clip = 'off') 
 
-#Gráfico Total por Gênero do PROFESSOR - BARRA
+# Gráfico | Total | Gênero | PROFESSOR - BARRA####
 dados |> 
   drop_na(g_orientador) |> 
   ggplot(aes(x = g_orientador, y = an_base, fill = nm_grau_academico)) +
@@ -726,63 +851,18 @@ dados |>
 
 
 #RAZÃO DE PREVALÊNCIA#### 
-tab <- function(dataset, var){
-  dataset  |> 
-    group_by({{var}})  |>
-    drop_na({{var}}) |> 
-    summarise(n = n()) |> 
-    mutate(TotalN = cumsum(n),
-           relativa = (scales::percent(n / sum(n), accuracy = .1, trim = FALSE)),
-           acumulada = (scales::percent(cumsum(n/sum(n)), accuracy = .1, trim = FALSE)))
-}
+dadosfil <- read.csv("dados/catalogo.csv") |> 
+  drop_na(g_oridis)
 
-teste <- tab(dados, gorientador)
-
-scales::percent(n/sum(n), accuracy = .1, trim = FALSE)
-#Matriz 2x2 para cálculo de razão de prevalência
-matriz <- dados |>  
-  drop_na(galuno, gorientador) |> 
-  tabyl(gorientador, galuno) |> 
+matriz <- dadosfil |>  
+  filter(between(an_base, 2011,2021)) |> 
+  tabyl(g_orientador, g_discente) |> 
   adorn_totals(c("row", "col"))
 
-decadas <- dados |> mutate(
-  cincoanos = cut(ano,
-                  c(0, 1995, 2000, 2005, 2010, 2015, Inf),
-                  c("1987-1995", "1996-2000", "2001-2005", "2006-2010", "2011-2015", "2016-2020"))) |> 
-  drop_na(gorientador, galuno) |> 
-  select(cincoanos, galuno, gorientador)
+dat.v <- matrix(c(470,1537,936,4156), ncol =2)
 
-decadas |> count(cincoanos, gorientador, galuno) 
-
-
-
-matriz1 <- matriz %>%
-  remove_rownames() %>%
-  column_to_rownames(var = "gorientador")
-
-epi.2by2(dat = doismilvinte, method = "cross.sectional",
+resultado <- epi.2by2(dat = dat.v, method = "cross.sectional",
          conf.level = 0.95, units = 100, outcome = "as.columns")
-
-
-dadosreg <- dados |>  
-  group_by(ano) |> 
-  summarize(naluno = sum(galuno, na.rm = TRUE),
-            nprofe = sum(gorientador, na.rm = TRUE))
-#Cálculo profe por ano
-dadosprofe <- dados  |> 
-  filter(codigoarea == 70100004) |> 
-  count(ano, gorientador) |> 
-  drop_na()
-#Cálculo aluno por ano
-dadosaluno <- dados  |> 
-  filter(codigoarea == 70100004) |> 
-  count(ano, galuno) |> 
-  drop_na()
-
-mergedados <- 
-  left_join(dadosprofe, dadosaluno, by = c("ano" = "ano"))
-
-model <- lm(naluno ~ nprofe, data = dadosreg)  
 
 # FILOSOFIA #### 
 # Uso do catálogo específico da Filosofia 
@@ -801,126 +881,124 @@ fatores <- c("nm_grau_academico",
 dadosfi <- dadosfi  |> 
   mutate(across(all_of(fatores), as.factor))
 
-# Tabela 3 | Universidades####
-
-# Organização e extração dos 10 piores cursos
-# Cálculo Total
-dados_ies <- dadosfi |> 
-  group_by(nm_entidade_ensino) |> 
-  summarize(total = n()) |> 
-  mutate(frequencia = round(total/sum(total)*100,2)) |> 
-  slice_max(total, n = 15)
-
-# Lista para filtrar os dados
-lista_ies <- levels(dados_ies$nm_entidade_ensino)
-
-# Cálculo por discente
-dados_ies_d <- dadosfi |> 
-  filter(nm_entidade_ensino %in% lista_ies) |> 
-  group_by(nm_entidade_ensino, g_discente) |> 
-  summarize(total_d = n()) |> 
-  mutate(frequencia_d = round(total_d/sum(total_d)*100,2)) |> 
-  ungroup()
-
-dados_ies_d <- dados_ies_d |> 
-  pivot_wider(
-    names_from = g_discente,
-    values_from = c(total_d, frequencia_d)) 
-
-# Cálculo por orientador
-dados_ies_o <- dadosfi |> 
-  filter(nm_entidade_ensino %in% lista_ies) |> 
-  group_by(nm_entidade_ensino, g_orientador) |> 
+# Gráfico | Evol Prop. Orientadora | Grandes áreas####
+dados_evol_go <- dados |> 
+  group_by(nm_grande_area_conhecimento, an_base, g_orientador) |> 
   summarize(total_o = n()) |> 
   mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
 
-dados_ies_o <- dados_ies_o |> 
-  pivot_wider(
-    names_from = g_orientador,
-    values_from = c(total_o, frequencia_o)) 
+dados_evol_go |> 
+  filter(g_orientador == "Female") |> 
+  ggplot(aes(x = an_base, 
+             y = frequencia_o,
+             color = nm_grande_area_conhecimento)) +
+  geom_line(linewidth = 1.2, alpha = 0.3) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = FALSE) +
+  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
+  scale_y_continuous( position = "right") +
+  scale_colour_manual(values = met.brewer("Nizami", 9)) +
+  labs(title = "Evolução da proporção de trabalhos orientados por mulheres na Pós-Graduação por Grande Área",
+       caption = "Elaboração: Dataphilo | Dados: CAPES", 
+       x = "",
+       y = "") +
+  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
+        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
+        plot.caption = element_markdown(margin = margin(t = 3)),
+        text = element_text(size = 20)) + 
+  coord_cartesian(clip = 'off')
 
-# Cálculo por Orientador-Discente
-dados_ies_god <- dadosfi |> 
-  filter(nm_entidade_ensino %in% lista_ies) |> 
-  group_by(nm_entidade_ensino, g_oridis) |> 
-  summarize(total_od = n()) |> 
-  mutate(frequencia_od = round(total_od/sum(total_od)*100,2))
+# Gráfico | Evol Prop. Discente | Grandes áreas####
+dados_evol_gd <- dados |> 
+  group_by(nm_grande_area_conhecimento, an_base, g_discente) |> 
+  summarize(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
 
-dados_ies_god <- dados_ies_god |> 
-  pivot_wider(
-    names_from = g_oridis,
-    values_from = c(total_od, frequencia_od))
+dados_evol_gd |> 
+  filter(g_discente == "Female") |> 
+  ggplot(aes(x = an_base, 
+             y = frequencia_o,
+             color = nm_grande_area_conhecimento)) +
+  geom_line(linewidth = 1.2, alpha = 0.2) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = FALSE) +
+  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
+  scale_y_continuous( position = "right") +
+ # scale_colour_manual(values = met.brewer("Nizami", 9)) +
+  labs(title = "Evolução da proporção de trabalhos defendidos por mulheres na Pós-Graduação por Grande Área",
+       caption = "Elaboração: Dataphilo | Dados: CAPES", 
+       x = "",
+       y = "") +
+  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
+        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
+        plot.caption = element_markdown(margin = margin(t = 3)),
+        text = element_text(size = 20)) + 
+  coord_cartesian(clip = 'off')
 
-# Tabela 3 | Agrupamento em um dataframe ####
-lista_ies_df <- list(dados_ies, 
-                        dados_ies_o, 
-                        dados_ies_d, 
-                        dados_ies_god)
+# Gráfico | Evol Prop. Discente | Humanas####
+dados_evol_humanas <- dados |> 
+  filter(nm_grande_area_conhecimento == "ciencias humanas") |> 
+  mutate(nm_area_avaliacao = droplevels(nm_area_avaliacao)) |> 
+  group_by(nm_area_avaliacao, an_base, g_discente) |> 
+  summarize(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
 
-tab_ies <- purrr::reduce(lista_ies_df, 
-                            left_join, 
-                            by = "nm_entidade_ensino") |> 
-  mutate(nm_entidade_ensino = stringr::str_to_title(nm_entidade_ensino)) |> 
-  mutate_all(~replace_na(.,0)) |> 
-  rename("IES" = "nm_entidade_ensino") 
+dados_evol_humanas |> 
+  filter(g_discente == "Female") |> 
+  ggplot(aes(x = an_base, 
+             y = frequencia_o,
+             color = nm_area_avaliacao)) +
+  geom_line(linewidth = 1.2, alpha = 0.2) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = FALSE) +
+  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
+  scale_y_continuous( position = "right") +
+  #scale_colour_manual(values = met.brewer("Nizami", 9)) +
+  labs(title = "Evolução da proporção de trabalhos defendidos por mulheres na Pós-Graduação nas Ciências Humanas",
+       caption = "Elaboração: Dataphilo | Dados: CAPES", 
+       x = "",
+       y = "") +
+  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
+        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
+        plot.caption = element_markdown(margin = margin(t = 3)),
+        text = element_text(size = 20)) + 
+  coord_cartesian(clip = 'off')
 
-# TABELA 3 ####
-tab_ies |> 
-  gt() |> 
-  cols_merge(
-    columns = c(total, frequencia), # Total
-    pattern = "{1} ({2}%)") |>
-  cols_merge(
-    columns = c(total_o_Male, frequencia_o_Male), # Orientadores Homens
-    pattern = "{1} ({2}%)") |> 
-  cols_merge(
-    columns = c(total_o_Female, frequencia_o_Female), # Orientadoras Mulheres
-    pattern = "{1} ({2}%)") |> 
-  cols_merge(
-    columns = c(total_d_Male, frequencia_d_Male), # Discentes Homens
-    pattern = "{1} ({2}%)") |> 
-  cols_merge(
-    columns = c(total_d_Female, frequencia_d_Female), # Discentes Mulheres
-    pattern = "{1} ({2}%)") |>
-  cols_merge(
-    columns = c(total_od_FF, frequencia_od_FF), # Mulher-Mulher
-    pattern = "{1} ({2}%)") |>
-  cols_merge(
-    columns = c(total_od_FM, frequencia_od_FM), # Mulher-Homem
-    pattern = "{1} ({2}%)") |>
-  cols_merge(
-    columns = c(total_od_MF, frequencia_od_MF), # Homem-Mulher
-    pattern = "{1} ({2}%)") |>
-  cols_merge(
-    columns = c(total_od_MM, frequencia_od_MM), # Homem-Homem
-    pattern = "{1} ({2}%)") |>
-  tab_spanner(   # Títulos
-    label = "Orientador(a)",  
-    columns = c(total_o_Male, total_o_Female)) |>
-  tab_spanner(
-    label = "Discente",
-    columns = c(total_d_Male, total_d_Female)) |> 
-  tab_spanner(
-    label = "Orientador(a)/Discente",
-    columns = c(total_od_FF, total_od_FM, total_od_MF,total_od_MM)) |> 
-  cols_label(
-    total = "Trabalhos",
-    total_o_Male = "Homem",
-    total_o_Female = "Mulher",
-    total_d_Female = "Mulher",
-    total_d_Male = "Homem",
-    total_od_FF = "Mulher/Mulher",
-    total_od_FM = "Mulher/Homem",
-    total_od_MF = "Homem/Mulher",
-    total_od_MM = "Homem/Homem",
-  ) |> 
-  tab_header(
-    title = "Tabela 3. Descrição do gênero de orientadores e discentes das teses e dissertações defendidas nas 10 IES mais produtivas no Brasil entre 1991-2021") |> 
-  cols_align(
-    align = "center") |> 
-  fmt_number(
-    drop_trailing_zeros = TRUE,
-    decimals = 2,
-    sep_mark = ".") 
+
+# Gráfico | Evol Prop. Discente | 10 piores####
+dados_evol_piores <- dados |> 
+  filter(nm_area_avaliacao %in% lista_piores) |> 
+  group_by(nm_area_avaliacao, an_base, g_discente) |> 
+  summarize(total = n()) |> 
+  mutate(frequencia = round(total/sum(total)*100,2))
+
+dados_evol_piores |> 
+  filter(g_discente == "Female") |> 
+  ggplot(aes(x = an_base, 
+             y = frequencia,
+             color = nm_area_avaliacao)) +
+  geom_line(linewidth = 1.2, alpha = 0.2) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = FALSE) +
+  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
+  scale_y_continuous( position = "right") +
+  #scale_colour_manual(values = met.brewer("Nizami", 10)) +
+  labs(title = "Evolução da proporção de trabalhos defendidos por mulheres na Pós-Graduação nas Ciências Humanas",
+       caption = "Elaboração: Dataphilo | Dados: CAPES", 
+       x = "",
+       y = "") +
+  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
+        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
+        plot.caption = element_markdown(margin = margin(t = 3)),
+        text = element_text(size = 20)) + 
+  coord_cartesian(clip = 'off')
+
+
+
+avaliacao_percentual <- dados_evol_piores  |> 
+  filter(an_base %in% c(1991, 2021) & g_discente == "Female")  |> 
+  group_by(nm_area_avaliacao)  |> 
+  arrange(an_base)  |> 
+  summarise(diminuicao_perc = ((last(frequencia) - first(frequencia)) / first(frequencia)) * 100)
+
+              
+              
+              
 
 
