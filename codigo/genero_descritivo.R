@@ -747,7 +747,7 @@ dados |>
   facet_wrap(~nm_area_avaliacao) 
 
 
-# Gráficos Relação Professor-Aluno####
+# Gráfico | Relação Professor-Aluno####
 # Total
 dados |> 
   ggplot(aes(x = an_base, 
@@ -989,15 +989,69 @@ dados_evol_piores |>
         text = element_text(size = 20)) + 
   coord_cartesian(clip = 'off')
 
-
-
+# Avaliação aumento-diminuição em dados percentuais
 avaliacao_percentual <- dados_evol_piores  |> 
   filter(an_base %in% c(1991, 2021) & g_discente == "Female")  |> 
   group_by(nm_area_avaliacao)  |> 
   arrange(an_base)  |> 
   summarise(diminuicao_perc = ((last(frequencia) - first(frequencia)) / first(frequencia)) * 100)
 
-              
+
+# Gráfico | Docente vs Discente mulher #### 
+# Cálculo por orientador
+dados_go <- dados |> 
+  group_by(nm_grande_area_conhecimento, nm_area_avaliacao, g_orientador) |> 
+  summarize(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2)) |> 
+  filter(g_orientador == "Female")
+
+# Cálculo por discente
+dados_gd <- dados |> 
+  group_by(nm_grande_area_conhecimento, nm_area_avaliacao, g_discente) |> 
+  summarize(total_d = n()) |> 
+  mutate(frequencia_d = round(total_d/sum(total_d)*100,2)) |> 
+  filter(g_discente == "Female") 
+
+dados_god <- left_join(dados_go, 
+                       dados_gd, 
+                       by = c("nm_grande_area_conhecimento", "nm_area_avaliacao")) |> 
+    mutate(nm_grande_area_conhecimento = stringr::str_to_title(nm_grande_area_conhecimento),
+           nm_area_avaliacao = stringr::str_to_title(nm_area_avaliacao))
+
+dados_god |> ggplot(aes(x = frequencia_o, 
+                         y = frequencia_d)) +
+  geom_point(aes(colour = nm_grande_area_conhecimento),
+             shape = 21,
+             fill = "White",
+             stroke = 3,
+             size = 2) +
+  ggrepel::geom_text_repel(aes(label = nm_area_avaliacao,
+                               color = nm_grande_area_conhecimento),
+                           min.segment.length = 0,
+                           size = 5,
+                           nudge_x = .15,
+                           nudge_y = .15) +
+  labs(title = "Frequência de orientadoras vs. Frequência de alunas", 
+       x = "Frequência relativa de mulheres orientadoras",
+       y = "Frequência relativa de mulheres discentes") +
+  scale_x_continuous(limits = c(0, 100)) +
+  scale_y_continuous(limits = c(0, 100)) +
+  theme_light() +
+  theme(legend.position = "none") 
+
+  geom_text_repel(
+    aes(label = highlight),
+    family = "Poppins",
+    size = 3,
+    min.segment.length = 0, 
+    seed = 42, 
+    box.padding = 0.5,
+    max.overlaps = Inf,
+    arrow = arrow(length = unit(0.010, "npc")),
+    nudge_x = .15,
+    nudge_y = .5,
+    color = "grey50"
+  )
               
               
 
