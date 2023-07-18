@@ -13,6 +13,7 @@ library(epiR)
 library(gt)
 library(janitor)
 library(ggsci) # Paleta cores
+library(ggpubr) # Combina gráficos
 
 # Banco - N: 1117943
 dados <- read.csv("dados/catalogo/catalogo9121_raw.csv") 
@@ -89,9 +90,8 @@ tab_grande_area <- purrr::reduce(lista_grande_area,
 # Tabela 1 | Cálculo por Humanas ####
 dados_humanas <- dados |> 
   filter(nm_grande_area_conhecimento == "Ciências Humanas") |> 
-  mutate(nm_area_avaliacao = droplevels(nm_area_avaliacao)) |> 
+  mutate(nm_area_avaliacao = droplevels(nm_area_avaliacao))  
   
-
 # Cálculo Total
 dados_humanas_total <- dados_humanas |> 
   group_by(nm_area_avaliacao) |> 
@@ -154,48 +154,48 @@ tab |>
     columns = c(total, frequencia), # Total
     pattern = "{1} ({2}%)") |> 
   cols_merge(
+    columns = c(total_d_Male, frequencia_d_Male), # Discentes Homens
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
+    columns = c(total_d_Female, frequencia_d_Female), # Discentes Mulheres
+    pattern = "{1} ({2}%)") |> 
+  cols_merge(
     columns = c(total_o_Male, frequencia_o_Male), # Orientadores Homens
     pattern = "{1} ({2}%)") |> 
   cols_merge(
     columns = c(total_o_Female, frequencia_o_Female), # Orientadoras Mulheres
     pattern = "{1} ({2}%)") |> 
   cols_merge(
-    columns = c(total_d_Male, frequencia_d_Male), # Discentes Homens
-    pattern = "{1} ({2}%)") |> 
-  cols_merge(
-    columns = c(total_d_Female, frequencia_d_Female), # Discentes Mulheres
+    columns = c(total_od_FF, frequencia_od_FF), # Mulher-Mulher
     pattern = "{1} ({2}%)") |>
   cols_merge(
-    columns = c(total_od_Female/Female, frequencia_od_Female/Female), # Mulher-Mulher
+    columns = c(total_od_FM, frequencia_od_FM), # Mulher-Homem
     pattern = "{1} ({2}%)") |>
   cols_merge(
-    columns = c(total_od_Female/Male, frequencia_od_Female/Male), # Mulher-Homem
+    columns = c(total_od_MF, frequencia_od_MF), # Homem-Mulher
     pattern = "{1} ({2}%)") |>
   cols_merge(
-    columns = c(total_od_Male/Female, frequencia_od_Male/Female), # Homem-Mulher
+    columns = c(total_od_MM, frequencia_od_MM), # Homem-Homem
     pattern = "{1} ({2}%)") |>
-  cols_merge(
-    columns = c(total_od_Male/Male, frequencia_od_Male/Male), # Homem-Homem
-    pattern = "{1} ({2}%)") |>
+  tab_spanner(
+    label = "Discente",
+    columns = c(total_d_Male, total_d_Female)) |> 
   tab_spanner(   # Títulos
     label = "Orientador(a)",  
     columns = c(total_o_Male, total_o_Female)) |>
   tab_spanner(
-    label = "Discente",
-    columns = c(total_d_Male, total_d_Female)) |> 
-  tab_spanner(
     label = "Orientador(a)/Discente",
-    columns = c(total_god_Female/Female, total_god_Female/Male, total_god_Male/Female,total_god_Male/Male)) |> 
+    columns = c(total_od_FF, total_od_FM, total_od_MF,total_od_MM)) |> 
   cols_label(
     total = "Trabalhos",
     total_o_Male = "Homem",
     total_o_Female = "Mulher",
     total_d_Female = "Mulher",
     total_d_Male = "Homem",
-    total_od_Female/Female = "Mulher/Mulher",
-    total_od_Female/Male = "Mulher/Homem",
-    total_od_Male/Female = "Homem/Mulher",
-    total_od_Male/Male = "Homem/Homem"
+    total_od_FF = "Mulher/Mulher",
+    total_od_FM = "Mulher/Homem",
+    total_od_MF = "Homem/Mulher",
+    total_od_MM = "Homem/Homem"
   ) |> 
   tab_header(
     title = "Tabela 1. Descrição do gênero de orientadores e discentes das teses e dissertações defendidas no Brasil entre 1991-2021 de acordo com as Grandes Áreas da CAPES"
@@ -209,23 +209,23 @@ tab |>
 
 # Tabela 2 | Os 10 piores####
 
-# Cálculo por discente
-dados_piores_gd <- dados |> 
-  group_by(nm_area_avaliacao, g_discente) |> 
-  summarize(total_d = n()) |> 
-  mutate(frequencia_d = round(total_d/sum(total_d)*100,2)) |> 
+# Cálculo por orientador
+dados_piores_go <- dados |> 
+  group_by(nm_area_avaliacao, g_orientador) |> 
+  summarize(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2)) |> 
   ungroup()
 
 # Organização e extração dos 10 piores cursos
-dados_piores_gd <- dados_piores_gd |> 
+dados_piores_go <- dados_piores_go |> 
   pivot_wider(
-    names_from = g_discente,
-    values_from = c(total_d, frequencia_d)) |> 
-  slice_min(frequencia_d_Female, n = 10) |> 
+    names_from = g_orientador,
+    values_from = c(total_o, frequencia_o)) |> 
+  slice_min(frequencia_o_Female, n = 10) |> 
   mutate(nm_area_avaliacao = droplevels(nm_area_avaliacao)) 
 
 # Lista para filtrar os dados
-lista_piores <- levels(dados_piores_gd$nm_area_avaliacao)
+lista_piores <- levels(dados_piores_go$nm_area_avaliacao)
 
 # Cálculo Total
 dados_piores <- dados |> 
@@ -234,17 +234,17 @@ dados_piores <- dados |>
   summarize(total = n()) |> 
   mutate(frequencia = round(total/sum(total)*100,2))
 
-# Cálculo por orientador
-dados_piores_go <- dados |> 
+# Cálculo por discente
+dados_piores_gd <- dados |> 
   filter(nm_area_avaliacao %in% lista_piores) |> 
-  group_by(nm_area_avaliacao, g_orientador) |> 
-  summarize(total_o = n()) |> 
-  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
+  group_by(nm_area_avaliacao, g_discente) |> 
+  summarize(total_d = n()) |> 
+  mutate(frequencia_d = round(total_d/sum(total_d)*100,2))
 
-dados_piores_go <- dados_piores_go |> 
+dados_piores_gd <- dados_piores_gd |> 
   pivot_wider(
-    names_from = g_orientador,
-    values_from = c(total_o, frequencia_o)) 
+    names_from = g_discente,
+    values_from = c(total_d, frequencia_d)) 
 
 # Cálculo por Orientador-Discente
 dados_piores_god <- dados |> 
@@ -267,15 +267,7 @@ lista_piores_df <- list(dados_piores,
 tab_piores <- purrr::reduce(lista_piores_df, 
                              left_join, 
                              by = "nm_area_avaliacao") |> 
-  arrange(frequencia_d_Female) |> 
-  mutate(nm_area_avaliacao = stringr::str_to_title(nm_area_avaliacao), 
-         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Iv", "IV"),
-         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Ciencia Da Computacao", "Ciência da Computação"),
-         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Fisica", "Física"),
-         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Iii", "III"),
-         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Matematica Probabilidade E Estatistica", "Matemática, Probabilidade E Estatística"),
-         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Administracao Ciencias Contabeis E Turismo", "Administração, Ciências Contábeis E Turismo"),
-         nm_area_avaliacao = stringr::str_replace(nm_area_avaliacao, "Geociencias", "Geociências")) |> 
+  arrange(frequencia_d_Female) |>  
   rename("Áreas de Avaliação" = "nm_area_avaliacao")
 
 # TABELA 2 ####
@@ -337,7 +329,6 @@ tab_piores |>
     sep_mark = ".") 
 
 # Tabela 3 | Universidades####
-
 # Organização e extração dos 10 piores cursos
 # Cálculo Total
 dados_ies <- dadosfi |> 
@@ -944,31 +935,34 @@ dados_evol_humanas |>
   coord_cartesian(clip = 'off')
 
 
-# Gráfico | Evol Prop. Discente | 10 piores####
-dados_evol_piores <- dados |> 
+# Gráfico 03.A | Evol Prop. Docente | 10 piores####
+evol_piores_go <- dados |> 
   filter(nm_area_avaliacao %in% lista_piores) |> 
-  group_by(nm_area_avaliacao, an_base, g_discente) |> 
+  group_by(nm_area_avaliacao, an_base, g_orientador) |> 
   summarize(total = n()) |> 
   mutate(frequencia = round(total/sum(total)*100,2))
 
-dados_evol_piores |> 
-  filter(g_discente == "Female") |> 
+graf02a <- evol_piores_go |> 
+  filter(g_orientador == "Female") |> 
   ggplot(aes(x = an_base, 
              y = frequencia,
              color = nm_area_avaliacao)) +
-  geom_line(linewidth = 1.2, alpha = 0.2) +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = FALSE) +
+  geom_line(linewidth = 2, alpha = 0.3) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 3), 
+              se = FALSE,
+              linewidth = 2) +
   scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
-  scale_y_continuous( position = "right") +
-  #scale_colour_manual(values = met.brewer("Nizami", 10)) +
-  labs(title = "Evolução da proporção de trabalhos defendidos por mulheres na Pós-Graduação nas Ciências Humanas",
-       caption = "Elaboração: Dataphilo | Dados: CAPES", 
+  scale_y_continuous(limits = c(0, 50), position = "right") +
+  labs(title = "Gráfico 03.A. Evolução da prevalência de trabalhos orientados por mulheres na Pós-Graduação (1991-2021)",
+       subtitle = "As 10 piores Áreas de Avaliação",
        x = "",
-       y = "") +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
-        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
-        plot.caption = element_markdown(margin = margin(t = 3)),
-        text = element_text(size = 20)) + 
+       y = "%",
+       color = "Área de Avaliação") +
+  scale_color_d3() +
+  theme_classic()+
+  theme(text = element_text(size = 15),
+        legend.position = "bottom") + 
   coord_cartesian(clip = 'off')
 
 # Avaliação aumento-diminuição em dados percentuais
@@ -978,8 +972,43 @@ avaliacao_percentual <- dados_evol_piores  |>
   arrange(an_base)  |> 
   summarise(diminuicao_perc = ((last(frequencia) - first(frequencia)) / first(frequencia)) * 100)
 
+# Gráfico 02.B | Evol Prop. Discente | 10 piores####
+evol_piores_gd <- dados |> 
+  filter(nm_area_avaliacao %in% lista_piores) |> 
+  group_by(nm_area_avaliacao, an_base, g_discente) |> 
+  summarize(total = n()) |> 
+  mutate(frequencia = round(total/sum(total)*100,2))
 
-# Gráfico | Docente vs Discente mulher #### 
+graf02b <- evol_piores_gd |> 
+  filter(g_discente == "Female") |> 
+  ggplot(aes(x = an_base, 
+             y = frequencia,
+             color = nm_area_avaliacao)) +
+  geom_line(linewidth = 2, alpha = 0.3) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 3), 
+              se = FALSE,
+              linewidth = 2) +
+  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
+  scale_y_continuous(limits = c(0, 50), position = "right") +
+  labs(title = "Gráfico 03.B. Evolução da prevalência de trabalhos *defendidos* por mulheres na Pós-Graduação (1991-2021)",
+       subtitle = "As 10 piores Áreas de Avaliação",
+       x = "",
+       y = "%",
+       color = "Área de Avaliação") +
+  scale_color_d3() +
+  theme_classic()+
+  theme(text = element_text(size = 15),
+        legend.position = "bottom") + 
+  coord_cartesian(clip = 'off')
+
+ggarrange(graf02a, 
+          graf02b,
+          ncol = 1,
+          common.legend = TRUE,
+          legend = "bottom")
+
+# Gráfico 01 | Prevalência mulher Docente vs Discente | Áreas e Grande Área #### 
 # Cálculo por orientador
 dados_go <- dados |> 
   group_by(nm_grande_area_conhecimento, nm_area_avaliacao, g_orientador) |> 
@@ -1011,7 +1040,7 @@ dados_god |> ggplot(aes(x = frequencia_o,
                            size = 5,
                            nudge_x = 0.1,
                            nudge_y = 1.6) +
-  labs(title = "Prevalência de mulheres orientadoras e mulheres discentes entre as áreas de avaliação da CAPES (1991-2021)", 
+  labs(title = "Gráfico 01. Prevalência de mulheres orientadoras e mulheres discentes entre as áreas de avaliação da CAPES (1991-2021)", 
        x = "Prevalência de mulheres orientadoras (%)",
        y = "Prevalência de mulheres discentes (%)",
        color = "Grande Área") +
@@ -1019,11 +1048,18 @@ dados_god |> ggplot(aes(x = frequencia_o,
   scale_y_continuous(limits = c(0, 100)) +
   scale_color_d3() +
   guides(colour = guide_legend(override.aes = list(size=8))) +
-  theme_classic() +
+  theme_light() +
   theme(plot.title = element_markdown(face = "bold"),
         legend.position = c(.85, .38),
-        text = element_text(size = 20),
+        text = element_text(size = 15),
         legend.title.align = 0.25,
         legend.background = element_rect(color = "black", 
                                       linewidth = 0.5, 
                                       linetype = "solid")) 
+ggsave(
+  "figs/genero_graf02AB_piorWRONG.png",
+  bg = "white",
+  width = 20,
+  height = 8,
+  dpi = 900,
+  plot = last_plot())
