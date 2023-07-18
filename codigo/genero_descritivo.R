@@ -1023,6 +1023,7 @@ dados_god |> ggplot(aes(x = frequencia_o,
              size = 4.5) +
   ggrepel::geom_text_repel(aes(label = nm_area_avaliacao,
                                color = nm_grande_area_conhecimento),
+                           show.legend = FALSE,
                            min.segment.length = .5,
                            box.padding = 0.3,
                            size = 5,
@@ -1030,26 +1031,17 @@ dados_god |> ggplot(aes(x = frequencia_o,
                            nudge_y = 1.7) +
   labs(title = "Prevalência de mulheres orientadoras e mulheres discentes entre as áreas de avaliação da CAPES (1991-2021)", 
        x = "Prevalência de mulheres orientadoras (%)",
-       y = "Prevalência de mulheres discentes (%)") +
+       y = "Prevalência de mulheres discentes (%)",
+       color = "Grande Área") +
   scale_x_continuous(limits = c(0, 100)) +
   scale_y_continuous(limits = c(0, 100)) +
-  theme_light() +
-  theme(legend.position = c(.9, .35)) 
-
-  geom_text_repel(
-    aes(label = highlight),
-    family = "Poppins",
-    size = 3,
-    min.segment.length = 0, 
-    seed = 42, 
-    box.padding = 0.5,
-    max.overlaps = Inf,
-    arrow = arrow(length = unit(0.010, "npc")),
-    nudge_x = .15,
-    nudge_y = .5,
-    color = "grey50"
-  )
-              
-              
-
-
+  scale_color_aaas() +
+  guides(colour = guide_legend(override.aes = list(size=8))) +
+  theme_classic() +
+  theme(plot.title = element_markdown(face = "bold"),
+        legend.position = c(.85, .38),
+        text = element_text(size = 20),
+        legend.title.align=0.25,
+        legend.background = element_rect(color = "black", 
+                                      linewidth = 0.5, 
+                                      linetype = "solid")) 
