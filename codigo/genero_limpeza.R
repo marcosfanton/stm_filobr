@@ -64,8 +64,15 @@ catalogo9121 <- dplyr::bind_rows(
 catalogo9121 <- catalogo9121  |> 
   dplyr::mutate(SG_UF_IES = as.factor(SG_UF_IES),
                 across(where(is.character), 
-                       ~ str_squish(str_to_title(.))), # Padroniza todo texto em caixa alta na primeira letra
+                       ~ str_squish(str_to_title(., locale = "pt_BR"))), # Padroniza todo texto em caixa alta na primeira letra
                 NM_AREA_AVALIACAO = str_replace_all(NM_AREA_AVALIACAO, c(Ii = "II", IIi = "III", Iv = "IV")), # Mantém o nome correto
+                NM_AREA_AVALIACAO = recode(NM_AREA_AVALIACAO, # Recodificação das áreas de avaliação 
+                                           "Filosofia / Teologia:subcomissão Filosofia" = "Filosofia", 
+                                           "Filosofia/Teologia:subcomissão Filosofia" = "Filosofia",
+                                           "Filosofia/Teologia:subcomissão Teologia" = "Teologia",
+                                           "Ciências Da Religião E Teologia" = "Teologia",
+                                           "Administração Pública E De Empresas, Ciências Contábeis E Turismo" = "Administração, Ciências Contábeis E Turismo",
+                                           "Letras / Linguística" = "Linguística E Literatura"),
                 NM_GRAU_ACADEMICO = case_when( # Atribui titulação com base na variável nm_subtipo_producao
                     AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Mestrado" ~ "Mestrado",
                     AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Doutorado" ~ "Doutorado",
