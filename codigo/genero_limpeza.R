@@ -72,7 +72,8 @@ catalogo9121 <- catalogo9121  |>
                                            "Filosofia/Teologia:subcomissão Teologia" = "Teologia",
                                            "Ciências Da Religião E Teologia" = "Teologia",
                                            "Administração Pública E De Empresas, Ciências Contábeis E Turismo" = "Administração, Ciências Contábeis E Turismo",
-                                           "Letras / Linguística" = "Linguística E Literatura"),
+                                           "Letras / Linguística" = "Linguística E Literatura",
+                                           "Ciência Política E Relações Internacionais" = "Ciência Política E RI"),
                 NM_GRAU_ACADEMICO = case_when( # Atribui titulação com base na variável nm_subtipo_producao
                     AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Mestrado" ~ "Mestrado",
                     AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Doutorado" ~ "Doutorado",
