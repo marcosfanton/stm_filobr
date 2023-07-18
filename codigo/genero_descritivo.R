@@ -19,11 +19,11 @@ dados <- read.csv("dados/catalogo/catalogo9121_raw.csv")
 # Recodificação das áreas de avaliação da filosofia e teologia
 dados <- dados  |> 
   mutate(nm_area_avaliacao = recode(nm_area_avaliacao, 
-                                     "filosofia teologiasubcomissao filosofia" = "filosofia", 
-                                    "filosofiateologiasubcomissao filosofia" = "filosofia",
-                                    "filosofiateologiasubcomissao teologia" = "teologia",
-                                    "ciencias da religiao e teologia" = "teologia",
-                                    "administracao publica e de empresas ciencias contabeis e turismo" = "administracao ciencias contabeis e turismo"))
+                                     "Filosofia / Teologia:subcomissão Filosofia" = "Filosofia", 
+                                    "Filosofia/Teologia:subcomissão Filosofia" = "Filosofia",
+                                    "Filosofia/Teologia:subcomissão Teologia" = "Teologia",
+                                    "Ciências Da Religião E Teologia" = "Teologia",
+                                    "Administração Pública E De Empresas, Ciências Contábeis E Turismo" = "Administração, Ciências Contábeis E Turismo"))
 
 # Transforma variáveis de interesse em categóricas
 fatores <- c("nm_grande_area_conhecimento", 
@@ -1014,26 +1014,23 @@ dados_gd <- dados |>
 
 dados_god <- left_join(dados_go, 
                        dados_gd, 
-                       by = c("nm_grande_area_conhecimento", "nm_area_avaliacao")) |> 
-    mutate(nm_grande_area_conhecimento = stringr::str_to_title(nm_grande_area_conhecimento),
-           nm_area_avaliacao = stringr::str_to_title(nm_area_avaliacao))
+                       by = c("nm_grande_area_conhecimento", "nm_area_avaliacao")) 
 
 dados_god |> ggplot(aes(x = frequencia_o, 
                          y = frequencia_d)) +
   geom_point(aes(colour = nm_grande_area_conhecimento),
-             shape = 21,
-             fill = "White",
-             stroke = 2,
-             size = 2) +
+             shape = 20,
+             size = 4.5) +
   ggrepel::geom_text_repel(aes(label = nm_area_avaliacao,
                                color = nm_grande_area_conhecimento),
-                           min.segment.length = 0,
+                           min.segment.length = .5,
+                           box.padding = 0.3,
                            size = 5,
-                           nudge_x = .15,
-                           nudge_y = .15) +
-  labs(title = "Frequência de orientadoras vs. Frequência de alunas", 
-       x = "Frequência relativa de mulheres orientadoras (%)",
-       y = "Frequência relativa de mulheres discentes (%)") +
+                           nudge_x = 0,
+                           nudge_y = 1.7) +
+  labs(title = "Prevalência de mulheres orientadoras e mulheres discentes entre as áreas de avaliação da CAPES (1991-2021)", 
+       x = "Prevalência de mulheres orientadoras (%)",
+       y = "Prevalência de mulheres discentes (%)") +
   scale_x_continuous(limits = c(0, 100)) +
   scale_y_continuous(limits = c(0, 100)) +
   theme_light() +
