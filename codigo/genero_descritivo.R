@@ -990,7 +990,7 @@ graf02b <- evol_piores_gd |>
               se = FALSE,
               linewidth = 2) +
   scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
-  scale_y_continuous(limits = c(0, 50), position = "right") +
+  scale_y_continuous(limits = c(0, 60), position = "right") +
   labs(title = "Gráfico 03.B. Evolução da prevalência de trabalhos *defendidos* por mulheres na Pós-Graduação (1991-2021)",
        subtitle = "As 10 piores Áreas de Avaliação",
        x = "",
