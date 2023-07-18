@@ -13,14 +13,18 @@ banco8712 <- purrr::map_dfr(list.files(path = "dados/catalogo/capes8712",
                                        pattern = "dados", 
                                        full.names = TRUE),
                             readr::read_csv2, 
-                            locale = readr::locale(encoding = "ISO-8859-1"),
+                            locale = readr::locale(encoding = "ISO-8859-1", 
+                                                   decimal_mark = ",", 
+                                                   grouping_mark = "."),
                             show_col_types = FALSE)
 # Bancos de 2013-2021
 banco1321 <- purrr::map_dfr(list.files(path = "dados/catalogo/capes1321", 
                                        pattern = "capes", 
                                        full.names = TRUE),
                             readr::read_csv2, 
-                            locale = readr::locale(encoding = "ISO-8859-1"),
+                            locale = readr::locale(encoding = "ISO-8859-1", 
+                                                   decimal_mark = ",", 
+                                                   grouping_mark = "."),
                             na = c("NI", "NA"),
                             show_col_types = FALSE) 
 
@@ -28,10 +32,7 @@ banco1321 <- purrr::map_dfr(list.files(path = "dados/catalogo/capes1321",
 vars8712 <- c("AnoBase",
               "NomeIes",
               "GrandeAreaDescricao",
-              "AreaConhecimento",
               "AreaAvaliacao",
-              "CodigoPrograma",
-              "TituloTese",
               "Nivel", 
               "Autor",
               "Orientador_1",
@@ -42,10 +43,7 @@ vars8712 <- c("AnoBase",
 vars1321 <- c("AN_BASE",
               "NM_ENTIDADE_ENSINO",
               "NM_GRANDE_AREA_CONHECIMENTO",
-              "NM_AREA_CONHECIMENTO",
               "NM_AREA_AVALIACAO",
-              "CD_PROGRAMA",
-              "NM_PRODUCAO", 
               "NM_SUBTIPO_PRODUCAO", 
               "NM_GRAU_ACADEMICO",
               "NM_DISCENTE",
@@ -64,16 +62,16 @@ catalogo9121 <- dplyr::bind_rows(
 
 # Limpeza do texto e padronização de variáveis####
 catalogo9121 <- catalogo9121  |> 
-  dplyr::mutate(dplyr::across(-sg_uf_ies, 
-                              ~if(is.character(.)) 
-                                str_squish(str_to_title(.)) 
-                              else .), # Padroniza todo texto em caixa alta na primeira letra
+  dplyr::mutate(SG_UF_IES = as.factor(SG_UF_IES),
+                across(where(is.character), 
+                       ~ str_squish(str_to_title(.))), # Padroniza todo texto em caixa alta na primeira letra
+                NM_AREA_AVALIACAO = str_replace_all(NM_AREA_AVALIACAO, c(Ii = "II", IIi = "III", Iv = "IV")), # Mantém o nome correto
                 NM_GRAU_ACADEMICO = case_when( # Atribui titulação com base na variável nm_subtipo_producao
                     AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Mestrado" ~ "Mestrado",
                     AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Doutorado" ~ "Doutorado",
                     AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Profissionalizante" ~ "Mestrado Profissional",
-                    TRUE ~ as.character(NM_GRAU_ACADEMICO)
-                  )) |> 
+                    TRUE ~ as.character(NM_GRAU_ACADEMICO))
+                  ) |> 
   dplyr::rename_all(tolower)
 
 # Variáveis derivadas####
@@ -83,10 +81,10 @@ catalogo9121 <- catalogo9121  |>
     g_orientador = genderBR::get_gender(nm_orientador),
     g_discente = genderBR::get_gender(nm_discente),
     g_oridis = factor(case_when(
-      g_orientador == "Male" & g_discente == "Male" ~ "MM",
-      g_orientador == "Male" & g_discente == "Female" ~ "MF",
-      g_orientador == "Female" & g_discente == "Male" ~ "FM",
-      g_orientador == "Female" & g_discente == "Female" ~ "FF")
+      g_orientador == "Male" & g_discente == "Male" ~ "Male/Male",
+      g_orientador == "Male" & g_discente == "Female" ~ "Male/Female",
+      g_orientador == "Female" & g_discente == "Male" ~ "Female/Male",
+      g_orientador == "Female" & g_discente == "Female" ~ "Female/Female")
     ))
 
 # Exclui NA's de variáveis da análise
@@ -95,7 +93,6 @@ catalogo9121 <- catalogo9121 |>
   filter(nm_grande_area_conhecimento != "") |>  # Exclui 1 observação com fator em branco
   drop_na(nm_grau_academico, 
           g_oridis) # Automaticamente exclui NAs de g_orientador e g_discente (104324|0.924)
-
 
 # Banco limpo####
 # Salvar arquivo RAW -- CSV 
