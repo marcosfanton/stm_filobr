@@ -1023,7 +1023,7 @@ dados_god |> ggplot(aes(x = frequencia_o,
   geom_point(aes(colour = nm_grande_area_conhecimento),
              shape = 21,
              fill = "White",
-             stroke = 3,
+             stroke = 2,
              size = 2) +
   ggrepel::geom_text_repel(aes(label = nm_area_avaliacao,
                                color = nm_grande_area_conhecimento),
@@ -1032,12 +1032,12 @@ dados_god |> ggplot(aes(x = frequencia_o,
                            nudge_x = .15,
                            nudge_y = .15) +
   labs(title = "Frequência de orientadoras vs. Frequência de alunas", 
-       x = "Frequência relativa de mulheres orientadoras",
-       y = "Frequência relativa de mulheres discentes") +
+       x = "Frequência relativa de mulheres orientadoras (%)",
+       y = "Frequência relativa de mulheres discentes (%)") +
   scale_x_continuous(limits = c(0, 100)) +
   scale_y_continuous(limits = c(0, 100)) +
   theme_light() +
-  theme(legend.position = "none") 
+  theme(legend.position = c(.9, .35)) 
 
   geom_text_repel(
     aes(label = highlight),

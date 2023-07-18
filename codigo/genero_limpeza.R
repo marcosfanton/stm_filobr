@@ -33,13 +33,10 @@ vars8712 <- c("AnoBase",
               "CodigoPrograma",
               "TituloTese",
               "Nivel", 
-              "PalavrasChave",
               "Autor",
               "Orientador_1",
               "Regiao",
-              "Uf",
-              "AreaConhecimentoCodigo", 
-              "NumeroPaginas")
+              "Uf")
 
 # Variáveis dos Bancos de 2013-2021 - Ver Metadados do Catálogo
 vars1321 <- c("AN_BASE",
@@ -51,13 +48,10 @@ vars1321 <- c("AN_BASE",
               "NM_PRODUCAO", 
               "NM_SUBTIPO_PRODUCAO", 
               "NM_GRAU_ACADEMICO",
-              "DS_PALAVRA_CHAVE",
               "NM_DISCENTE",
               "NM_ORIENTADOR",
               "NM_REGIAO",
-              "SG_UF_IES",
-              "CD_AREA_CONHECIMENTO",   
-              "NR_PAGINAS")
+              "SG_UF_IES")
 
 # Junção dos bancos com as 13 variáveis escolhidas + 1991####
 catalogo9121 <- dplyr::bind_rows(
@@ -70,19 +64,14 @@ catalogo9121 <- dplyr::bind_rows(
 
 # Limpeza do texto e padronização de variáveis####
 catalogo9121 <- catalogo9121  |> 
-  dplyr::mutate(CD_PROGRAMA = as.factor(CD_PROGRAMA), # Torna variável como fator para não ser desconfigurada
-                dplyr::across(where(is.character), ~ { # Modifica apenas variáveis do tipo character
-                  x <- stringr::str_to_lower(.) # Padroniza todo texto em caixa baixa
-                  x <- stringr::str_remove_all(x, "[[:punct:]]") # Remove pontuações
-                  x <- stringr::str_remove_all(x, "[[:digit:]]") # Remove números
-                  x <- stringi::stri_trans_general(x, "Latin-ASCII") # Transforma todo texto em Latin-ASCII ou expressões equivalente
-                  x <- stringr::str_squish(x) # Remove espaços consecutivos
-                  x
-                }),
+  dplyr::mutate(dplyr::across(-sg_uf_ies, 
+                              ~if(is.character(.)) 
+                                str_squish(str_to_title(.)) 
+                              else .), # Padroniza todo texto em caixa alta na primeira letra
                 NM_GRAU_ACADEMICO = case_when( # Atribui titulação com base na variável nm_subtipo_producao
-                    AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "mestrado" ~ "mestrado",
-                    AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "doutorado" ~ "doutorado",
-                    AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "profissionalizante" ~ "mestrado profissional",
+                    AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Mestrado" ~ "Mestrado",
+                    AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Doutorado" ~ "Doutorado",
+                    AN_BASE <= 2012 & NM_SUBTIPO_PRODUCAO == "Profissionalizante" ~ "Mestrado Profissional",
                     TRUE ~ as.character(NM_GRAU_ACADEMICO)
                   )) |> 
   dplyr::rename_all(tolower)
@@ -102,7 +91,7 @@ catalogo9121 <- catalogo9121  |>
 
 # Exclui NA's de variáveis da análise
 catalogo9121 <- catalogo9121 |> 
-  filter(nm_grau_academico != "doutorado profissional") |>  # Exclusão de 38 observações
+  filter(nm_grau_academico != "Doutorado Profissional") |>  # Exclusão de 38 observações
   filter(nm_grande_area_conhecimento != "") |>  # Exclui 1 observação com fator em branco
   drop_na(nm_grau_academico, 
           g_oridis) # Automaticamente exclui NAs de g_orientador e g_discente (104324|0.924)
