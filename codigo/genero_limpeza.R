@@ -88,18 +88,17 @@ catalogo9121 <- catalogo9121  |>
     g_orientador = genderBR::get_gender(nm_orientador),
     g_discente = genderBR::get_gender(nm_discente),
     g_oridis = factor(case_when(
-      g_orientador == "Male" & g_discente == "Male" ~ "Male/Male",
-      g_orientador == "Male" & g_discente == "Female" ~ "Male/Female",
-      g_orientador == "Female" & g_discente == "Male" ~ "Female/Male",
-      g_orientador == "Female" & g_discente == "Female" ~ "Female/Female")
+      g_orientador == "Male" & g_discente == "Male" ~ "MM",
+      g_orientador == "Male" & g_discente == "Female" ~ "MF",
+      g_orientador == "Female" & g_discente == "Male" ~ "FM",
+      g_orientador == "Female" & g_discente == "Female" ~ "FF")
     ))
-
+# N = 1374371
 # Exclui NA's de variáveis da análise
 catalogo9121 <- catalogo9121 |> 
-  filter(nm_grau_academico != "Doutorado Profissional") |>  # Exclusão de 38 observações
+  filter(nm_grau_academico != "Doutorado Profissional") |>  # Exclusão de 39 observações
   filter(nm_grande_area_conhecimento != "") |>  # Exclui 1 observação com fator em branco
-  drop_na(nm_grau_academico, 
-          g_oridis) # Automaticamente exclui NAs de g_orientador e g_discente (104324|0.924)
+  drop_na(g_oridis) # Automaticamente exclui NAs de g_orientador e g_discente (1117943 | -256388) --> 81.34%
 
 # Banco limpo####
 # Salvar arquivo RAW -- CSV 
