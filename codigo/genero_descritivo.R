@@ -15,6 +15,8 @@ library(janitor)
 library(ggsci) # Paleta cores
 library(ggpubr) # Combina gráficos
 
+
+# ******TOTAL******#### 
 # Banco - N: 1117943
 dados <- read.csv("dados/catalogo/catalogo9121_raw.csv") 
 
@@ -441,7 +443,7 @@ tab_ies |>
     total_od_MM = "Homem/Homem",
   ) |> 
   tab_header(
-    title = "Tabela 3. Descrição do gênero de orientadores e discentes das teses e dissertações defendidas nas 10 IES mais produtivas no Brasil entre 1991-2021") |> 
+    title = "Tabela 3. Descrição do gênero de orientadores e discentes das teses e dissertações defendidas nas 15 IES mais produtivas no Brasil entre 1991-2021") |> 
   cols_align(
     align = "center") |> 
   fmt_number(
@@ -449,24 +451,64 @@ tab_ies |>
     decimals = 2,
     sep_mark = ".") 
 
-# GRÁFICOS#### 
-# Evolução da pós-graduação no Brasil - 1991-2021####
-theme_set(theme_minimal(base_family = "Roboto"))
-# Gráfico 
-dados |> 
-  ggplot(aes(x = an_base)) +
-  geom_freqpoly(binwidth = 1, linewidth = 1.2) +
+# ******FILOSOFIA******#### 
+# Uso do catálogo específico da Filosofia | n: 12525
+dadosfi <- readr::read_csv("dados/catalogo.csv") |> 
+  filter(an_base >= 1991) |> # Exclusão - 172 observações (n: 12353)
+  drop_na(g_oridis) # Exclusão - 408 (n: 11945)
+
+# Transforma variáveis de interesse em categóricas
+fatores <- c("nm_grau_academico",
+             "nm_entidade_ensino",
+             "nm_regiao", 
+             "sg_uf_ies", 
+             "g_orientador", 
+             "g_discente", 
+             "g_oridis")
+
+dadosfi <- dadosfi  |> 
+  mutate(across(all_of(fatores), as.factor))
+
+# Gráfico 4 |  Filosofia Evolução | Grau Acadêmico | Linha ####
+evol_fi_total <-  dadosfi |> 
+  summarize(n = n(),
+            .by = c(an_base, nm_grau_academico)) |> 
+  mutate(nm_grau_academico = stri_trans_totitle(nm_grau_academico))
+
+evol_fi_total |> 
+  ggplot(aes(x = an_base, 
+             y = n)) +
+  geom_line(aes(color = nm_grau_academico), linewidth = 2)+
+  stat_summary(aes(color = "Total"), fun = sum, geom ='line', linewidth = 2) +
   scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
-  scale_y_continuous(limits = c(0, 100000), position = "right") +
-  labs(title = "Evolução da defesa de trabalhos na Pós-Graduação brasileira",
-       subtitle = "Teses e Dissertações defendidas entre 1991-2021 | n: 1.270.0009 trabalhos",
+  scale_y_continuous(position = "right") +
+  theme_classic() +
+  scale_color_d3() +
+  labs(title = "Evolução da defesa de trabalhos na Pós-Graduação em Filosofia",
+       subtitle = "Teses e Dissertações defendidas entre 1991-2021 | n: 11945 trabalhos",
        caption = "Elaboração: Os autores | Dados: CAPES", 
        x = "",
-       y = "") +
-  theme(plot.title = element_markdown(face = "bold"), #letra do título
-        plot.subtitle = element_markdown(face = "bold"),
-        text = element_text(size = 20)) + 
+       y = "",
+       color = "Grau Acadêmico") +
+  theme(legend.position = "top") +
   coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
+
+# Gráfico 04 | Filosofia | Relação Professor vs Discente | Barra ####
+dadosfi |> 
+  ggplot(aes(x = an_base, 
+             fill = factor(g_oridis, levels = c("FF", "FM", "MF", "MM")))) +
+  geom_bar(position = "fill") +
+  labs(title = "Desigualdade de gênero na Pós-Graduação em Filosofia",
+       subtitle = "Proporção de trabalhos defendidos conforme relação Professor/Aluno (1991-2020)",
+       caption = "Elaboração: Dataphilo | Dados: CAPES", 
+       x = "",
+       y = "",
+       fill = "Professor/Aluno") +
+  theme_classic() +
+  scale_fill_d3() +
+  scale_x_continuous(limits = c(1990, 2021), expand = c(0, 0)) +
+  scale_y_continuous(labels=scales::percent, position = "right") +
+  theme(legend.position = "top")
 
 #Gráfico | Total | PROFESSOR - LINHA #### 
 dados |> 
@@ -823,9 +865,9 @@ dados |>
   facet_wrap(~nm_area_avaliacao) 
 
 
-#RAZÃO DE PREVALÊNCIA#### 
-dadosfil <- read.csv("dados/catalogo.csv") |> 
-  drop_na(g_oridis)
+# Cálculo Razão de Prevalência #### 
+dadosfil <- read.csv("dados/catalogo.csv") |> # Uso do banco da filosofia
+  drop_na(g_oridis) # Eliminação de 
 
 matriz <- dadosfil |>  
   filter(between(an_base, 2011,2021)) |> 
@@ -837,22 +879,6 @@ dat.v <- matrix(c(470,1537,936,4156), ncol =2)
 resultado <- epi.2by2(dat = dat.v, method = "cross.sectional",
          conf.level = 0.95, units = 100, outcome = "as.columns")
 
-# FILOSOFIA #### 
-# Uso do catálogo específico da Filosofia 
-dadosfi <- readr::read_csv("dados/catalogo.csv") |> 
-  drop_na(g_oridis)
-
-# Transforma variáveis de interesse em categóricas
-fatores <- c("nm_grau_academico",
-             "nm_entidade_ensino",
-             "nm_regiao", 
-             "sg_uf_ies", 
-             "g_orientador", 
-             "g_discente", 
-             "g_oridis")
-
-dadosfi <- dadosfi  |> 
-  mutate(across(all_of(fatores), as.factor))
 
 # Gráfico | Evol Prop. Orientadora | Grandes áreas####
 dados_evol_go <- dados |> 
@@ -880,35 +906,9 @@ dados_evol_go |>
         text = element_text(size = 20)) + 
   coord_cartesian(clip = 'off')
 
-# Gráfico | Evol Prop. Discente | Grandes áreas####
-dados_evol_gd <- dados |> 
-  group_by(nm_grande_area_conhecimento, an_base, g_discente) |> 
-  summarize(total_o = n()) |> 
-  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
-
-dados_evol_gd |> 
-  filter(g_discente == "Female") |> 
-  ggplot(aes(x = an_base, 
-             y = frequencia_o,
-             color = nm_grande_area_conhecimento)) +
-  geom_line(linewidth = 1.2, alpha = 0.2) +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = FALSE) +
-  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
-  scale_y_continuous( position = "right") +
- # scale_colour_manual(values = met.brewer("Nizami", 9)) +
-  labs(title = "Evolução da proporção de trabalhos defendidos por mulheres na Pós-Graduação por Grande Área",
-       caption = "Elaboração: Dataphilo | Dados: CAPES", 
-       x = "",
-       y = "") +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
-        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
-        plot.caption = element_markdown(margin = margin(t = 3)),
-        text = element_text(size = 20)) + 
-  coord_cartesian(clip = 'off')
-
 # Gráfico | Evol Prop. Discente | Humanas####
 dados_evol_humanas <- dados |> 
-  filter(nm_grande_area_conhecimento == "ciencias humanas") |> 
+  filter(nm_grande_area_conhecimento == "Ciências Humanas") |> 
   mutate(nm_area_avaliacao = droplevels(nm_area_avaliacao)) |> 
   group_by(nm_area_avaliacao, an_base, g_discente) |> 
   summarize(total_o = n()) |> 
@@ -923,17 +923,18 @@ dados_evol_humanas |>
   geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = FALSE) +
   scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
   scale_y_continuous( position = "right") +
-  #scale_colour_manual(values = met.brewer("Nizami", 9)) +
   labs(title = "Evolução da proporção de trabalhos defendidos por mulheres na Pós-Graduação nas Ciências Humanas",
        caption = "Elaboração: Dataphilo | Dados: CAPES", 
        x = "",
-       y = "") +
+       y = "%",
+       color = "Ciências Humanas") +
+  scale_color_d3() +
+  theme_classic() +
   theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
         plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
         plot.caption = element_markdown(margin = margin(t = 3)),
         text = element_text(size = 20)) + 
   coord_cartesian(clip = 'off')
-
 
 # Gráfico 03.A | Evol Prop. Docente | 10 piores####
 evol_piores_go <- dados |> 
@@ -1057,9 +1058,36 @@ dados_god |> ggplot(aes(x = frequencia_o,
                                       linewidth = 0.5, 
                                       linetype = "solid")) 
 ggsave(
-  "figs/genero_graf02AB_piorWRONG.png",
+  "figs/genero_graf04_goridis.png",
   bg = "white",
-  width = 20,
+  width = 12,
   height = 8,
   dpi = 900,
   plot = last_plot())
+
+
+##*****************WASTED**********************************#########
+# Gráfico | Evol Prop. Discente | Grandes áreas####
+dados_evol_gd <- dados |> 
+  group_by(nm_grande_area_conhecimento, an_base, g_discente) |> 
+  summarize(total_o = n()) |> 
+  mutate(frequencia_o = round(total_o/sum(total_o)*100,2))
+
+dados_evol_gd |> 
+  filter(g_discente == "Female") |> 
+  ggplot(aes(x = an_base, 
+             y = frequencia_o,
+             color = nm_grande_area_conhecimento)) +
+  geom_line(linewidth = 1.2, alpha = 0.2) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = FALSE) +
+  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
+  scale_y_continuous( position = "right") +
+  labs(title = "Evolução da proporção de trabalhos defendidos por mulheres na Pós-Graduação por Grande Área",
+       caption = "Elaboração: Dataphilo | Dados: CAPES", 
+       x = "",
+       y = "") +
+  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
+        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
+        plot.caption = element_markdown(margin = margin(t = 3)),
+        text = element_text(size = 20)) + 
+  coord_cartesian(clip = 'off')
