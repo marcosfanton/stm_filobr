@@ -231,13 +231,16 @@ ggplot(aes(x = covariate.value,
            ymin = ci.lower,
            ymax = ci.upper)) +
   facet_wrap(~topic) +
-  theme_classic()+
+  theme_classic() +
   geom_ribbon(alpha = .7, color = "#7da7ea", fill = "#7da7ea") +
   geom_line(color = "#1d4497") +
   labs(x = "Ano",
        y = "Proporção de Tópico Esperada",
        title = "Efeito de estimação pontual e intervalos de confiança dos tópicos ao longo do tempo") +
   theme(legend.position = "none")
+
+
+
 
 
 #Cálculo da variação dos tópicos
@@ -261,9 +264,12 @@ t_effect_gender <- tidystm::extract.estimateEffect(x = effect_gender,
                                                            labeltype = "prob",
                                                            n = 3)
 # Gráfico gênero
-ggplot(t_effect_gender, aes(x = covariate.value, 
+ggplot(t_effect_gender, aes(x = covariate, 
                                     y = estimate,
-                                    group = covariate)) +
+                                    fill = covariate.value)) +
+  geom_bar(stat = "identity", position = "fill")+
+  facet_wrap(~topic) +
+  coord_flip()
   geom_line(color = "#1d4497") +
   geom_point(color = "#1d4497", size = 1) +
  # scale_x_discrete(labels = c("Female", "Male")) +
