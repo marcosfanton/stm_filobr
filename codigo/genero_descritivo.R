@@ -508,10 +508,10 @@ dadosfi |>
   scale_fill_d3() +
   scale_x_continuous(limits = c(1990, 2021), expand = c(0, 0)) +
   scale_y_continuous(labels=scales::percent, position = "right") +
-  theme(legend.position = "top")
+  theme(legend.position = "top") 
 
 #Gráfico | Total | PROFESSOR - LINHA #### 
-dados |> 
+dadosfi |> 
   ggplot(aes(x = an_base, color = nm_grau_academico)) +
   geom_line(stat = "count", linewidth = 1.2) +
   scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
@@ -526,47 +526,6 @@ dados |>
         plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
         plot.caption = element_markdown(margin = margin(t = 3)),
         text = element_text(size = 20)) + 
-  coord_cartesian(clip = 'off') 
-
-# Gráfico | Total | Gênero | PROFESSOR - BARRA####
-dados |> 
-  drop_na(g_orientador) |> 
-  ggplot(aes(x = g_orientador, y = an_base, fill = nm_grau_academico)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  theme_minimal() +
-  labs(title = "Desigualdade de gênero na Pós-Graduação do Brasil | Grande Área",
-       subtitle = "Proporção de trabalhos *orientados* por <span style= 'color:#1d4497; font-size:32pt;'>**Homens**</span> e <span style= 'color:#b83326;font-size:32pt;'>**Mulheres**</span> (1987-2020)",
-       caption = "Dados: CAPES | Elaboração: Dataphilo", 
-       x = "",
-       y = "") +
-  scale_fill_manual(values = met.brewer("Nizami", 2)) +
-  scale_x_continuous(limits = c(1991, 2021), expand = c(0, 0)) +
-  #scale_y_continuous(labels = NULL) +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.5),  #letra do título
-        plot.subtitle = element_markdown(hjust = 0.5),
-        plot.caption = element_markdown(margin = margin(t = 0), hjust = 0.975),
-        legend.position = "none",
-        plot.margin = margin(1,1,1.5,1.2, "cm"),
-        axis.text.y=element_blank(),
-        text = element_text(size = 35))
-
-#Gráfico Total por Gênero do ALUNO - LINHA
-dados |> 
-  ggplot(aes(x = an_base, color = g_discente)) +
-  geom_line(stat = "count", size = 1.2) +
-  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
-  scale_y_continuous( position = "right") +
-  scale_colour_manual(values = met.brewer("Nizami", 2)) +
-  labs(title = "Evolução da defesa de trabalhos na Pós-Graduação",
-       subtitle = "Trabalhos defendidos por pesquisadores <span style= 'color:#1d4497; font-size:24pt; font-weight: bold;'>Homens</span> e <span style= 'color:#b83326;font-size:24pt;'>Mulheres</span> entre 1991 e 2020",
-       caption = "Elaboração: Dataphilo | Dados: CAPES", 
-       x = "",
-       y = "") +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.5), 
-        plot.subtitle = element_markdown(face = "bold", hjust = 0.5),
-        plot.caption = element_markdown(margin = margin(t = 3)),
-        legend.position = "none",
-        text = element_text(size = 25)) + 
   coord_cartesian(clip = 'off') 
 
 #Gráfico Total por Gênero do ALUNO - BARRA

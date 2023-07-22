@@ -12,6 +12,9 @@ library(scales) # Uso de porcentagem em gráficos
 library(embed) # UMAP
 library(umap) # UMAP
 library(recipes) # UMAP
+library(ggsci) # Paleta cores
+library(ggtext) # Config de textos
+
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
@@ -77,6 +80,8 @@ filowords <- filowords |>
 # Salvar banco para análise
 filowords |> 
   readr::write_csv("dados/filowords_stm.csv")
+filowords <- read_csv("dados/filowords_stm.csv",
+                      show_col_types = FALSE)
 
 # Preparação do banco em matriz esparsa
 filosparse <- filowords |> tidytext::cast_sparse(doc_id, word, n) #matriz para análise
@@ -108,7 +113,7 @@ tidygamma <- tidytext::tidy(topic_model,
 top_words <- tidybeta %>%
   arrange(desc(beta)) %>%
   group_by(topic) %>%
-  top_n(10, beta) %>%
+  top_n(5, beta) %>%
   summarise(terms = paste(term, collapse = ", ")) %>%
   ungroup()
 
@@ -130,26 +135,45 @@ gamma_words <- tidygamma %>%
   mutate(topic = paste0("T", topic),
          topic = reorder(topic, gamma))
 
+# Gráfico beta ####
+tidybeta  |> 
+  group_by(topic) %>%
+  top_n(4, beta) %>%
+  ungroup() %>%
+  mutate(topic = paste0("Tópico ", topic),
+         term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(x = term, y = beta, fill = as.factor(topic))) +
+  theme_classic() +
+  geom_col(alpha = 0.9, show.legend = FALSE) +
+  scale_fill_manual(values = met.brewer("Nizami", 80)) +
+  facet_wrap(~ topic, scales = "free_y") +
+  labs(x = "",
+       y = expression(beta)) +
+  coord_flip() +
+  scale_x_reordered() 
+
+# Gráfico gamma #### 
 gamma_words |> 
-  top_n(100, gamma) |> 
-  ggplot(aes(topic, gamma, label = terms, fill = topic)) +
+  top_n(80, gamma) |> 
+  ggplot(aes(topic, gamma, 
+             label = terms, 
+             fill = topic)) +
   geom_col(show.legend = FALSE) +
-  geom_text(hjust = 0, size = 5) +
+  geom_text(hjust = 0, nudge_y = -0.000001, size = 3) +
   coord_flip() +
   scale_y_continuous(expand = c(0,0),
-                     limits = c(0, 0.05),
+                     limits = c(0, 0.04),
                      labels = percent_format()) +
-  scale_fill_manual(values = met.brewer("Cross", 100)) + 
   theme_classic() +
-  theme(plot.title = element_text(size = 10),
-        plot.subtitle = element_text(size = 12),
-        text = element_text(size = 1)) +
-  labs(x = NULL, y = expression(gamma),
-       title = "25 Tópicos de Teses e Dissertações de Filosofia por década (2009 - 2008)",
-       subtitle = "Elaboração: Os autores | Dados: Catálogo de Teses e Dissertações (CAPES)") 
-
-# title = "77 Tópicos de Teses e Dissertações de Filosofia (1987-2021) (n: 11736) sem a exclusão de stopwords personalizadas",
-
+  scale_fill_manual(values = met.brewer("Cross", 80))  +
+  labs(x = NULL, 
+       y = NULL,
+       title = "80 Tópicos do *corpus* de teses e dissertações de Filosofia  com a probabilidade média esperada para cada tópico (&#947;)") +
+  theme(plot.title = element_markdown(),
+        plot.subtitle = element_markdown(),
+        legend.position = "none",
+        text = element_text(size = 10)) 
+  
 # Findthoughts (STM) #### 
 findallthoughts_m80 <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
@@ -167,6 +191,15 @@ findthoughts_m80 <- tidygamma |>
   slice_max(order_by = gamma, n = 5) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
   select(document, topic, nm_producao, ds_resumo, gamma) # Seleciona apenas as variáveis de interesse
 
+# Gráfico semântica x exclusividade para cada tópico
+excl <- exclusivity(topic_model)
+semcoh <- semanticCoherence(topic_model, filosparse)
+diag_df <- tibble(excl, semcoh, topic = factor(1:80))
+ggplot(diag_df, aes(x = semcoh, y = excl, label = topic))+
+  geom_text() +
+  theme_classic()
+
+
 #Salvar modelos em .txt e .csv
 findthoughts_m80 |> 
   readr::write_csv("dados/findthoughts_m80.csv")
@@ -179,14 +212,12 @@ sink()
 
 #Efeitos#### 
 # Efeito ano####
-stm_prep_ano <- stm::estimateEffect(1:80 ~ an_base, 
+stm_effect_ano <- stm::estimateEffect(1:80 ~ an_base, 
                                     stmobj = topic_model, 
                                     metadata = covars, 
                                     uncertainty = "Global")
 
-stm_prep_ano_tidy <- tidytext::tidy(stm_prep_ano)
-
-sig_effects_ano_tidy <- tidystm::extract.estimateEffect(x = stm_prep_ano, 
+ext_stm_effect_ano <- tidystm::extract.estimateEffect(x = stm_effect_ano, 
                                                         covariate = "an_base", 
                                                         model = topic_model, 
                                                         method = "pointestimate",
@@ -194,42 +225,61 @@ sig_effects_ano_tidy <- tidystm::extract.estimateEffect(x = stm_prep_ano,
                                                         n = 3)
 
 # Gráfico ano
-ggplot(sig_effects_ano_tidy, aes(x = covariate.value, y = estimate,
-                                 ymin = ci.lower, ymax = ci.upper)) +
-  facet_wrap(~label) +
-  geom_ribbon(alpha = .5, fill = "blue") +
-  geom_line() +
+ext_stm_effect_ano |> 
+ggplot(aes(x = covariate.value,
+           y = estimate,
+           ymin = ci.lower,
+           ymax = ci.upper)) +
+  facet_wrap(~topic) +
+  theme_classic()+
+  geom_ribbon(alpha = .7, color = "#7da7ea", fill = "#7da7ea") +
+  geom_line(color = "#1d4497") +
   labs(x = "Ano",
        y = "Proporção de Tópico Esperada",
-       fill = "Treated (0/1)") +
+       title = "Efeito de estimação pontual e intervalos de confiança dos tópicos ao longo do tempo") +
   theme(legend.position = "none")
 
+
+#Cálculo da variação dos tópicos
+calc_ano <- ext_stm_effect_ano |> 
+  filter(covariate.value %in% c(1991, 2021)) |> 
+  select(topic, covariate.value, estimate) |> 
+  pivot_wider(names_from = "covariate.value", 
+              values_from  = "estimate") |> 
+  mutate(diferenca = round(`1991` - `2021`,4)) 
+
 # Efeito gênero de orientador####
-stm_prep_gender <- stm::estimateEffect(1:80 ~ g_orientador, 
+effect_gender <- stm::estimateEffect(1:80 ~ g_orientador, 
                                        stmobj = topic_model, 
                                        metadata = covars, 
                                        uncertainty = "Global")
 
-stm_prep_gender_tidy <- tidytext::tidy(stm_prep_gender)
-
-# Efeitos orientador
-sig_effects_gender_tidy <- tidystm::extract.estimateEffect(x = stm_prep_gender, 
+t_effect_gender <- tidystm::extract.estimateEffect(x = effect_gender, 
                                                            covariate = "g_orientador", 
                                                            model = topic_model, 
                                                            method = "pointestimate",
                                                            labeltype = "prob",
                                                            n = 3)
 # Gráfico gênero
-ggplot(sig_effects_gender_tidy, aes(x = covariate.value, 
+ggplot(t_effect_gender, aes(x = covariate.value, 
                                     y = estimate,
                                     group = covariate)) +
-  geom_line() +
-  geom_point() +
-  geom_errorbar(aes(ymin = ci.lower, ymax = ci.upper), width = 0.1) + 
-  facet_wrap(~label, labeller = labeller(label = label_wrap_gen(width = 60))) +
+  geom_line(color = "#1d4497") +
+  geom_point(color = "#1d4497", size = 1) +
+ # scale_x_discrete(labels = c("Female", "Male")) +
+  facet_wrap(~topic, labeller = labeller(label = label_wrap_gen(width = 60))) +
+  theme_classic() +
   labs(x = "Gênero",
-       y = "Estimativa") +
+       y = "Estimativa",
+       title = "Efeito de estimação pontual dos tópicos por gênero do orientador") +
   theme(legend.position = "none")
+
+#Cálculo da variação de tópicos por gênero
+gen_dif <- t_effect_gender |> 
+  select(topic, covariate.value, estimate) |> 
+  pivot_wider(names_from = "covariate.value", 
+              values_from  = "estimate") |> 
+  mutate(diferenca = round(Male - Female, 4)) 
 
 # Rotulação de categorias ####
 # Ver arquivo topic_model80.txt ou similar
