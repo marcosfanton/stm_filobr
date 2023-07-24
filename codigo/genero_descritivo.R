@@ -10,6 +10,7 @@ library(ggtext)
 library(ggstream)
 library(janitor)
 library(epiR)
+library(stringi)
 library(gt)
 library(janitor)
 library(ggsci) # Paleta cores
