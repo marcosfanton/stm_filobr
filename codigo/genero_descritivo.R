@@ -15,6 +15,7 @@ library(gt)
 library(janitor)
 library(ggsci) # Paleta cores
 library(ggpubr) # Combina gráficos
+library(ggrepel)
 
 
 # ******TOTAL******#### 
@@ -896,7 +897,7 @@ dados_evol_humanas |>
         text = element_text(size = 20)) + 
   coord_cartesian(clip = 'off')
 
-# Gráfico 03.A | Evol Prop. Docente | 10 piores####
+# Gráfico 03.A | Tendência Prop. Docente | 10 piores####
 evol_piores_go <- dados |> 
   filter(nm_area_avaliacao %in% lista_piores) |> 
   group_by(nm_area_avaliacao, an_base, g_orientador) |> 
