@@ -14,9 +14,8 @@ library(stringi)
 library(gt)
 library(janitor)
 library(ggsci) # Paleta cores
-library(ggpubr) # Combina gráficos
 library(ggrepel)
-
+library(ggtext)
 
 # ******TOTAL******#### 
 # Banco - N: 1117943
@@ -35,7 +34,7 @@ fatores <- c("nm_grande_area_conhecimento",
 
 dados <- dados  |> 
   mutate(across(all_of(fatores), as.factor))
-
+#
 dados |>
   readr::write_csv("dados/catalogo/catalogo9121_genero.csv")
 
@@ -898,13 +897,25 @@ dados_evol_humanas |>
   coord_cartesian(clip = 'off')
 
 # Gráfico 03.A | Tendência Prop. Docente | 10 piores####
-evol_piores_go <- dados |> 
+piores_go <- dados |> 
   filter(nm_area_avaliacao %in% lista_piores) |> 
   group_by(nm_area_avaliacao, an_base, g_orientador) |> 
   summarize(total = n()) |> 
   mutate(frequencia = round(total/sum(total)*100,2))
 
-graf02a <- evol_piores_go |> 
+# Avaliação aumento-diminuição em dados percentuais
+avaliacao_go <- piores_go  |> 
+  filter(g_orientador == "Female")  |> 
+  group_by(nm_area_avaliacao)  |> 
+  arrange(an_base)  |> 
+  summarise(variacao = round(((last(frequencia) - first(frequencia))/first(frequencia)) * 100,2))
+
+# Junção no dataframe
+piores_go <- piores_go  |> 
+  left_join(avaliacao_go, by = "nm_area_avaliacao")
+
+# Gráfico
+piores_go |> 
   filter(g_orientador == "Female") |> 
   ggplot(aes(x = an_base, 
              y = frequencia,
@@ -914,34 +925,44 @@ graf02a <- evol_piores_go |>
               formula = y ~ poly(x, 3), 
               se = FALSE,
               linewidth = 2) +
-  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
-  scale_y_continuous(limits = c(0, 50), position = "right") +
-  labs(title = "Gráfico 03.A. Evolução da prevalência de trabalhos orientados por mulheres na Pós-Graduação (1991-2021)",
-       subtitle = "As 10 piores Áreas de Avaliação",
+  geom_label_repel(aes(label = paste0(variacao, "%")),
+                   data = filter(piores_go, an_base == 2021 & g_orientador == "Female"),
+                   show.legend = FALSE,
+                   hjust = 0,
+                   size = 4,
+                   nudge_x = 0.2) +
+  scale_x_continuous(limits = c(1991, 2022), breaks = seq(1990, 2021, 5)) +
+  scale_y_continuous(limits = c(0, 30), position = "right") +
+  labs(title = "Gráfico 03.A. Tendência da prevalência de trabalhos orientados por mulheres (1991-2021)",
+       subtitle = "Com a variação percentual entre 1991 e 2021",
        x = "",
        y = "%",
        color = "Área de Avaliação") +
   scale_color_d3() +
   theme_classic()+
   theme(text = element_text(size = 15),
-        legend.position = "bottom") + 
+        legend.position = "top") + 
   coord_cartesian(clip = 'off')
 
-# Avaliação aumento-diminuição em dados percentuais
-avaliacao_percentual <- dados_evol_piores  |> 
-  filter(an_base %in% c(1991, 2021) & g_discente == "Female")  |> 
-  group_by(nm_area_avaliacao)  |> 
-  arrange(an_base)  |> 
-  summarise(diminuicao_perc = ((last(frequencia) - first(frequencia)) / first(frequencia)) * 100)
-
-# Gráfico 02.B | Evol Prop. Discente | 10 piores####
-evol_piores_gd <- dados |> 
+# Gráfico 03.B | Tendência Prop. Discente | 10 piores####
+piores_gd <- dados |> 
   filter(nm_area_avaliacao %in% lista_piores) |> 
   group_by(nm_area_avaliacao, an_base, g_discente) |> 
   summarize(total = n()) |> 
   mutate(frequencia = round(total/sum(total)*100,2))
 
-graf02b <- evol_piores_gd |> 
+# Avaliação aumento-diminuição em dados percentuais
+avaliacao_gd <- piores_gd  |> 
+  filter(g_discente == "Female")  |> 
+  group_by(nm_area_avaliacao)  |> 
+  arrange(an_base)  |> 
+  summarise(variacao = round(((last(frequencia) - first(frequencia))/first(frequencia)) * 100,2))
+
+# Junção no dataframe
+piores_gd <- piores_gd  |> 
+  left_join(avaliacao_gd, by = "nm_area_avaliacao")
+
+piores_gd |> 
   filter(g_discente == "Female") |> 
   ggplot(aes(x = an_base, 
              y = frequencia,
@@ -951,24 +972,32 @@ graf02b <- evol_piores_gd |>
               formula = y ~ poly(x, 3), 
               se = FALSE,
               linewidth = 2) +
-  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
+  geom_label_repel(aes(label = paste0(variacao, "%")),
+                   data = filter(piores_gd, an_base == 2021 & g_discente == "Female"),
+                   show.legend = FALSE,
+                   hjust = 0,
+                   size = 4,
+                   nudge_x = 0.1) +
+  scale_x_continuous(limits = c(1991, 2022), breaks = seq(1990, 2021, 5)) +
   scale_y_continuous(limits = c(0, 60), position = "right") +
-  labs(title = "Gráfico 03.B. Evolução da prevalência de trabalhos *defendidos* por mulheres na Pós-Graduação (1991-2021)",
-       subtitle = "As 10 piores Áreas de Avaliação",
+  labs(title = "Gráfico 03.B. Tendência da prevalência de trabalhos defendidos por mulheres (1991-2021)",
+       subtitle = "Com a variação percentual entre 1991 e 2021",
        x = "",
        y = "%",
        color = "Área de Avaliação") +
   scale_color_d3() +
   theme_classic()+
   theme(text = element_text(size = 15),
-        legend.position = "bottom") + 
+        legend.position = "top") + 
   coord_cartesian(clip = 'off')
 
-ggarrange(graf02a, 
-          graf02b,
-          ncol = 1,
-          common.legend = TRUE,
-          legend = "bottom")
+ggsave(
+  "figs/genero_graf03A_piorgo.png",
+  bg = "white",
+  width = 12,
+  height = 8,
+  dpi = 900,
+  plot = last_plot())
 
 # Gráfico 01 | Prevalência mulher Docente vs Discente | Áreas e Grande Área #### 
 # Cálculo por orientador
