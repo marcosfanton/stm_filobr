@@ -867,3 +867,69 @@ gtsave(tabela_ies,
        "figs/iaph/table3_10ies.png",
        vwidth = 2000, vheight = 3000)
 
+# STM - 80 TÓPICOS####
+# # Cálculo da proporção de cada tópico
+prop_tidystm_genero <- tidystm_genero |> 
+  group_by(topic) |> 
+  mutate(total = sum(estimate)) |> 
+  group_by(topic, covariate.value) |> 
+  mutate(proporcao = round(estimate/sum(total)*100,2)) |> 
+  arrange(covariate.value, desc(proporcao)) 
+
+# Gráfico gênero
+prop_tidystm_genero |>
+  ggplot(aes(x = fct_inorder(as_factor(topic)),
+             y = proporcao,
+             fill = covariate.value)) +
+  geom_col() +
+  scale_y_continuous(labels = percent_format(scale = 1))+
+  theme_classic() +
+  coord_flip() +
+  scale_fill_d3() +
+  labs(x = "",
+       y = "",
+       title = "Distribuição de trabalhos orientados por <span style= 'color:#FF7F0EFF; font-size:30pt;'>**Homens**</span> e <span style= 'color:#1F77B4FF;font-size:30pt;'>**Mulheres**</span> entre os 80 tópicos") +
+  theme(legend.position = "none",
+        plot.title = element_markdown(face = "bold"),
+        text = element_text(size = 30))
+
+ggsave(
+  "figs/iaph/graf7_80tgen.png",
+  bg = "white",
+  width = 25,
+  height = 18,
+  dpi = 900,
+  plot = last_plot())
+
+
+tab_80 <- prop_stm_genero  |> 
+  select(topic, covariate.value, label, proporcao)  |> 
+  mutate(label = str_replace_all(label, "\\(Covariate Level: Male\\)", "")) |> 
+  pivot_wider(names_from = covariate.value,
+              values_from = c(topic, proporcao)) |>
+  slice(1:10, 71:80)
+
+# Tabela Tópicos
+
+# TABELA 3 ####
+tabela_80 <- tab_80 |> 
+  gt() |> 
+  cols_hide(
+    columns = topic_Male
+    ) |>
+  cols_merge(
+    columns = c(topic_Female, label), # Orientadores Homens
+    pattern = "Tópico{1} | {2}") |> 
+  cols_label(   # Títulos
+    topic_Female = "Tópico | Termos (\U03B2)",
+    proporcao_Female = "Mulher (%)",
+    proporcao_Male = "Homem (%)"
+    ) |>
+  tab_header(
+    title = "Tópicos com maior e menor prevalência de mulheres orientadoras") |> 
+  cols_align(
+    align = "left")  
+
+gtsave(tabela_80,
+       "figs/iaph/table4_20de80.png",
+       vwidth = 2000, vheight = 3000)

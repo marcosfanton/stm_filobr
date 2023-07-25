@@ -12,9 +12,7 @@ library(scales) # Uso de porcentagem em gráficos
 library(embed) # UMAP
 library(umap) # UMAP
 library(recipes) # UMAP
-library(ggsci) # Paleta cores
 library(ggtext) # Config de textos
-
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
@@ -103,42 +101,41 @@ tidybeta <- tidytext::tidy(topic_model) |>
   mutate(topic = as_factor(topic))
 # Gamma
 tidygamma <- tidytext::tidy(topic_model, 
-                            matrix = "gamma",
-                            document_names = topic_model$meta$doc) |> 
+                            matrix = "gamma") |> 
   right_join(covars, by = c("document" = "doc_id")) |> 
   arrange(topic, desc(gamma)) |> 
   mutate(topic = as_factor(topic))
 
 # Matriz Beta - Palavras mais frequentes de cada tópico 
-top_words <- tidybeta %>%
-  arrange(desc(beta)) %>%
-  group_by(topic) %>%
-  top_n(5, beta) %>%
+top_words <- tidybeta  |> 
+  arrange(desc(beta))  |> 
+  group_by(topic) |> 
+  top_n(3, beta) |> 
   summarise(terms = paste(term, collapse = ", ")) %>%
   ungroup()
 
 # Matriz Gamma - Prevalência de tópicos com respectivos termos
-gamma_words <- tidygamma %>%
-  group_by(topic) %>%
-  summarise(gamma = mean(gamma)) %>%
-  arrange(desc(gamma)) %>%
-  left_join(top_words, by = "topic") %>%
+gamma_words <- tidygamma |> 
+  group_by(topic) |> 
+  summarise(gamma = mean(gamma)) |> 
+  arrange(desc(gamma)) |> 
+  left_join(top_words, by = "topic") |> 
   mutate(topic = paste0("T", topic),
          topic = reorder(topic, gamma))
 
 # Matriz Gamma - Prevalência de tópicos com respectivos termos por década
-gamma_words <- tidygamma %>%
-  group_by(topic) %>%
-  summarise(gamma = mean(gamma)) %>%
-  arrange(desc(gamma)) %>%
-  left_join(top_words, by = "topic") %>%
+gamma_words <- tidygamma |> 
+  group_by(topic) |> 
+  summarise(gamma = mean(gamma)) |> 
+  arrange(desc(gamma)) |> 
+  left_join(top_words, by = "topic") |> 
   mutate(topic = paste0("T", topic),
          topic = reorder(topic, gamma))
 
 # Gráfico beta ####
 tidybeta  |> 
   group_by(topic) %>%
-  top_n(4, beta) %>%
+  top_n(3, beta) %>%
   ungroup() %>%
   mutate(topic = paste0("Tópico ", topic),
          term = reorder_within(term, beta, topic)) %>%
@@ -159,21 +156,31 @@ gamma_words |>
              label = terms, 
              fill = topic)) +
   geom_col(show.legend = FALSE) +
-  geom_text(hjust = 0, nudge_y = -0.000001, size = 3) +
+  geom_text(hjust = 0, nudge_y = -0.000001, size = 6) +
   coord_flip() +
   scale_y_continuous(expand = c(0,0),
-                     limits = c(0, 0.04),
+                     limits = c(0, 0.038),
                      labels = percent_format()) +
   theme_classic() +
   scale_fill_manual(values = met.brewer("Cross", 80))  +
   labs(x = NULL, 
        y = NULL,
-       title = "80 Tópicos do *corpus* de teses e dissertações de Filosofia  com a probabilidade média esperada para cada tópico (&#947;)") +
-  theme(plot.title = element_markdown(),
+       title = "80 tópicos do *corpus* de teses e dissertações de Filosofia  com a probabilidade média esperada para cada tópico (&#947;)",
+       subtitle = "Período: 1987-2021 | n: 11.733 trabalhos") +
+  theme(plot.title = element_markdown(face = "bold"),
         plot.subtitle = element_markdown(),
         legend.position = "none",
-        text = element_text(size = 10)) 
-  
+        text = element_text(size = 20)) 
+
+# Salvar gráfico
+ggsave(
+  "figs/filostm_80t.png",
+  bg = "white",
+  width = 22,
+  height = 14,
+  dpi = 600,
+  plot = last_plot())
+
 # Findthoughts (STM) #### 
 findallthoughts_m80 <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
@@ -212,12 +219,12 @@ sink()
 
 #Efeitos#### 
 # Efeito ano####
-stm_effect_ano <- stm::estimateEffect(1:80 ~ an_base, 
+stm_ano <- stm::estimateEffect(1:80 ~ an_base, 
                                     stmobj = topic_model, 
                                     metadata = covars, 
                                     uncertainty = "Global")
 
-ext_stm_effect_ano <- tidystm::extract.estimateEffect(x = stm_effect_ano, 
+tidystm_ano <- tidystm::extract.estimateEffect(x = stm_ano, 
                                                         covariate = "an_base", 
                                                         model = topic_model, 
                                                         method = "pointestimate",
@@ -225,7 +232,7 @@ ext_stm_effect_ano <- tidystm::extract.estimateEffect(x = stm_effect_ano,
                                                         n = 3)
 
 # Gráfico ano
-ext_stm_effect_ano |> 
+tidystm_ano |> 
 ggplot(aes(x = covariate.value,
            y = estimate,
            ymin = ci.lower,
@@ -235,13 +242,18 @@ ggplot(aes(x = covariate.value,
   geom_ribbon(alpha = .7, color = "#7da7ea", fill = "#7da7ea") +
   geom_line(color = "#1d4497") +
   labs(x = "Ano",
-       y = "Proporção de Tópico Esperada",
+       y = "Proporção Esperada de cada Tópico",
        title = "Efeito de estimação pontual e intervalos de confiança dos tópicos ao longo do tempo") +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        plot.title = element_markdown(face = "bold"))
 
-
-
-
+ggsave(
+  "figs/filostm_80t_ano.png",
+  bg = "white",
+  width = 22,
+  height = 14,
+  dpi = 600,
+  plot = last_plot())
 
 #Cálculo da variação dos tópicos
 calc_ano <- ext_stm_effect_ano |> 
@@ -252,40 +264,43 @@ calc_ano <- ext_stm_effect_ano |>
   mutate(diferenca = round(`1991` - `2021`,4)) 
 
 # Efeito gênero de orientador####
-effect_gender <- stm::estimateEffect(1:80 ~ g_orientador, 
+stm_genero <- stm::estimateEffect(1:80 ~ g_orientador, 
                                        stmobj = topic_model, 
                                        metadata = covars, 
                                        uncertainty = "Global")
 
-t_effect_gender <- tidystm::extract.estimateEffect(x = effect_gender, 
+tidystm_genero <- tidystm::extract.estimateEffect(x = stm_genero, 
                                                            covariate = "g_orientador", 
                                                            model = topic_model, 
                                                            method = "pointestimate",
                                                            labeltype = "prob",
                                                            n = 3)
-# Gráfico gênero
-ggplot(t_effect_gender, aes(x = covariate, 
-                                    y = estimate,
-                                    fill = covariate.value)) +
-  geom_bar(stat = "identity", position = "fill")+
-  facet_wrap(~topic) +
-  coord_flip()
-  geom_line(color = "#1d4497") +
-  geom_point(color = "#1d4497", size = 1) +
- # scale_x_discrete(labels = c("Female", "Male")) +
-  facet_wrap(~topic, labeller = labeller(label = label_wrap_gen(width = 60))) +
-  theme_classic() +
-  labs(x = "Gênero",
-       y = "Estimativa",
-       title = "Efeito de estimação pontual dos tópicos por gênero do orientador") +
-  theme(legend.position = "none")
 
-#Cálculo da variação de tópicos por gênero
-gen_dif <- t_effect_gender |> 
-  select(topic, covariate.value, estimate) |> 
-  pivot_wider(names_from = "covariate.value", 
-              values_from  = "estimate") |> 
-  mutate(diferenca = round(Male - Female, 4)) 
+# Cálculo da proporção de cada tópico
+prop_tidystm_genero <- tidystm_genero |> 
+  group_by(topic) |> 
+  mutate(total = sum(estimate)) |> 
+  group_by(topic, covariate.value) |> 
+  mutate(proporcao = round(estimate/sum(total)*100,2)) |> 
+  arrange(covariate.value, desc(proporcao)) 
+
+# Gráfico gênero
+prop_tidystm_genero |>
+ggplot(aes(x = fct_inorder(as_factor(topic)),
+           y = proporcao,
+           fill = covariate.value)) +
+  geom_col() +
+  scale_y_continuous(labels = percent_format(scale = 1))+
+  theme_classic() +
+  coord_flip() +
+  scale_fill_d3() +
+  labs(x = "",
+       y = "",
+       title = "Distribuição de trabalhos orientados por <span style= 'color:#FF7F0EFF; font-size:12pt;'>**Homens**</span> e <span style= 'color:#1F77B4FF;font-size:12pt;'>**Mulheres**</span> entre os 80 tópicos") +
+  theme(legend.position = "none",
+        plot.title = element_markdown(face = "bold"),
+        text = element_text(size = 10))
+
 
 # Rotulação de categorias ####
 # Ver arquivo topic_model80.txt ou similar
