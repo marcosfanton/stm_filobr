@@ -919,17 +919,17 @@ tabela_80 <- tab_80 |>
     ) |>
   cols_merge(
     columns = c(topic_Female, label), # Orientadores Homens
-    pattern = "Tópico{1} | {2}") |> 
+    pattern = "Topic{1} | {2}") |> 
   cols_label(   # Títulos
-    topic_Female = "Tópico | Termos (\U03B2)",
-    proporcao_Female = "Mulher (%)",
-    proporcao_Male = "Homem (%)"
+    topic_Female = "Topic | Terms (\U03B2)",
+    proporcao_Female = "Woman (%)",
+    proporcao_Male = "Man (%)"
     ) |>
   tab_header(
-    title = "Tópicos com maior e menor prevalência de mulheres orientadoras") |> 
+    title = "Topics with Higher and Lower Prevalence of Woman Supervisor") |> 
   cols_align(
     align = "left")  
 
 gtsave(tabela_80,
-       "figs/iaph/table4_20de80.png",
+       "figs/iaph/table4en_20de80.png",
        vwidth = 2000, vheight = 3000)
