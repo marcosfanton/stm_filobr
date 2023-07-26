@@ -166,7 +166,7 @@ tab_humanas <- purrr::reduce(lista_humanas,
 tab <- bind_rows(tab_grande_area, tab_humanas)
 
 # TABELA 01####                                                             
-tab_humanas_total <- tab_humanas |> 
+tab_grande_area_total <- tab_grande_area |> 
   gt(rowname_col = "areas") |>
   cols_hide("descritor") |> 
   cols_merge(
@@ -197,27 +197,27 @@ tab_humanas_total <- tab_humanas |>
     columns = c(total_od_MM, frequencia_od_MM), # Homem-Homem
     pattern = "{1} ({2}%)") |>
   tab_spanner(
-    label = "Student",
+    label = "Candidate",
     columns = c(total_d_Male, total_d_Female)) |> 
   tab_spanner(   # Títulos
     label = "Supervisor",  
     columns = c(total_o_Male, total_o_Female)) |>
   tab_spanner(
-    label = "Supervisor/Student",
+    label = "Supervisor/Candidate",
     columns = c(total_od_FF, total_od_FM, total_od_MF,total_od_MM)) |> 
   cols_label(
-    total = "Works",
+    total = "Theses",
     total_o_Male = "Man",
     total_o_Female = "Woman",
     total_d_Female = "Woman",
     total_d_Male = "Man",
-    total_od_FF = "Female/Female",
-    total_od_FM = "Female/Male",
-    total_od_MF = "Male/Female",
-    total_od_MM = "Male/Male"
+    total_od_FF = "Woman/Woman",
+    total_od_FM = "Woman/Man",
+    total_od_MF = "Man/Woman",
+    total_od_MM = "Man/Man"
   ) |> 
   tab_header(
-    title = "Table 1. Description of the gender distribution among supervisors and students in Humanities (Graduate Programs) in Brazil (1991-2021)"
+    title = "Table 1.1. Description of the gender distribution among supervisors and candidates in Graduate Programs in Brazil, categorized according to the Scientific Fields defined by CAPES (1991-2021)"
   ) |> 
   cols_align(
     align = "center") |> 
@@ -234,8 +234,8 @@ tab_humanas_total <- tab_humanas |>
       rows = 4)
     )
 # Salvar as tabelas - 2 Tabelas distintas
-gtsave(tab_humanas_total,
-  "figs/iaph/table1_2totaldescription.png",
+gtsave(tab_grande_area_total,
+  "figs/iaph/table1_1totaldescription.png",
   vwidth = 1300, vheight = 3000)
 
 # Gráfico 02 | Prevalência mulher Docente vs Discente | Áreas e Grande Área #### 
@@ -293,19 +293,20 @@ dados_god |> ggplot(aes(x = frequencia_o,
                            show.legend = FALSE,
                            min.segment.length = .7,
                            box.padding = 0.3,
-                           size = 5,
+                           size = 10,
                            nudge_x = 0.1,
                            nudge_y = 1.6) +
-  labs(title = "Prevalence of Female Supervisors and Female Students among Scientific Subfields (1991-2021)", 
-       x = "Prevalence of Female Supervisors (%)",
-       y = "Prevalence of Female Students (%)",
+  labs(title = "Accumulated Percentages of Women Supervisors *vs* Women Candidates",
+       subtitle = "Scientific Subfields in Brazilian Graduate Programs (1991-2021)", 
+       x = "Women Supervisors (%)",
+       y = "Women Candidates (%)",
        color = "Scientific Fields") +
   scale_color_d3() +
   guides(colour = guide_legend(override.aes = list(size=10))) +
   theme_classic() +
   theme(plot.title = element_markdown(face = "bold"),
         legend.position = c(.85, .38),
-        text = element_text(size = 18),
+        text = element_text(size = 25),
         legend.title.align = 0.25,
         legend.background = element_rect(color = "black", 
                                          linewidth = 0.5, 
@@ -313,8 +314,8 @@ dados_god |> ggplot(aes(x = frequencia_o,
 ggsave(
   "figs/iaph/graf2_supervisorvsstudents.png",
   bg = "white",
-  width = 17,
-  height = 12,
+  width = 20,
+  height = 18,
   dpi = 1200,
   plot = last_plot())
 
@@ -424,24 +425,24 @@ tabela_piores <- tab_piores |>
     label = "Supervisor",  
     columns = c(total_o_Male, total_o_Female)) |>
   tab_spanner(
-    label = "Student",
+    label = "Candidate",
     columns = c(total_d_Male, total_d_Female)) |> 
   tab_spanner(
-    label = "Supervisor/Student",
+    label = "Supervisor/Candidate",
     columns = c(total_od_FF, total_od_FM, total_od_MF,total_od_MM)) |> 
   cols_label(
-    total = "Works",
+    total = "Theses",
     total_o_Male = "Man",
     total_o_Female = "Woman",
     total_d_Female = "Woman",
     total_d_Male = "Man",
-    total_od_FF = "Female/Female",
-    total_od_FM = "Female/Male",
-    total_od_MF = "Male/Female",
-    total_od_MM = "Male/Male",
+    total_od_FF = "Woman/Woman",
+    total_od_FM = "Woman/Man",
+    total_od_MF = "Man/Woman",
+    total_od_MM = "Man/Man",
   ) |> 
   tab_header(
-    title = "Table 2. Description of the Gender Distribution among the 10 Scientific SubFields with the Lowest Prevalence of works defended by Female Students in Brazil (1991-2021)") |> 
+    title = "Table 2. Description of the Gender Distribution among the 10 Scientific SubFields with the Lowest Prevalence of Theses defended by Women Candidates in Brazil (1991-2021)") |> 
   cols_align(
     align = "center") |> 
   fmt_number(
@@ -504,8 +505,8 @@ evol_piores_go |>
              nudge_x = 0.2) +
   scale_x_continuous(limits = c(1991, 2022), breaks = seq(1990, 2021, 5)) +
   scale_y_continuous(limits = c(0, 30), position = "right") +
-  labs(title = "Trend of Graduate Works Supervised by Women (with percentage variation between 1991 and 2021)",
-       subtitle = "The 10 Scientific SubFields with the Lowest Prevalence of Works defended by Women Students in Brazil (1991-2021)",
+  labs(title = "Trend of Graduate Theses Supervised by Women (with percentage variation between 1991 and 2021)",
+       subtitle = "The 10 Scientific SubFields with the Lowest Prevalence of Theses Supervised by Women in Brazil (1991-2021)",
        x = "",
        y = "%",
        color = "Subfield") +
@@ -573,8 +574,8 @@ evol_piores_gd |>
                    nudge_x = 0.1) +
   scale_x_continuous(limits = c(1991, 2022), breaks = seq(1990, 2021, 5)) +
   scale_y_continuous(limits = c(0, 60), position = "right") +
-  labs(title = "Trend of Graduate Works Defended by Women (with percentage variation between 1991 and 2021)",
-       subtitle = "The 10 Scientific SubFields with the Lowest Prevalence of Works defended by Women Students in Brazil (1991-2021)",
+  labs(title = "Trend of Graduate Theses Defended by Women (with percentage variation between 1991 and 2021)",
+       subtitle = "The 10 Scientific SubFields with the Lowest Prevalence of Theses Supervised by Women in Brazil (1991-2021)",
        x = "",
        y = "%",
        color = "Subfield") +
@@ -629,7 +630,7 @@ evol_fi_total |>
   scale_y_continuous(position = "right") +
   theme_classic() +
   scale_color_d3() +
-  labs(title = "Defenses of academic works in Graduate Programs in Philosophy in Brazil",
+  labs(title = "Defenses of Academic Theses in Philosophy Graduate Programs in Brazil",
        subtitle = "Masters and PhD Dissertations defended between 1991-2021 | n: **11.945**",
        x = "",
        y = "",
@@ -654,8 +655,8 @@ dadosfi |>
              fill = g_orientador)) +
   geom_bar(position = "fill") +
   theme_void() +
-  labs(title = "Gender Inequality in Philosophy Graduate Studies in Brazil",
-       subtitle = "Prevalence of dissertations *supervised* by <span style= 'color:#FF7F0EFF; font-size:32pt;'>**Men**</span> and <span style= 'color:#1F77B4FF;font-size:32pt;'>**Women**</span> (1991-2021)",
+  labs(title = "Gender Inequality in Philosophy Graduate Programs in Brazil",
+       subtitle = "Dissertations *supervised* by <span style= 'color:#FF7F0EFF; font-size:20pt;'>**Men**</span> and <span style= 'color:#1F77B4FF;font-size:20pt;'>**Women**</span> (1991-2021)",
        x = "",
        y = "") +
   scale_fill_d3() +
@@ -665,7 +666,7 @@ dadosfi |>
         plot.subtitle = element_markdown(hjust = 0.5),
         legend.position = "none",
         axis.text.y=element_blank(),
-        text = element_text(size = 25)) +
+        text = element_text(size = 20)) +
   geom_richtext(aes(x = 2017, 
                     y = 0.4, 
                     label ="&#187;Mean:80.23%&#171;"),
@@ -688,8 +689,8 @@ dadosfi |>
              fill = g_discente)) +
   geom_bar(position = "fill") +
   theme_void() +
-  labs(title = "Gender Inequality in Philosophy Graduate Studies in Brazil",
-       subtitle = "Prevalence of dissertations *defended* by <span style= 'color:#FF7F0EFF; font-size:32pt;'>**Men**</span> and <span style= 'color:#1F77B4FF;font-size:32pt;'>**Women**</span> (1991-2021)",
+  labs(title = "Gender Inequality in Philosophy Graduate Programs in Brazil",
+       subtitle = "Dissertations *defended* by <span style= 'color:#FF7F0EFF; font-size:20pt;'>**Men**</span> and <span style= 'color:#1F77B4FF;font-size:20pt;'>**Women**</span> (1991-2021)",
        x = "",
        y = "") +
   scale_fill_d3() +
@@ -699,7 +700,7 @@ dadosfi |>
         plot.subtitle = element_markdown(hjust = 0.5),
         legend.position = "none",
         axis.text.y=element_blank(),
-        text = element_text(size = 25)) +
+        text = element_text(size = 20)) +
   geom_richtext(aes(x = 2017, 
                     y = 0.4, 
                     label ="&#187;Mean:70.74%&#171;"),
@@ -717,10 +718,15 @@ ggsave(
 
 # Gráfico 05 | Filosofia | Relação Professor vs Discente | Barra ####
 dadosfi |> 
+  mutate(g_oridis = recode(g_oridis,
+                           "FF" = "Woman/Woman",
+                           "FM" = "Woman/Man",
+                           "MF" = "Man/Woman",
+                           "MM" = "Man/Man")) |> 
   ggplot(aes(x = an_base, 
              fill = factor(g_oridis))) +
   geom_bar(position = "fill") +
-  labs(title = "Gender Inequality in Graduate Programs in Philosophy in Brazil",
+  labs(title = "Gender Inequality in Philosophy Graduate Programs in Brazil",
        subtitle = "Description according to the Relationship Supervisor/Candidate (1991-2021)",
        x = "",
        y = "",
@@ -868,6 +874,73 @@ gtsave(tabela_ies,
        vwidth = 2000, vheight = 3000)
 
 # STM - 80 TÓPICOS####
+# Gráfico gamma - 80 tópicos #### 
+gamma_words |> 
+  top_n(80, gamma) |> 
+  ggplot(aes(topic, gamma, 
+             label = terms, 
+             fill = topic)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(hjust = 0, nudge_y = -0.000001, size = 6) +
+  coord_flip() +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0, 0.038),
+                     labels = percent_format()) +
+  theme_classic() +
+  scale_fill_manual(values = met.brewer("Cross", 80))  +
+  labs(x = NULL, 
+       y = NULL,
+       title = "80 Topics from the *Corpus* of Philosophy Theses with the Estimated Topic Proportion (&#947;)",
+       subtitle = "Theses defended in Philosophy Graduate Programs between 1987-2021 | n: 11.733") +
+  theme(plot.title = element_markdown(face = "bold"),
+        plot.subtitle = element_markdown(),
+        legend.position = "none",
+        text = element_text(size = 20)) 
+
+# Salvar gráfico
+ggsave(
+  "figs/iaph/graf6_1_80t.png",
+  bg = "white",
+  width = 22,
+  height = 14,
+  dpi = 600,
+  plot = last_plot())
+
+ 
+# Gráfico gamma - 10 tópicos #### 
+gamma_words |> 
+  top_n(20, gamma) |> 
+  ggplot(aes(topic, gamma, 
+             label = terms, 
+             fill = topic)) +
+  geom_col(show.legend = FALSE) +
+  geom_label(hjust = 0, 
+             nudge_y = -0.005, 
+             size = 10, 
+             color = "white") +
+  coord_flip() +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0, 0.038),
+                     labels = percent_format()) +
+  theme_classic() +
+  scale_fill_manual(values = met.brewer("Cross", 20))  +
+  labs(x = NULL, 
+       y = NULL,
+       title = "20 Topics from the *Corpus* of Philosophy Theses with the Highest Estimated Topic Proportion (&#947;)")+
+  theme(plot.title = element_markdown(face = "bold"),
+        plot.subtitle = element_markdown(),
+        legend.position = "none",
+        text = element_text(size = 20)) 
+
+# Salvar gráfico
+ggsave(
+  "figs/iaph/graf6_2_80t.png",
+  bg = "white",
+  width = 22,
+  height = 14,
+  dpi = 600,
+  plot = last_plot())
+
 # # Cálculo da proporção de cada tópico
 prop_tidystm_genero <- tidystm_genero |> 
   group_by(topic) |> 
@@ -876,7 +949,7 @@ prop_tidystm_genero <- tidystm_genero |>
   mutate(proporcao = round(estimate/sum(total)*100,2)) |> 
   arrange(covariate.value, desc(proporcao)) 
 
-# Gráfico gênero
+# Gráfico gênero####
 prop_tidystm_genero |>
   ggplot(aes(x = fct_inorder(as_factor(topic)),
              y = proporcao,
@@ -888,7 +961,8 @@ prop_tidystm_genero |>
   scale_fill_d3() +
   labs(x = "",
        y = "",
-       title = "Distribuição de trabalhos orientados por <span style= 'color:#FF7F0EFF; font-size:30pt;'>**Homens**</span> e <span style= 'color:#1F77B4FF;font-size:30pt;'>**Mulheres**</span> entre os 80 tópicos") +
+       title = "Description of the Gender Distribution of Theses Supervised by <span style= 'color:#FF7F0EFF; font-size:30pt;'>**Men**</span> e <span style= 'color:#1F77B4FF;font-size:30pt;'>**Women**</span> among the 80 topics",
+       subtitle = "Theses defended in Philosophy Graduate Programs between 1987-2021 | n: 11.733") +
   theme(legend.position = "none",
         plot.title = element_markdown(face = "bold"),
         text = element_text(size = 30))
@@ -902,34 +976,55 @@ ggsave(
   plot = last_plot())
 
 
+
+
+# Tabela | 10-10 tópicos####
 tab_80 <- prop_stm_genero  |> 
   select(topic, covariate.value, label, proporcao)  |> 
   mutate(label = str_replace_all(label, "\\(Covariate Level: Male\\)", "")) |> 
   pivot_wider(names_from = covariate.value,
-              values_from = c(topic, proporcao)) |>
-  slice(1:10, 71:80)
+              values_from = c(topic, proporcao)) 
+# Prepara o gamma
+tab_gamma <- gamma_words |> 
+  mutate(topic = str_replace_all(topic, "T", "")) |> 
+  drop_na() |> 
+  mutate(topic = as.numeric(topic))
 
-# Tabela Tópicos
+tab_20 <- left_join(tab_80,
+                    tab_gamma,
+                    by = c("topic_Female" = "topic")) |> 
+  slice(1:10, 71:80) |> 
+  select(-c(terms, topic_Male)) |> 
+  mutate(gamma = round(gamma*100,4))
+                    
 
 # TABELA 3 ####
-tabela_80 <- tab_80 |> 
+tabela_20 <- tab_20 |> 
   gt() |> 
-  cols_hide(
-    columns = topic_Male
-    ) |>
-  cols_merge(
-    columns = c(topic_Female, label), # Orientadores Homens
-    pattern = "Topic{1} | {2}") |> 
+  cols_move_to_start(topic_Female) |> 
   cols_label(   # Títulos
-    topic_Female = "Topic | Terms (\U03B2)",
+    topic_Female = "Topic",
+    label = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)",
     proporcao_Female = "Woman (%)",
     proporcao_Male = "Man (%)"
     ) |>
   tab_header(
     title = "Topics with Higher and Lower Prevalence of Woman Supervisor") |> 
   cols_align(
-    align = "left")  
+    align = "left") |>  
+  data_color(
+    columns = proporcao_Female,
+    target_columns = everything(),
+    palette = "inferno"
+  ) |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
 
-gtsave(tabela_80,
+gtsave(tabela_20,
        "figs/iaph/table4en_20de80.png",
        vwidth = 2000, vheight = 3000)
