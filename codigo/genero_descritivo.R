@@ -16,6 +16,8 @@ library(janitor)
 library(ggsci) # Paleta cores
 library(ggrepel)
 library(ggtext)
+library(geobr)
+library(sf)
 
 # ******TOTAL******#### 
 # Banco - N: 1117943

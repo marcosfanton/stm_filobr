@@ -13,6 +13,7 @@ library(embed) # UMAP
 library(umap) # UMAP
 library(recipes) # UMAP
 library(ggtext) # Config de textos
+library(gganimate)
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
@@ -110,7 +111,7 @@ tidygamma <- tidytext::tidy(topic_model,
 top_words <- tidybeta  |> 
   arrange(desc(beta))  |> 
   group_by(topic) |> 
-  top_n(3, beta) |> 
+  top_n(5, beta) |> 
   summarise(terms = paste(term, collapse = ", ")) %>%
   ungroup()
 
@@ -123,19 +124,10 @@ gamma_words <- tidygamma |>
   mutate(topic = paste0("T", topic),
          topic = reorder(topic, gamma))
 
-# Matriz Gamma - Prevalência de tópicos com respectivos termos por década
-gamma_words <- tidygamma |> 
-  group_by(topic) |> 
-  summarise(gamma = mean(gamma)) |> 
-  arrange(desc(gamma)) |> 
-  left_join(top_words, by = "topic") |> 
-  mutate(topic = paste0("T", topic),
-         topic = reorder(topic, gamma))
-
 # Gráfico beta ####
 tidybeta  |> 
   group_by(topic) %>%
-  top_n(3, beta) %>%
+  top_n(5, beta) %>%
   ungroup() %>%
   mutate(topic = paste0("Tópico ", topic),
          term = reorder_within(term, beta, topic)) %>%
@@ -143,7 +135,7 @@ tidybeta  |>
   theme_classic() +
   geom_col(alpha = 0.9, show.legend = FALSE) +
   scale_fill_manual(values = met.brewer("Nizami", 80)) +
-  facet_wrap(~ topic, scales = "free_y") +
+  facet_wrap(~ topic, scales = "free") +
   labs(x = "",
        y = expression(beta)) +
   coord_flip() +
@@ -215,7 +207,6 @@ findthoughts_m80 |>
 sink('dados/summary_topicmodel80.txt')
 print(summary(topic_model))
 sink()
-
 
 #Efeitos#### 
 # Efeito ano####
@@ -308,23 +299,23 @@ ggplot(aes(x = fct_inorder(as_factor(topic)),
 # Categorias Hugo e Marcos
 categorias <- dplyr::tibble(
   topic = as_factor(unlist(list(
-    c(2, 3,9,11,12,18,20,25,30,32,33,39,45,46,47,48,49,57,77), # Política
+    c(3,9,11,12,18,20,25,30,32,33,39,45,46,47,48,49,57,69,77), # Política
     c(5,13,28,29,42,52,63,73,79), # Fenomenologia 
-    c(27,40,58,59,66,71,76), # Mente e Linguagem
+    c(27,40,41,44,58,59,66,71,72,74,76), # Mente e Linguagem
     c(6,7,19,34,43,53,60,61), # Moral
-    c(14,15,21,23,51,54,65,68,69,70,75,78), # Metafísica
-    c(4,10,24,36,37,50,55,62), # Estética 
-    c(8,16,17,22,26,31,35,41,44,46, 56,64,67,72,74,80), # Filosofia da ciência
-    c(1,38) # Excluir
+    c(14,15,21,23,51,54,65,68,70,75,78), # Metafísica
+    c(1,4,10,24,36,37,50,55,62), # Estética 
+    c(8,16,17,22,26,31,35,41,46,56,64,67,80), # Filosofia da ciência
+    c(2,38) # Excluir
   ))),
   category = as_factor(c(
     rep("Filosofia Social e Política", 19),
     rep("Fenomenologia e Hermenêutica", 9),
-    rep("Filosofia da Mente e da Linguagem", 7),
+    rep("Filosofia da Mente e da Linguagem", 11),
     rep("Ética", 8),
-    rep("Metafísica", 12),
-    rep("Estética", 8),
-    rep("Filosofia da Ciência", 16),
+    rep("Metafísica", 11),
+    rep("Estética", 9),
+    rep("Filosofia da Ciência", 13),
     rep("Excluídos", 2)
   )
   ))
@@ -361,12 +352,13 @@ category_labels <- tidygamma  |>
   distinct(document, .keep_all = TRUE)
 
 category_labels |> 
-  drop_na() |> 
   ggplot(aes(x = an_base, color = category)) +
   geom_freqpoly(binwidth = 1, linewidth = 1.2) +
   scale_x_continuous(limits = c(1987, 2021)) +
   scale_y_continuous(limits = c(0, 200), position = "right") +
   scale_color_manual(values = met.brewer("Cross", 8))  
+
+
 
 prop_by_category <- category_labels |> 
   drop_na() |> 

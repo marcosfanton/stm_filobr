@@ -231,7 +231,7 @@ tab_grande_area_total <- tab_grande_area |>
     ),
     locations = cells_body(
       columns = everything(),
-      rows = 4)
+      rows = 5)
     )
 # Salvar as tabelas - 2 Tabelas distintas
 gtsave(tab_grande_area_total,
@@ -283,7 +283,8 @@ dados_god <- dados_god |>
 
 dados_god |> ggplot(aes(x = frequencia_o, 
                         y = frequencia_d)) +
-  geom_point(aes(colour = nm_grande_area_conhecimento),
+  geom_point(aes(colour = nm_grande_area_conhecimento,
+                 shape = nm_grande_area_conhecimento),
              shape = 20,
              size = 4.5) +
   scale_x_continuous(limits = c(0, 100)) +
@@ -1028,3 +1029,66 @@ tabela_20 <- tab_20 |>
 gtsave(tabela_20,
        "figs/iaph/table4en_20de80.png",
        vwidth = 2000, vheight = 3000)
+
+# Gráfico - Mapa Brasil (Região e Estado)####
+# Baixar dados populacionais por Estado
+# Site: Elaboração: Atlas do Desenvolvimento Humano no Brasil. Pnud Brasil, Ipea e FJP, 2022.
+# Site: Fontes: dados do IBGE e de registros administrativos, conforme especificados nos metadados disponíveis disponíveis em: http://atlasbrasil.org.br/acervo/biblioteca.
+# População por Estado
+populacao_estado <- readxl::read_excel("dados/populacao_br.xlsx") |> 
+  mutate(regiao = case_when(
+    territorio %in% c("Acre", "Amapá", "Amazonas", "Pará", "Rondônia", "Roraima", "Tocantins") ~ "Norte",
+    territorio %in% c("Alagoas", "Bahia", "Ceará", "Maranhão", "Paraíba", "Pernambuco", "Piauí", "Rio Grande do Norte", "Sergipe") ~ "Nordeste",
+    territorio %in% c("Distrito Federal", "Goiás", "Mato Grosso", "Mato Grosso do Sul") ~ "Centro Oeste",
+    territorio %in% c("Espírito Santo", "Minas Gerais", "Rio de Janeiro", "São Paulo") ~ "Sudeste",
+    territorio %in% c("Paraná", "Rio Grande do Sul", "Santa Catarina") ~ "Sul"))
+
+# População por região
+populacao_regiao <- populacao_estado |> 
+  group_by(regiao) |> 
+  summarize(populacao = sum(populacao))
+
+# Baixar mapa de regiões
+regiao <- geobr::read_region(year = 2020)
+
+# Sumarizar dados por região
+dados_regiao <- dadosfi |> 
+  group_by(nm_regiao) |> 
+  summarize(trabalhos = n()) |> 
+  mutate(nm_regiao = recode(nm_regiao, # MANTER OS NOMES PARA FUNCIONAR
+                            "centrooeste" = "Centro Oeste",
+                            "nordeste" = "Nordeste",
+                            "norte" = "Norte",
+                            "sudeste" = "Sudeste",
+                            "sul" = "Sul")) 
+
+# Cálculo densidade regional
+densidade_regiao <- dplyr::left_join(populacao_regiao, 
+                                     dados_regiao, 
+                                     by = c("regiao" = "nm_regiao")) |> 
+  mutate(densidade = (trabalhos / populacao)*100000)
+
+# Unificar bancos
+regiao <- dplyr::left_join(regiao, 
+                           dados_regiao, 
+                           by = c("name_region" = "nm_regiao"))
+
+# Gráfico - Regiao
+ggplot(regiao) +
+  geom_sf(aes(fill = trabalhos), color = "NA") +
+  labs(title="Academic Works in Philosophy Graduate Programs by region (1987-2021)", 
+       size = 30,
+       fill = "Works") +
+  theme_void() +
+  theme(plot.title = element_markdown(face = "bold")) +
+ # scale_fill_viridis_c()+
+  scale_fill_distiller(palette = "Blues", direction = 1) +
+  geom_sf_text(aes(label = trabalhos), size = 6) 
+
+ggsave(
+  "figs/iaph/graf8_map.png",
+  bg = "white",
+  width = 11,
+  height = 8,
+  dpi = 900,
+  plot = last_plot())
