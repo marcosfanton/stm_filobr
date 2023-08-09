@@ -212,6 +212,80 @@ sink('dados/summary_topicmodel80.txt')
 print(summary(topic_model))
 sink()
 
+# Rotulação de categorias ####
+# Ver arquivo topic_model80.txt ou similar
+# Categorias 
+categorias <- dplyr::tibble(
+  topic = as_factor(unlist(list(
+    c(3,9,11,12,18,20,25,30,32,33,39,45,46,47,48,49,57,69,77), # Política OK
+    c(5,13,28,29,42,52,63,73,79), # Fenomenologia OK
+    c(27,40,41,44,58,59,66,71,72,74,76), # Mente e Linguagem OK
+    c(6,7,19,34,43,53,60,61), # Moral OK
+    c(14,15,21,23,51,54,65,68,70,75,78), # Metafísica OK
+    c(1,4,10,24,36,37,50,55,62), # Estética OK
+    c(8,16,17,22,26,31,35,56,64,67,80), # Filosofia da ciência
+    c(2,38) # Excluir
+  ))),
+  category = as_factor(c(
+    rep("Social and Political Philosophy", 19),
+    rep("Phenomenology and Hermeneutics", 9),
+    rep("Philosophy of Mind and Language", 10),
+    rep("Ethics", 8),
+    rep("Metaphysics", 11),
+    rep("Aesthetics", 9),
+    rep("Philosophy of Science", 12),
+    rep("Excluídos", 2)
+  )
+  ))
+
+# Inclusão das categorias na matrix gamma
+tidygamma <- tidygamma |> 
+  left_join(categorias, by = "topic") 
+
+tidygamma <- tidygamma |> 
+  filter(category != "Excluídos")
+
+# UMAP ####
+# Preparação do banco
+gammawide <- tidygamma  |>  
+  summarise(gamma = mean(gamma), .by = c(category, document))  |> 
+  pivot_wider(id_cols = document,
+              names_from = category, 
+              values_from = gamma) 
+
+# Preparação da rotulagem de categorias e tópicos com base na média de gamma
+# Tópicos
+label_topic <- tidygamma |> 
+  group_by(document, topic) |> 
+  summarise(gamma = mean(gamma)) |> 
+  slice_max(gamma, n = 1, with_ties = FALSE) |> 
+  select(-gamma)
+
+# Junção de rótulos 
+gammawide <- gammawide |> 
+  left_join(label_topic, by = "document") |> 
+  left_join(categorias, by = "topic") 
+
+# UMAP via recipe
+umap_recipe <- recipe(~., data = gammawide)  |> 
+  update_role(document, topic, category, new_role = "id") |> 
+  step_normalize(all_predictors())  |> 
+  step_umap(all_predictors())
+umap_model <- prep(umap_recipe)
+
+# Plot do UMAP
+juice(umap_model)  |> 
+  ggplot(aes(UMAP1, UMAP2)) +
+  geom_point(aes(fill = category), alpha = .8, size = 6, shape = 21) +
+  # geom_text(check_overlap = TRUE, size = 3, color = "white") +
+  scale_fill_manual(values = met.brewer("Cross", 7)) +
+  theme_minimal() +
+  labs(title = "UMAP Projection of document-category relationships",
+       subtitle = "Dissertations from Brazilian Philosophy Graduate Programs (1988-2021)",
+       fill = "Category") +
+  theme(plot.title = element_markdown(face = "bold"),
+        legend.position = "bottom")
+
 #Efeitos#### 
 # Efeito ano####
 stm_efeitoano <- stm::estimateEffect(1:80 ~ an_base, 
@@ -233,30 +307,35 @@ stm_ano <- stm_ano |>
   left_join(categorias, by = "topic") |> 
   filter(category != "Excluídos")
 
-# Sumariza por categoria
+# Sumariza por categoria | COM EFEITOS####
 stmcat_ano <- stm_ano |> 
-  summarize(gamma = sum(estimate), .by = c(category, covariate.value))
+  summarize(total = sum(estimate), 
+            .by = c(category, covariate.value)) 
 
-# Gráfico da evolução por categorias
+# Gráfico
 stmcat_ano |>
   ggplot(aes(x = covariate.value,
-             y = gamma,
-             fill = category)) +
-  geom_point(alpha = 0.8, linewidth = 0.4, colour = "black") +
- # geom_labelpath(aes(label = category)) +
+             y = total,
+             color = category)) +
+  geom_point(alpha=0.5, size=0.5) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 3), 
+              se = FALSE,
+              linewidth = .9) +
   theme_classic() +
   labs(x = "Year",
-       y = "Percentage",
+       y = "Estimation",
+       color = "Category",
        title = "Trends of Categories in Dissertations",
        subtitle = "Brazilian Philosophy Graduate Programs (1988-2021)") +
-  scale_fill_manual(values = met.brewer("Cross", 7)) +
-  theme(legend.position = "none",
-        plot.title = element_markdown(face = "bold"),
+  scale_color_manual(values = met.brewer("Cross", 7)) +
+  scale_y_continuous(position = "right") +
+  scale_x_continuous(limits = c(1988, 2021)) +
+  guides(color = guide_legend(override.aes = list(size = 3))) +
+  theme(plot.title = element_markdown(face = "bold"),
         text = element_text(size = 15))
 
-
- 
-stm_ano |> 
+ stm_ano |> 
   ggplot(aes(x = covariate.value,
              y = estimate,
              color = topic)) +
@@ -315,7 +394,6 @@ tidystm_genero <- tidystm::extract.estimateEffect(x = stm_genero,
                                                            method = "pointestimate",
                                                            labeltype = "prob",
                                                            n = 3)
-
 # Cálculo da proporção de cada tópico
 prop_tidystm_genero <- tidystm_genero |> 
   group_by(topic) |> 
@@ -341,78 +419,41 @@ ggplot(aes(x = fct_inorder(as_factor(topic)),
         plot.title = element_markdown(face = "bold"),
         text = element_text(size = 10))
 
+# Sumariza por categoria | SEM EFEITOS####
+cat_count <- tidygamma  |> 
+  group_by(document, category)  |> 
+  summarize(gamma = mean(gamma))  |> 
+  ungroup()  |> 
+  group_by(document)  |> 
+  slice_max(gamma, n = 1, with_ties = FALSE)  |> 
+  left_join(tidygamma  |>  
+              select(document, an_base, g_orientador),
+            by = "document") |> 
+  ungroup() |> 
+  unique()
 
+cat_count_ano <- cat_count |> 
+  summarize(n = n(), .by = c(an_base, category))
 
-# Rotulação de categorias ####
-# Ver arquivo topic_model80.txt ou similar
-# Categorias 
-categorias <- dplyr::tibble(
-  topic = as_factor(unlist(list(
-    c(3,9,11,12,18,20,25,30,32,33,39,45,46,47,48,49,57,69,77), # Política OK
-    c(5,13,28,29,42,52,63,73,79), # Fenomenologia OK
-    c(27,40,41,44,58,59,66,71,72,74,76), # Mente e Linguagem OK
-    c(6,7,19,34,43,53,60,61), # Moral OK
-    c(14,15,21,23,51,54,65,68,70,75,78), # Metafísica OK
-    c(1,4,10,24,36,37,50,55,62), # Estética OK
-    c(8,16,17,22,26,31,35,56,64,67,80), # Filosofia da ciência
-    c(2,38) # Excluir
-  ))),
-  category = as_factor(c(
-    rep("Social and Political Philosophy", 19),
-    rep("Phenomenology and Hermeneutics", 9),
-    rep("Philosophy of Mind and Language", 10),
-    rep("Ethics", 8),
-    rep("Metaphysics", 11),
-    rep("Aesthetics", 9),
-    rep("Philosophy of Science", 12),
-    rep("Excluídos", 2)
-  )
-  ))
-
-# Inclusão das categorias na matrix gamma
-tidygamma <- tidygamma |> 
-  left_join(categorias, by = "topic")
-
-# UMAP ####
-# Preparação do banco
-gammawide <- tidygamma  |>  
-  summarise(gamma = mean(gamma), .by = c(category, document))  |> 
-  pivot_wider(id_cols = document,
-              names_from = category, 
-              values_from = gamma) 
-
-# Preparação da rotulagem de categorias e tópicos com base na média de gamma
-# Tópicos
-label_topic <- tidygamma |> 
-  group_by(document, topic) |> 
-  summarise(gamma = mean(gamma)) |> 
-  slice_max(gamma, n = 1, with_ties = FALSE) |> 
-  select(-gamma)
-
-# Junção de rótulos 
-gammawide <- gammawide |> 
-  left_join(label_topic, by = "document") |> 
-  left_join(categorias, by = "topic") |> 
-  filter(category != "Excluídos")
-
-# UMAP via recipe
-umap_recipe <- recipe(~., data = gammawide)  |> 
-  update_role(document, topic, category, new_role = "id") |> 
-  step_normalize(all_predictors())  |> 
-  step_umap(all_predictors())
-umap_model <- prep(umap_recipe)
-
-# Plot do UMAP
-juice(umap_model)  |> 
-  ggplot(aes(UMAP1, UMAP2)) +
-  geom_point(aes(fill = category), alpha = .8, size = 6, shape = 21) +
- # geom_text(check_overlap = TRUE, size = 3, color = "white") +
-  scale_fill_manual(values = met.brewer("Cross", 7)) +
-  theme_minimal() +
-  labs(title = "UMAP Projection of document-category relationships",
-       subtitle = "Dissertations from Brazilian Philosophy Graduate Programs (1988-2021)",
-       fill = "Category") +
-  theme(plot.title = element_markdown(face = "bold"),
-        legend.position = "bottom")
-  
- 
+cat_count_ano |>
+  ggplot(aes(x = an_base,
+             y = n,
+             color = category)) +
+  geom_point(alpha=0.5, size=1.5) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 3), 
+              se = FALSE,
+              linewidth = 1.8) +
+  theme_classic() +
+  labs(x = "Year",
+       y = "Number of Dissertations",
+       color = "Category",
+       title = "Trends of Categories in Dissertations",
+       subtitle = "Brazilian Philosophy Graduate Programs (1988-2021)") +
+  scale_color_manual(values = met.brewer("Cross", 7)) +
+  scale_y_continuous(limits = c(0, 200), position = "right") +
+  scale_x_continuous(limits = c(1988, 2021)) +
+  guides(color = guide_legend(override.aes = list(size = 3))) +
+  theme(legend.position = "top",
+        plot.title = element_markdown(face = "bold"),
+        text = element_text(size = 15))
