@@ -13,13 +13,16 @@ library(embed) # UMAP
 library(umap) # UMAP
 library(recipes) # UMAP
 library(ggtext) # Config de textos
-library(gganimate)
+library(gganimate) # Produção de gif
+library(ggstream)  # Produção de grafico stream
+library(geomtextpath)
+
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
 dados <- read.csv("dados/catalogo.csv")
 
-dados_ <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filosofia (N = 12525)
+dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filosofia (N = 12525)
   dplyr::mutate(g_orientador = as.factor(g_orientador), # Tranforma em fator variável gênero
                 lang = textcat::textcat(ds_resumo)) |> # Cria identificar de idioma com base nos resumos
   dplyr::filter(
@@ -30,7 +33,8 @@ dados_ <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filos
     !is.na(nm_producao)) |> # -1 trabalho sem título (n = 11742)
   dplyr::distinct(nm_producao, ds_resumo, .keep_all = TRUE) |> # -6 trabalhos repetidos (n = 11736)
   dplyr::mutate(doc_id = row_number()) |> 
-  dplyr::filter(!doc_id %in% c(7854, 7849, 8205)) |># - 3 trabalhos com palavras repetidas (n = 11733)
+  dplyr::filter(!doc_id %in% c(7854, 7849, 8205)) |> # - 3 trabalhos com palavras repetidas (n = 11733)
+  dplyr::mutate(doc_id = row_number()) |> # Reconfiguração do id dos docs (ao rodar STM, os ids são desconfigurados)
   select(doc_id, an_base, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador)
 
 # ngrams e stopwords ####
@@ -85,7 +89,7 @@ filowords <- read_csv("dados/filowords_stm.csv",
 # Preparação do banco em matriz esparsa
 filosparse <- filowords |> tidytext::cast_sparse(doc_id, word, n) #matriz para análise
 # Preparação das covariáveis para análise
-covars <- dplyr::distinct(filowords, doc_id, an_base, g_orientador) #matriz de covariáveis
+covars <- filowords |> dplyr::distinct(doc_id, an_base, g_orientador) #matriz de covariáveis
 
 # Modelo STM
 #Modelo simples####
@@ -210,25 +214,70 @@ sink()
 
 #Efeitos#### 
 # Efeito ano####
-stm_ano <- stm::estimateEffect(1:80 ~ an_base, 
+stm_efeitoano <- stm::estimateEffect(1:80 ~ an_base, 
                                     stmobj = topic_model, 
                                     metadata = covars, 
                                     uncertainty = "Global")
 
-tidystm_ano <- tidystm::extract.estimateEffect(x = stm_ano, 
+stm_ano <- tidystm::extract.estimateEffect(x = stm_efeitoano, 
                                                         covariate = "an_base", 
                                                         model = topic_model, 
                                                         method = "pointestimate",
                                                         labeltype = "prob",
                                                         n = 3)
 
+# Limpeza do banco e rotulação de categorias  
+stm_ano <- stm_ano |> 
+  mutate(topic = as_factor(topic),
+         label = str_replace_all(label, "\\(Covariate Level: 1988\\)", "")) |> 
+  left_join(categorias, by = "topic") |> 
+  filter(category != "Excluídos")
+
+# Sumariza por categoria
+stmcat_ano <- stm_ano |> 
+  summarize(gamma = sum(estimate), .by = c(category, covariate.value))
+
+# Gráfico da evolução por categorias
+stmcat_ano |>
+  ggplot(aes(x = covariate.value,
+             y = gamma,
+             fill = category)) +
+  geom_point(alpha = 0.8, linewidth = 0.4, colour = "black") +
+ # geom_labelpath(aes(label = category)) +
+  theme_classic() +
+  labs(x = "Year",
+       y = "Percentage",
+       title = "Trends of Categories in Dissertations",
+       subtitle = "Brazilian Philosophy Graduate Programs (1988-2021)") +
+  scale_fill_manual(values = met.brewer("Cross", 7)) +
+  theme(legend.position = "none",
+        plot.title = element_markdown(face = "bold"),
+        text = element_text(size = 15))
+
+
+ 
+stm_ano |> 
+  ggplot(aes(x = covariate.value,
+             y = estimate,
+             color = topic)) +
+  facet_wrap(~category) +
+  theme_classic() +
+  geom_line() +
+  labs(x = "Year",
+       y = "Point Estimation for Each Topic",
+       title = "Trends of topics within categories",
+       subtitle = "Brazilian Philosophy Graduate Programs (1988-2021)") +
+  scale_color_manual(values = met.brewer("Nizami", 80)) +
+  theme(legend.position = "none",
+        plot.title = element_markdown(face = "bold"))
+
 # Gráfico ano
-tidystm_ano |> 
+stm_ano |> 
 ggplot(aes(x = covariate.value,
            y = estimate,
            ymin = ci.lower,
            ymax = ci.upper)) +
-  facet_wrap(~topic) +
+  facet_wrap(~category) +
   theme_classic() +
   geom_ribbon(alpha = .7, color = "#7da7ea", fill = "#7da7ea") +
   geom_line(color = "#1d4497") +
@@ -293,283 +342,77 @@ ggplot(aes(x = fct_inorder(as_factor(topic)),
         text = element_text(size = 10))
 
 
+
 # Rotulação de categorias ####
 # Ver arquivo topic_model80.txt ou similar
-
-# Categorias Hugo e Marcos
+# Categorias 
 categorias <- dplyr::tibble(
   topic = as_factor(unlist(list(
-    c(3,9,11,12,18,20,25,30,32,33,39,45,46,47,48,49,57,69,77), # Política
-    c(5,13,28,29,42,52,63,73,79), # Fenomenologia 
-    c(27,40,41,44,58,59,66,71,72,74,76), # Mente e Linguagem
-    c(6,7,19,34,43,53,60,61), # Moral
-    c(14,15,21,23,51,54,65,68,70,75,78), # Metafísica
-    c(1,4,10,24,36,37,50,55,62), # Estética 
-    c(8,16,17,22,26,31,35,41,46,56,64,67,80), # Filosofia da ciência
+    c(3,9,11,12,18,20,25,30,32,33,39,45,46,47,48,49,57,69,77), # Política OK
+    c(5,13,28,29,42,52,63,73,79), # Fenomenologia OK
+    c(27,40,41,44,58,59,66,71,72,74,76), # Mente e Linguagem OK
+    c(6,7,19,34,43,53,60,61), # Moral OK
+    c(14,15,21,23,51,54,65,68,70,75,78), # Metafísica OK
+    c(1,4,10,24,36,37,50,55,62), # Estética OK
+    c(8,16,17,22,26,31,35,56,64,67,80), # Filosofia da ciência
     c(2,38) # Excluir
   ))),
   category = as_factor(c(
-    rep("Filosofia Social e Política", 19),
-    rep("Fenomenologia e Hermenêutica", 9),
-    rep("Filosofia da Mente e da Linguagem", 11),
-    rep("Ética", 8),
-    rep("Metafísica", 11),
-    rep("Estética", 9),
-    rep("Filosofia da Ciência", 13),
+    rep("Social and Political Philosophy", 19),
+    rep("Phenomenology and Hermeneutics", 9),
+    rep("Philosophy of Mind and Language", 10),
+    rep("Ethics", 8),
+    rep("Metaphysics", 11),
+    rep("Aesthetics", 9),
+    rep("Philosophy of Science", 12),
     rep("Excluídos", 2)
   )
   ))
 
-# Categorias Carolina
-categorias <- dplyr::tibble(
-  topic = as_factor(unlist(list(
-    c(2,3,12,18,20,25,30,32,33,39,45,46,47,48,49,53,68,69,77), # Política
-    c(5,8,14,16,17,22,26,31,35,44,56,63,64,65,66,67,71,74,76,80), # Lógica, Linguagem e Ciência
-    c(6,7,15,19,34,40,42,43,52,57,60,61,79), # Moral
-    c(11,21,23,54,70,73,75,78), # Metafísica
-    c(4,10,24,36,37,50,51,55,62), # Estética 
-    c(9,13,27,28,29,41,58,59,72), # Psicologia e Filosofia da Mente
-    c(1,38) # Excluir
-  ))),
-  category = as_factor(c(
-    rep("Filosofia Social e Política", 19),
-    rep("Lógica, Linguagem e Ciência", 20),
-    rep("Filosofia Moral", 13),
-    rep("Metafísica", 8),
-    rep("Estética", 9),
-    rep("Psicologia e Filosofia da Mente", 9),
-    rep("Excluídos", 2)
-  )
-  ))
-
+# Inclusão das categorias na matrix gamma
 tidygamma <- tidygamma |> 
   left_join(categorias, by = "topic")
 
-category_labels <- tidygamma  |> 
-  group_by(document) |> 
-  slice_max(order_by = gamma) |> 
-  ungroup() |> 
-  distinct(document, .keep_all = TRUE)
-
-category_labels |> 
-  ggplot(aes(x = an_base, color = category)) +
-  geom_freqpoly(binwidth = 1, linewidth = 1.2) +
-  scale_x_continuous(limits = c(1987, 2021)) +
-  scale_y_continuous(limits = c(0, 200), position = "right") +
-  scale_color_manual(values = met.brewer("Cross", 8))  
-
-
-
-prop_by_category <- category_labels |> 
-  drop_na() |> 
-  group_by(category, g_orientador) |> 
-  summarise(count = n()) |> 
-  ungroup() |> 
-  mutate(prop = count / sum(count))
-ggplot(prop_by_category, aes(x = category, y = prop, fill = g_orientador)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "Category", y = "Proportion", fill = "Gender") +
-  theme_minimal() +
-  scale_fill_manual(values = met.brewer("Austria", 2))  
-
-category_labels  |> 
-  ggplot(aes(x = an_base, color = category, group = category)) +
-  geom_line(stat = "bin", binwidth = 1, size = 1.2, alpha = 0.5) +
-  geom_point(aes(y = ..count..), stat = "bin", binwidth = 1, size = 1.5, alpha = 0.7) +
-  scale_x_continuous(limits = c(1987, 2021)) +
-  scale_y_continuous(limits = c(0, 200), position = "right") +
-  scale_color_manual(values = met.brewer("Austria", 8)) +
-  theme_minimal() +
-  labs(x = "Ano", 
-       color = "Categoria",
-       title = "Número de trabalhos de filosofia defendidos por categoria",
-       subtitle = "Elaboração: Os autores | Dados: Catálogo de Teses e Dissertações (CAPES)")
-  
-# UMAP####
-#Transformação de matriz theta com informações
-#Transformação de matriz thetha com informações
-#Gamma matrix sem categorias
-gamma_matrix <- tidygamma |> 
-  drop_na() |> 
-  pivot_wider(names_from = topic, 
-              values_from = gamma)
-
-#Gamma matrix com categorias 
-gamma_matrix <- tidygamma |>
-  drop_na() |> 
-  select(document, category, topic, gamma) |> 
-  group_by(category, document) |> 
-  summarise(gamma = mean(gamma), .groups = 'drop') |> 
-  pivot_wider(id_cols = document, 
+# UMAP ####
+# Preparação do banco
+gammawide <- tidygamma  |>  
+  summarise(gamma = mean(gamma), .by = c(category, document))  |> 
+  pivot_wider(id_cols = document,
               names_from = category, 
-              values_from = gamma)
+              values_from = gamma) 
 
-gamma_matrix1 <- as.matrix.data.frame(gamma_matrix[,2:8], rownames.force = TRUE)
-rownames(gamma_matrix1) <- unique(gamma_matrix$document)
+# Preparação da rotulagem de categorias e tópicos com base na média de gamma
+# Tópicos
+label_topic <- tidygamma |> 
+  group_by(document, topic) |> 
+  summarise(gamma = mean(gamma)) |> 
+  slice_max(gamma, n = 1, with_ties = FALSE) |> 
+  select(-gamma)
 
-me_gamma.pca <- prcomp(gamma_matrix1)
-me_gamma_umap <- umap(me_gamma.pca$x, 
-                      n_neighbors = 4,
-                      n_epochs = 500,
-                      spread = 6,
-                      min_dist = .7,
-                      seed = 1876
-)
-me_gamma_umap.pred <- predict(me_gamma_umap, me_gamma.pca$x)
-me_gamma_umap.pred  |>  head(5)
+# Junção de rótulos 
+gammawide <- gammawide |> 
+  left_join(label_topic, by = "document") |> 
+  left_join(categorias, by = "topic") |> 
+  filter(category != "Excluídos")
 
-# Outra análise
-theta_matrix <- gamma_matrix |> 
-  left_join(category_labels  |>  
-              select(document, topic, category), by = "document")
-
-umap_rec <- recipe(~., data = theta_matrix)  |> 
+# UMAP via recipe
+umap_recipe <- recipe(~., data = gammawide)  |> 
   update_role(document, topic, category, new_role = "id") |> 
   step_normalize(all_predictors())  |> 
   step_umap(all_predictors())
-umap_prep <- prep(umap_rec)
-
-#Gráfico
-#Extrair docs exemplares
-docs_labels <- category_labels  |> 
-  group_by(document)  |> 
-  slice_max(order_by = gamma) |> 
-  ungroup() |> 
-  pull(document)
+umap_model <- prep(umap_recipe)
 
 # Plot do UMAP
-juice(umap_prep)  |> 
-  ggplot(aes(UMAP1, UMAP2, fill = category, label = topic)) +
-  geom_point(aes(color = category), alpha = 0.5, size = 6) +
-  geom_text(check_overlap = TRUE, size = 5) +
- # scale_color_manual(values = met.brewer("Austria", 8)) +
-  theme_minimal() 
-
-
-juice(umap_prep)  |> 
-  ggplot(aes(UMAP1, UMAP2, label = topic)) +
-  geom_point(aes(color = topic), shape = 19, alpha = 0.2, size = 14) +
-  geom_text(check_overlap = TRUE) + 
-  scale_color_manual(values = met.brewer("Cross", 80)) +
+juice(umap_model)  |> 
+  ggplot(aes(UMAP1, UMAP2)) +
+  geom_point(aes(fill = category), alpha = .8, size = 6, shape = 21) +
+ # geom_text(check_overlap = TRUE, size = 3, color = "white") +
+  scale_fill_manual(values = met.brewer("Cross", 7)) +
   theme_minimal() +
-  theme(legend.position = "none")
-
-#Salvar gráfico
-ggsave(
-  "figs/umap_m80_tema1.png",
-  bg = "white",
-  width = 20,
-  height = 12,
-  dpi = 300,
-  plot = last_plot())
-
-#Transformação de matriz thetha com informações
-stm_gamma <- tidy(topic_model,
-                  matrix = "gamma",
-                  document_names = rownames(filosparse))  |>  
-  group_by(topic) |>  
-  arrange(topic, desc(gamma)) |>  
-  mutate(topic = as_factor(topic))
-
-gamma_matrix <- stm_gamma |> 
-  pivot_wider(names_from = topic, 
-              values_from = gamma)
-
-topic_labels <- stm_gamma  |> 
-  group_by(document) |> 
-  slice_max(order_by = gamma) |> 
-  ungroup()
-
-theta_matrix <- gamma_matrix |> 
-  left_join(topic_labels  |>  
-              select(document, topic), by = "document")
-
-
-umap_rec <- recipe(~., data = theta_matrix) %>%
-  update_role(document, topic, new_role = "id") %>%
-  step_normalize(all_predictors()) %>%
-  step_umap(all_predictors())
-umap_prep <- prep(umap_rec)
-
-#Gráfico
-#Extrair docs exemplares
-docs_labels <- topic_labels %>%
-  group_by(document) %>%
-  slice_max(order_by = gamma) %>%
-  ungroup() |> 
-  pull(document)
-
-# Plot do UMAP
-juice(umap_prep)  |> 
-  ggplot(aes(UMAP1, UMAP2, label = topic)) +
-  geom_point(aes(color = topic), shape = 19, alpha = 0.2, size = 14) +
-  geom_text(check_overlap = TRUE) + 
-  scale_color_manual(values = met.brewer("Cross", 77)) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-
-
-
-#Modelos Múltiplos (código de Julia Silge)####
-#Modelo com múltiplos K####
-plan(multisession)
-many_models <- tidyr::tibble(K = c(75, 77, 78, 79, 80, 85)) |> #Teste de modelos com 40 a 80 Tópicos
-  dplyr::mutate(topic_model = furrr::future_map(K, ~ stm::stm(filosparse, 
-                                                              K = .,
-                                                              prevalence = ~g_orientador + s(an_base),
-                                                              seed = 1987,
-                                                              data = covars,
-                                                              init.type = "Spectral"),
-                                                .options = furrr_options(seed = TRUE)))
- #Gráficos de diagnóstico dos modelos
-heldout <- stm::make.heldout(filosparse) 
-k_result <- many_models |> # Cria banco com resultados de cada modelo
-  dplyr::mutate(exclusivity = purrr::map(topic_model, exclusivity),
-                semantic_coherence = purrr::map(topic_model, semanticCoherence, filosparse),
-                eval_heldout = purrr::map(topic_model, eval.heldout, heldout$missing),
-                residual = purrr::map(topic_model, checkResiduals, filosparse),
-                bound =  purrr::map_dbl(topic_model, function(x) max(x$convergence$bound)),
-                lfact = purrr::map_dbl(topic_model, function(x) lfactorial(x$settings$dim$K)),
-                lbound = bound + lfact,
-                iterations = purrr::map_dbl(topic_model, function(x) length(x$convergence$bound)))
-
-#Critérios de avaliação de modelos | Held-out Likelihood, Coerência Semântica, Resíduos e Lower Bound ####
-theme_set(theme_minimal(base_family = "Roboto"))
-
-k_result |>  
-  transmute(K,
-            `Limite Inferior` = lbound,
-            Resíduos = map_dbl(residual, "dispersion"),
-            `Coerência Semântica` = map_dbl(semantic_coherence, mean),
-            `Verossimilhanca retida (held-out likelihood)` = map_dbl(eval_heldout, "expected.heldout")) %>%
-  gather(Metric, Value, -K) |> 
-  ggplot(aes(K, Value, color = Metric)) +
-  geom_line(linewidth = 1.5, alpha = 0.9, show.legend = FALSE) +
-  facet_wrap(~Metric, scales = "free_y") +
-  labs(x = "K (número de Tópicos)",
-       y = NULL,
-       title = "Diagnóstico do número de tópicos (K) para o modelo",
-       subtitle = "O intervalo entre 70 e 80 tópicos parece ser o mais apropriado | Elaboração: Os autores")
-
-#Gráfico Exclusividade x Coerência Semântica por tópicos
-k_result |>  
-  select(K, exclusivity, semantic_coherence)  |> 
-  filter(K %in% c(30, 40, 50, 60, 70, 75, 77, 78, 79, 80, 90, 100))  |> 
-  unnest(cols = c(exclusivity, semantic_coherence))  |> 
-  mutate(K = as.factor(K)) |> 
-  ggplot(aes(semantic_coherence, exclusivity, color = K)) +
-  geom_point(size = 2.5, alpha = 0.9) +
-  theme_minimal() +
-  scale_color_manual(values = met.brewer("Renoir", 12)) +
-  labs(x = "Coerência Semântica",
-       y = "Exclusividade",
-       title = "Comparação entre Coerência Semântica e Exclusividade",
-       subtitle = "O intervalo entre 65 e 80 tópicos parece ser o mais apropriado | Elaboração: Os autores")
-
-#Escolha do modelo com número adequado de tópicos
-topic_model <- k_result  |>  
-  filter(K == 85) |> 
-  pull(topic_model)  %>%   
-  .[[1]]
-
+  labs(title = "UMAP Projection of document-category relationships",
+       subtitle = "Dissertations from Brazilian Philosophy Graduate Programs (1988-2021)",
+       fill = "Category") +
+  theme(plot.title = element_markdown(face = "bold"),
+        legend.position = "bottom")
+  
+ 
