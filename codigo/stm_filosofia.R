@@ -17,7 +17,6 @@ library(gganimate) # Produção de gif
 library(ggstream)  # Produção de grafico stream
 library(geomtextpath)
 
-
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
 dados <- read.csv("dados/catalogo.csv")
@@ -34,6 +33,7 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
   dplyr::distinct(nm_producao, ds_resumo, .keep_all = TRUE) |> # -6 trabalhos repetidos (n = 11736)
   dplyr::mutate(doc_id = row_number()) |> 
   dplyr::filter(!doc_id %in% c(7854, 7849, 8205)) |> # - 3 trabalhos com palavras repetidas (n = 11733)
+  dplyr::filter(an_base >= 1991) |>  # - 7 trabalhos (11726)
   dplyr::mutate(doc_id = row_number()) |> # Reconfiguração do id dos docs (ao rodar STM, os ids são desconfigurados)
   select(doc_id, an_base, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador)
 
@@ -85,7 +85,6 @@ filowords |>
   readr::write_csv("dados/filowords_stm.csv")
 filowords <- read_csv("dados/filowords_stm.csv",
                       show_col_types = FALSE)
-
 # Preparação do banco em matriz esparsa
 filosparse <- filowords |> tidytext::cast_sparse(doc_id, word, n) #matriz para análise
 # Preparação das covariáveis para análise
@@ -116,7 +115,7 @@ top_words <- tidybeta  |>
   arrange(desc(beta))  |> 
   group_by(topic) |> 
   top_n(5, beta) |> 
-  summarise(terms = paste(term, collapse = ", ")) %>%
+  summarise(terms = paste(term, collapse = ", ")) |> 
   ungroup()
 
 # Matriz Gamma - Prevalência de tópicos com respectivos termos
@@ -130,11 +129,11 @@ gamma_words <- tidygamma |>
 
 # Gráfico beta ####
 tidybeta  |> 
-  group_by(topic) %>%
-  top_n(5, beta) %>%
-  ungroup() %>%
+  group_by(topic)  |> 
+  top_n(5, beta) |> 
+  ungroup() |> 
   mutate(topic = paste0("Tópico ", topic),
-         term = reorder_within(term, beta, topic)) %>%
+         term = reorder_within(term, beta, topic)) |> 
   ggplot(aes(x = term, y = beta, fill = as.factor(topic))) +
   theme_classic() +
   geom_col(alpha = 0.9, show.legend = FALSE) +
@@ -147,7 +146,6 @@ tidybeta  |>
 
 # Gráfico gamma #### 
 gamma_words |> 
-  top_n(80, gamma) |> 
   ggplot(aes(topic, gamma, 
              label = terms, 
              fill = topic)) +
@@ -161,21 +159,21 @@ gamma_words |>
   scale_fill_manual(values = met.brewer("Cross", 80))  +
   labs(x = NULL, 
        y = NULL,
-       title = "80 tópicos do *corpus* de teses e dissertações de Filosofia  com a probabilidade média esperada para cada tópico (&#947;)",
-       subtitle = "Período: 1987-2021 | n: 11.733 trabalhos") +
+       title = "80 Topics with the Estimated Topic Proportion (&#947;)") +
   theme(plot.title = element_markdown(face = "bold"),
-        plot.subtitle = element_markdown(),
         legend.position = "none",
         text = element_text(size = 20)) 
 
 # Salvar gráfico
 ggsave(
-  "figs/filostm_80t.png",
+  "figs/stm_model80t.png",
   bg = "white",
   width = 22,
-  height = 14,
-  dpi = 600,
+  height = 20,
+  dpi = 900,
   plot = last_plot())
+
+
 
 # Findthoughts (STM) #### 
 findallthoughts_m80 <- tidygamma |> 
@@ -306,6 +304,9 @@ stm_ano <- stm_ano |>
          label = str_replace_all(label, "\\(Covariate Level: 1988\\)", "")) |> 
   left_join(categorias, by = "topic") |> 
   filter(category != "Excluídos")
+
+
+
 
 # Sumariza por categoria | COM EFEITOS####
 stmcat_ano <- stm_ano |> 
