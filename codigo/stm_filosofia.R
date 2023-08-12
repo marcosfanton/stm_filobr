@@ -351,13 +351,13 @@ stmcat_ano |>
   theme(legend.position = "none",
         plot.title = element_markdown(face = "bold"))
 
-# Gráfico ano
+# Gráfico ano | Tópicos
 stm_ano |> 
 ggplot(aes(x = covariate.value,
            y = estimate,
            ymin = ci.lower,
            ymax = ci.upper)) +
-  facet_wrap(~category) +
+  facet_wrap(~topic) +
   theme_classic() +
   geom_ribbon(alpha = .7, color = "#7da7ea", fill = "#7da7ea") +
   geom_line(color = "#1d4497") +

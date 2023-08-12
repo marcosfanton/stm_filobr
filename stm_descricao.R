@@ -202,7 +202,7 @@ gamma_words |>
              color = "white") +
   coord_flip() +
   scale_y_continuous(expand = c(0,0),
-                     limits = c(0, 0.038),
+                     limits = c(0, 0.04),
                      labels = percent_format()) +
   theme_classic() +
   scale_fill_manual(values = met.brewer("Cross", 20))  +
@@ -219,6 +219,6 @@ ggsave(
   "figs/stm_model80t_20.png",
   bg = "white",
   width = 22,
-  height = 14,
+  height = 19,
   dpi = 600,
   plot = last_plot())
