@@ -15,7 +15,8 @@ library(recipes) # UMAP
 library(ggtext) # Config de textos
 library(gganimate) # Produção de gif
 library(ggstream)  # Produção de grafico stream
-library(geomtextpath)
+library(geomtextpath) # Labels nos gráficos
+library(gt) # Construção de tabelas
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
@@ -122,7 +123,7 @@ ggsave(
   plot = last_plot())
 
 # Gráfico 03 | Palavras mais frequentes em keywords####
-# Diagnóstico de palavras mais frequentes#### 
+# Diagnóstico de palavras mais frequentes 
 filo_freqwords <- dados |> 
   tidytext::unnest_tokens(output = word, input = ds_palavra_chave) |> # Separação de palavras dos resumos
   filter(!str_length(word) <= 2) |> # Eliminação de palavras com 2 ou menos caracteres
@@ -249,7 +250,7 @@ evol_cat |>
   geom_smooth(method = "lm", 
               formula = y ~ poly(x, 3), 
               se = FALSE,
-              linewidth = 1.5) +
+              linewidth = 2) +
   scale_x_continuous(limits = c(1991, 2021)) +
   scale_y_continuous(position = "right")+
   theme_classic() +
@@ -270,3 +271,271 @@ ggsave(
   height = 10,
   dpi = 900,
   plot = last_plot())
+
+# Tabela | 10 melhores e piores gênero####
+tab_20 <- left_join(tab_80,
+                    tab_gamma,
+                    by = c("topic_Female" = "topic")) |> 
+  slice(1:10, 71:80) |> 
+  select(-c(terms, topic_Male)) |> 
+  mutate(gamma = round(gamma*100,4))
+
+# TABELA 3 
+tabela_20 <- tab_20 |> 
+  gt() |> 
+  cols_move_to_start(topic_Female) |> 
+  cols_label(   # Títulos
+    topic_Female = "Topic",
+    label = "Terms (\U03B2)",
+    gamma = "\U03B3(%)",
+    proporcao_Female = "Woman (%)",
+    proporcao_Male = "Man (%)"
+  ) |>
+  tab_header(
+    title = "Topics with Higher and Lower Prevalence of Women Supervisors") |> 
+  cols_align(
+    align = "center",
+    columns = everything()) |>  
+  data_color(
+    columns = proporcao_Female,
+    target_columns = everything(),
+    palette = "inferno"
+  ) |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tabela_20,
+       "figs/stm_table_topicgender.png",
+       vwidth = 2000, vheight = 3000)
+
+# Tabelas | Categorias-Tópicos####
+gamma_words <- tidygamma |> 
+  group_by(topic) |> 
+  summarise(gamma = mean(gamma)) |> 
+  arrange(desc(gamma)) |> 
+  left_join(top_words, by = "topic") |> 
+  mutate(topic = reorder(topic, gamma))
+
+gamma_words <- gamma_words |> left_join(categorias,
+                                        by = "topic") 
+
+# Tabela Filosofia da Ciência
+tab_science <- gamma_words |>
+  filter(category == "Philosophy of Science") |> 
+  arrange(desc(gamma)) |> 
+  gt() |>
+  cols_hide(category) |> 
+  cols_move_to_end(gamma) |> 
+  cols_label(   # Títulos
+    topic = "Topic",
+    terms = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)"
+  ) |>
+  tab_header(
+    title = "Topics sorted as Philosophy of Science") |> 
+  cols_align(
+    align = "left") |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tab_science,
+       "figs/stm_table_science.png",
+       vwidth = 2000, vheight = 3000)
+
+# Tabela Estética####
+tab_estetica <- gamma_words |>
+  filter(category == "Aesthetics") |> 
+  arrange(desc(gamma)) |> 
+  gt() |>
+  cols_hide(category) |> 
+  cols_move_to_end(gamma) |> 
+  cols_label(   # Títulos
+    topic = "Topic",
+    terms = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)"
+  ) |>
+  tab_header(
+    title = "Topics sorted as Aesthetics") |> 
+  cols_align(
+    align = "left") |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tab_estetica,
+       "figs/stm_table_aesthetics.png",
+       vwidth = 2000, vheight = 3000)
+
+# Tabela Política####
+tab_fenomenologia <- gamma_words |>
+  filter(category == "Social and Political Philosophy") |> 
+  arrange(desc(gamma)) |> 
+  gt() |>
+  cols_hide(category) |> 
+  cols_move_to_end(gamma) |> 
+  cols_label(   # Títulos
+    topic = "Topic",
+    terms = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)"
+  ) |>
+  tab_header(
+    title = "Topics sorted as Social and Political Philosophy") |> 
+  cols_align(
+    align = "left") |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tab_politica,
+       "figs/stm_table_politics.png",
+       vwidth = 2000, vheight = 3000)
+
+# Tabela Fenomenologia####
+tab_fenomenologia <- gamma_words |>
+  filter(category == "Phenomenology and Hermeneutics") |> 
+  arrange(desc(gamma)) |> 
+  gt() |>
+  cols_hide(category) |> 
+  cols_move_to_end(gamma) |> 
+  cols_label(   # Títulos
+    topic = "Topic",
+    terms = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)"
+  ) |>
+  tab_header(
+    title = "Topics sorted as Phenomenology and Hermeneutics") |> 
+  cols_align(
+    align = "left") |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tab_fenomenologia,
+       "figs/stm_table_phenomenology.png",
+       vwidth = 2000, vheight = 3000)
+
+
+# Tabela Ética####
+tab_etica <- gamma_words |>
+  filter(category == "Ethics") |> 
+  arrange(desc(gamma)) |> 
+  gt() |>
+  cols_hide(category) |> 
+  cols_move_to_end(gamma) |> 
+  cols_label(   # Títulos
+    topic = "Topic",
+    terms = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)"
+  ) |>
+  tab_header(
+    title = "Topics sorted as Ethics") |> 
+  cols_align(
+    align = "left") |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tab_etica,
+       "figs/stm_table_ethics.png",
+       vwidth = 2000, vheight = 3000)
+
+# Tabela Mente e Linguagem####
+tab_linguagem <- gamma_words |>
+  filter(category == "Philosophy of Mind and Language") |> 
+  arrange(desc(gamma)) |> 
+  gt() |>
+  cols_hide(category) |> 
+  cols_move_to_end(gamma) |> 
+  cols_label(   # Títulos
+    topic = "Topic",
+    terms = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)"
+  ) |>
+  tab_header(
+    title = "Topics sorted as Philosophy of Mind and Language") |> 
+  cols_align(
+    align = "left") |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tab_linguagem,
+       "figs/stm_table_language.png",
+       vwidth = 2000, vheight = 3000)
+
+# Tabela Metafísica####
+tab_metafisica <- gamma_words |>
+  filter(category == "Metaphysics") |> 
+  arrange(desc(gamma)) |> 
+  gt() |>
+  cols_hide(category) |> 
+  cols_move_to_end(gamma) |> 
+  cols_label(   # Títulos
+    topic = "Topic",
+    terms = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)"
+  ) |>
+  tab_header(
+    title = "Topics sorted as Metaphysics") |> 
+  cols_align(
+    align = "left") |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tab_metafisica,
+       "figs/stm_table_metaphysics.png",
+       vwidth = 2000, vheight = 3000)
+
+# Tabela Filosofia da Ciência####
+tab_ciencia <- gamma_words |>
+  filter(category == "Philosophy of Science") |> 
+  arrange(desc(gamma)) |> 
+  gt() |>
+  cols_hide(category) |> 
+  cols_move_to_end(gamma) |> 
+  cols_label(   # Títulos
+    topic = "Topic",
+    terms = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)"
+  ) |>
+  tab_header(
+    title = "Topics sorted as Epistemology and Philosophy of Science") |> 
+  cols_align(
+    align = "left") |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tab_ciencia,
+       "figs/stm_table_science.png",
+       vwidth = 2000, vheight = 3000)

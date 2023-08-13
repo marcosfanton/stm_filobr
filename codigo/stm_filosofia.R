@@ -124,8 +124,7 @@ gamma_words <- tidygamma |>
   summarise(gamma = mean(gamma)) |> 
   arrange(desc(gamma)) |> 
   left_join(top_words, by = "topic") |> 
-  mutate(topic = paste0("T", topic),
-         topic = reorder(topic, gamma))
+  mutate(topic = reorder(topic, gamma))
 
 # Gráfico beta ####
 tidybeta  |> 
@@ -173,8 +172,6 @@ ggsave(
   dpi = 900,
   plot = last_plot())
 
-
-
 # Findthoughts (STM) #### 
 findallthoughts_m80 <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
@@ -215,23 +212,23 @@ sink()
 # Categorias 
 categorias <- dplyr::tibble(
   topic = as_factor(unlist(list(
-    c(3,9,11,12,18,20,25,30,32,33,39,45,46,47,48,49,56,68,75), # Política OK
-    c(5,13,28,29,42,62,71,79), # Fenomenologia OK
-    c(27,40,41,44,58,64,70,72,74,78), # Mente e Linguagem OK
-    c(6,7,19,34,43,52,59,61), # Moral OK
-    c(14,15,21,23,51,53,55,57,65,69,73,76,77), # Metafísica OK
-    c(1,4,10,24,36,37,50,54,60), # Estética OK
-    c(8,16,17,22,26,31,35,63,66,67), # Filosofia da ciência
+    c(3,9,12,18,20,25,30,32,33,39,45,46,47,48,49,56,68,75), # Política OK
+    c(5,13,28,29,42,62,71,77,79), # Fenomenologia OK
+    c(26,27,40,41,44,58,64,70,72,74,78), # Mente e Linguagem OK
+    c(6,7,19,34,43,52,59), # Moral OK
+    c(14,15,21,23,51,53,55,57,65,69,73,76), # Metafísica OK
+    c(1,4,10,11,24,36,37,50,54,60,61), # Estética OK
+    c(8,16,17,22,31,35,63,66,67), # Filosofia da ciência
     c(2,38,80) # Excluir
   ))),
   category = as_factor(c(
-    rep("Social and Political Philosophy", 19),
-    rep("Phenomenology and Hermeneutics", 8),
-    rep("Philosophy of Mind and Language", 10),
-    rep("Ethics", 8),
-    rep("Metaphysics", 13),
-    rep("Aesthetics", 9),
-    rep("Philosophy of Science", 10),
+    rep("Social and Political Philosophy", 18),
+    rep("Phenomenology and Hermeneutics", 9),
+    rep("Philosophy of Mind and Language", 11),
+    rep("Ethics", 7),
+    rep("Metaphysics", 12),
+    rep("Aesthetics", 11),
+    rep("Philosophy of Science", 9),
     rep("Excluídos", 3)
   )
   ))
@@ -275,13 +272,53 @@ umap_model <- prep(umap_recipe)
 juice(umap_model)  |> 
   ggplot(aes(UMAP1, UMAP2)) +
   geom_point(aes(fill = category), alpha = .8, size = 6, shape = 21) +
-  # geom_text(check_overlap = TRUE, size = 3, color = "white") +
+  geom_text(aes(label = topic), check_overlap = TRUE, size = 3, color = "white") +
   scale_fill_manual(values = met.brewer("Cross", 7)) +
   theme_minimal() +
   labs(title = "UMAP Projection of document-topic-category relationships",
        fill = "Category") +
   theme(plot.title = element_markdown(face = "bold"),
         legend.position = "bottom")
+
+ggsave(
+  "figs/stm_umap_80_7cat_topics.png",
+  bg = "white",
+  width = 12,
+  height = 10,
+  dpi = 900,
+  plot = last_plot())
+
+# Tabela | Categoria-Tópicos####
+gamma_words <- gamma_words |> left_join(categorias,
+                       by = "topic") 
+
+# Tabelas ver stm_descricao####
+tab_category <- gamma_words |>
+    filter(category == "Philosophy of Science") |> 
+  arrange(desc(gamma)) |> 
+  gt() |>
+  cols_hide(category) |> 
+  cols_move_to_end(gamma) |> 
+  cols_label(   # Títulos
+    topic = "Topic",
+    terms = "Terms (\U03B2)",
+    gamma = "Gamma(\U03B3)%)"
+  ) |>
+  tab_header(
+    title = "Topics sorted as Philosophy of Science") |> 
+  cols_align(
+    align = "left") |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tab_category,
+       "figs/stm_table_science.png",
+       vwidth = 2000, vheight = 3000)
+
 
 #Efeitos#### 
 # Efeito ano####
@@ -300,19 +337,16 @@ stm_ano <- tidystm::extract.estimateEffect(x = stm_efeitoano,
 # Limpeza do banco e rotulação de categorias  
 stm_ano <- stm_ano |> 
   mutate(topic = as_factor(topic),
-         label = str_replace_all(label, "\\(Covariate Level: 1988\\)", "")) |> 
+         label = str_replace_all(label, "\\(Covariate Level: 1991\\)", "")) |> 
   left_join(categorias, by = "topic") |> 
   filter(category != "Excluídos")
-
-
-
 
 # Sumariza por categoria | COM EFEITOS####
 stmcat_ano <- stm_ano |> 
   summarize(total = sum(estimate), 
             .by = c(category, covariate.value)) 
 
-# Gráfico
+# Gráfico | Categorias-Tópicos COM EFEITOS####
 stmcat_ano |>
   ggplot(aes(x = covariate.value,
              y = total,
@@ -335,6 +369,7 @@ stmcat_ano |>
   theme(plot.title = element_markdown(face = "bold"),
         text = element_text(size = 15))
 
+# Gráfico 
  stm_ano |> 
   ggplot(aes(x = covariate.value,
              y = estimate,
@@ -350,79 +385,34 @@ stmcat_ano |>
   theme(legend.position = "none",
         plot.title = element_markdown(face = "bold"))
 
-# Gráfico ano | Tópicos
+# Gráfico | Tempo-Tópicos####
 stm_ano |> 
-ggplot(aes(x = covariate.value,
+  mutate(label = str_extract(label, "\\w+\\s*,\\s*\\w+")) |> 
+  ggplot(aes(x = covariate.value,
            y = estimate,
            ymin = ci.lower,
            ymax = ci.upper)) +
-  facet_wrap(~topic) +
+  facet_wrap(~label) +
   theme_classic() +
   geom_ribbon(alpha = .7, color = "#7da7ea", fill = "#7da7ea") +
   geom_line(color = "#1d4497") +
-  labs(x = "Ano",
-       y = "Proporção Esperada de cada Tópico",
-       title = "Efeito de estimação pontual e intervalos de confiança dos tópicos ao longo do tempo") +
-  theme(legend.position = "none",
-        plot.title = element_markdown(face = "bold"))
-
-ggsave(
-  "figs/filostm_80t_ano.png",
-  bg = "white",
-  width = 22,
-  height = 14,
-  dpi = 600,
-  plot = last_plot())
-
-#Cálculo da variação dos tópicos
-calc_ano <- ext_stm_effect_ano |> 
-  filter(covariate.value %in% c(1991, 2021)) |> 
-  select(topic, covariate.value, estimate) |> 
-  pivot_wider(names_from = "covariate.value", 
-              values_from  = "estimate") |> 
-  mutate(diferenca = round(`1991` - `2021`,4)) 
-
-# Efeito gênero de orientador####
-stm_efeitogenero <- stm::estimateEffect(1:80 ~ g_orientador, 
-                                       stmobj = topic_model, 
-                                       metadata = covars, 
-                                       uncertainty = "Global")
-
-stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero, 
-                                                           covariate = "g_orientador", 
-                                                           model = topic_model, 
-                                                           method = "pointestimate",
-                                                           labeltype = "prob",
-                                                           n = 3)
-# Cálculo da proporção de cada tópico
-prop_genero <- stm_genero |> 
-  group_by(topic) |> 
-  mutate(total = sum(estimate)) |> 
-  group_by(topic, covariate.value) |> 
-  mutate(proporcao = round(estimate/sum(total)*100,2)) |> 
-  arrange(covariate.value, desc(proporcao)) 
-
-# Gráfico gênero
-prop_genero |>
-ggplot(aes(x = fct_inorder(as_factor(topic)),
-           y = proporcao,
-           fill = covariate.value)) +
-  geom_col() +
-  geom_hline(yintercept = 50, color = "white") +
-  scale_y_continuous(labels = percent_format(scale = 1))+
-  theme_classic() +
-  coord_flip() +
-  scale_fill_manual(values = met.brewer("Austria", 2))  +
-  labs(x = "",
-       y = "",
-       title = "Description of the Gender Distribution among the 80 topics",
-       subtitle = "Theses Supervised by <span style= 'color:#16317d;'>**Men**</span> e <span style= 'color:#a40000;'>**Women**</span>") +
+  labs(x = "Year",
+       y = "Point Estimation Effect",
+       title = "Trends of Topics in Dissertations (1991-2021)") +
   theme(legend.position = "none",
         plot.title = element_markdown(face = "bold"),
-        plot.subtitle = element_markdown(),
         text = element_text(size = 15))
 
-# Sumariza por categoria | SEM EFEITOS####
+ggsave(
+  "figs/stm_80t_topicyeareffect.png",
+  bg = "white",
+  width = 23,
+  height = 20,
+  dpi = 900,
+  plot = last_plot())
+
+# Gráfico | Tempo-Categoria por trabalho####
+# Rotulação de cada documento por categoria
 cat_count <- tidygamma  |> 
   group_by(document, category)  |> 
   summarize(gamma = mean(gamma))  |> 
@@ -435,9 +425,11 @@ cat_count <- tidygamma  |>
   ungroup() |> 
   unique()
 
+# Sumariza por trabalho
 cat_count_ano <- cat_count |> 
-  summarize(n = n(), .by = c(an_base, category))
+  summarize(n = n(), .by = c(an_base, category)) # Número de trabalhos
 
+# Gráfico
 cat_count_ano |>
   ggplot(aes(x = an_base,
              y = n,
@@ -460,3 +452,160 @@ cat_count_ano |>
   theme(legend.position = "top",
         plot.title = element_markdown(face = "bold"),
         text = element_text(size = 15))
+
+# Cálculo da variação dos tópicos#### 
+calc_ano <- ext_stm_effect_ano |> 
+  filter(covariate.value %in% c(1991, 2021)) |> 
+  select(topic, covariate.value, estimate) |> 
+  pivot_wider(names_from = "covariate.value", 
+              values_from  = "estimate") |> 
+  mutate(diferenca = round(`1991` - `2021`,4)) 
+
+
+
+
+
+# Efeito gênero de orientador####
+stm_efeitogenero <- stm::estimateEffect(1:80 ~ g_orientador, 
+                                       stmobj = topic_model, 
+                                       metadata = covars, 
+                                       uncertainty = "Global")
+
+stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero, 
+                                                           covariate = "g_orientador", 
+                                                           model = topic_model, 
+                                                           method = "pointestimate",
+                                                           labeltype = "prob",
+                                                           n = 3)
+# Cálculo da proporção de gênero para cada tópico####
+prop_topicgenero <- stm_genero |> 
+  group_by(topic) |> 
+  mutate(total = sum(estimate)) |> 
+  group_by(topic, covariate.value) |> 
+  mutate(proporcao = round(estimate/sum(total)*100,2)) |> 
+  arrange(covariate.value, desc(proporcao)) 
+
+# Gráfico Tópico-gênero####
+prop_topicgenero |>
+  ggplot(aes(x = fct_inorder(as_factor(topic)),
+             y = proporcao,
+             fill = covariate.value)) +
+  geom_col() +
+  geom_hline(yintercept = 50, color = "white") +
+  scale_y_continuous(labels = percent_format(scale = 1),
+                     expand = c(0,0)) +
+  theme_classic() +
+  coord_flip() +
+  scale_fill_manual(values = met.brewer("Austria", 2))  +
+  labs(x = "",
+       y = "",
+       title = "Description of the Gender Distribution among the 80 topics",
+       subtitle = "Theses Supervised by <span style= 'color:#16317d;'>**Men**</span> e <span style= 'color:#a40000;'>**Women**</span>") +
+  theme(legend.position = "none",
+        plot.title = element_markdown(face = "bold"),
+        plot.subtitle = element_markdown(),
+        text = element_text(size = 15))
+
+ggsave(
+  "figs/stm_80t_topicgenero.png",
+  bg = "white",
+  width = 20,
+  height = 18,
+  dpi = 600,
+  plot = last_plot())
+
+# Gráfico Gênero-Categoria####
+
+# Inclusão das categorias
+prop_catgenero <- stm_genero |> 
+  mutate(topic = as_factor(topic))  |> 
+  left_join(categorias, by = "topic") |> 
+  filter(category != "Excluídos") |> 
+  group_by(category, covariate.value) |>
+  summarise(total = sum(estimate)) |> 
+  mutate(proporcao = round(total/sum(total)*100,2)) |> 
+  arrange(covariate.value, desc(proporcao)) 
+
+
+prop_catgenero |>
+  ggplot(aes(x = fct_inorder(category),
+             y = proporcao,
+             fill = covariate.value)) +
+  geom_col() +
+  geom_hline(yintercept = 50, color = "white") +
+  scale_y_continuous(labels = percent_format(scale = 1),
+                     expand = c(0,1)) +
+  theme_classic() +
+  coord_flip() +
+  scale_fill_manual(values = met.brewer("Austria", 2))  +
+  labs(x = "",
+       y = "",
+       title = "Description of the Gender Distribution among Categories",
+       subtitle = "Theses Supervised by <span style= 'color:#16317d;'>**Men**</span> e <span style= 'color:#a40000;'>**Women**</span>") +
+  theme(legend.position = "none",
+        plot.title = element_markdown(face = "bold"),
+        plot.subtitle = element_markdown(),
+        axis.text.y = element_markdown(size = 20, 
+                                       face = "bold",
+                                       color = "black"),
+        text = element_text(size = 25))
+
+ggsave(
+  "figs/stm_80t_categorygender.png",
+  bg = "white",
+  width = 23,
+  height = 18,
+  dpi = 600,
+  plot = last_plot())
+
+# Tabela | 11-11 tópicos-gênero####
+tab_80 <- prop_genero  |> 
+  select(topic, covariate.value, label, proporcao)  |> 
+  mutate(label = str_replace_all(label, "\\(Covariate Level: Male\\)", "")) |> 
+  pivot_wider(names_from = covariate.value,
+              values_from = c(topic, proporcao)) 
+
+# Prepara o gamma
+tab_gamma <- gamma_words |> 
+  mutate(topic = as_factor(str_replace_all(topic, "T", "")))
+
+# Tabela dos 10-10
+tab_22 <- left_join(tab_80,
+                    tab_gamma,
+                    by = c("topic_Female" = "topic")) |> 
+  slice(1:11, 70:80) |> 
+  select(-c(terms, topic_Male)) |> 
+  mutate(gamma = round(gamma*100,4))
+
+# TABELA 3 
+tabela_22 <- tab_22 |> 
+  gt() |> 
+  cols_move_to_start(c(category,topic_Female)) |> 
+  cols_hide(proporcao_Male) |> 
+  cols_label(   # Títulos
+    topic_Female = "Topic",
+    label = "Terms (\U03B2)",
+    gamma = "\U03B3(%)",
+    proporcao_Female = "Woman (%)",
+    category = "Category"
+  ) |>
+  tab_header(
+    title = "Topics with Higher and Lower Prevalence of Women Supervisors") |> 
+  cols_align(
+    align = "center",
+    columns = everything()) |>  
+  data_color(
+    columns = proporcao_Female,
+    target_columns = everything(),
+    palette = "inferno"
+  ) |>
+  tab_options(
+    table_body.hlines.style = "none",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    table_body.border.bottom.color = "black"
+  )
+
+gtsave(tabela_22,
+       "figs/stm_table_topicgender.png",
+       vwidth = 2000, vheight = 3000)
