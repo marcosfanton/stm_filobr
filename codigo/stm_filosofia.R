@@ -215,24 +215,24 @@ sink()
 # Categorias 
 categorias <- dplyr::tibble(
   topic = as_factor(unlist(list(
-    c(3,9,11,12,18,20,25,30,32,33,39,45,46,47,48,49,57,69,77), # Política OK
-    c(5,13,28,29,42,52,63,73,79), # Fenomenologia OK
-    c(27,40,41,44,58,59,66,71,72,74,76), # Mente e Linguagem OK
-    c(6,7,19,34,43,53,60,61), # Moral OK
-    c(14,15,21,23,51,54,65,68,70,75,78), # Metafísica OK
-    c(1,4,10,24,36,37,50,55,62), # Estética OK
-    c(8,16,17,22,26,31,35,56,64,67,80), # Filosofia da ciência
-    c(2,38) # Excluir
+    c(3,9,11,12,18,20,25,30,32,33,39,45,46,47,48,49,56,68,75), # Política OK
+    c(5,13,28,29,42,62,71,79), # Fenomenologia OK
+    c(27,40,41,44,58,64,70,72,74,78), # Mente e Linguagem OK
+    c(6,7,19,34,43,52,59,61), # Moral OK
+    c(14,15,21,23,51,53,55,57,65,69,73,76,77), # Metafísica OK
+    c(1,4,10,24,36,37,50,54,60), # Estética OK
+    c(8,16,17,22,26,31,35,63,66,67), # Filosofia da ciência
+    c(2,38,80) # Excluir
   ))),
   category = as_factor(c(
     rep("Social and Political Philosophy", 19),
-    rep("Phenomenology and Hermeneutics", 9),
+    rep("Phenomenology and Hermeneutics", 8),
     rep("Philosophy of Mind and Language", 10),
     rep("Ethics", 8),
-    rep("Metaphysics", 11),
+    rep("Metaphysics", 13),
     rep("Aesthetics", 9),
-    rep("Philosophy of Science", 12),
-    rep("Excluídos", 2)
+    rep("Philosophy of Science", 10),
+    rep("Excluídos", 3)
   )
   ))
 
@@ -278,8 +278,7 @@ juice(umap_model)  |>
   # geom_text(check_overlap = TRUE, size = 3, color = "white") +
   scale_fill_manual(values = met.brewer("Cross", 7)) +
   theme_minimal() +
-  labs(title = "UMAP Projection of document-category relationships",
-       subtitle = "Dissertations from Brazilian Philosophy Graduate Programs (1988-2021)",
+  labs(title = "UMAP Projection of document-topic-category relationships",
        fill = "Category") +
   theme(plot.title = element_markdown(face = "bold"),
         legend.position = "bottom")
@@ -384,19 +383,19 @@ calc_ano <- ext_stm_effect_ano |>
   mutate(diferenca = round(`1991` - `2021`,4)) 
 
 # Efeito gênero de orientador####
-stm_genero <- stm::estimateEffect(1:80 ~ g_orientador, 
+stm_efeitogenero <- stm::estimateEffect(1:80 ~ g_orientador, 
                                        stmobj = topic_model, 
                                        metadata = covars, 
                                        uncertainty = "Global")
 
-tidystm_genero <- tidystm::extract.estimateEffect(x = stm_genero, 
+stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero, 
                                                            covariate = "g_orientador", 
                                                            model = topic_model, 
                                                            method = "pointestimate",
                                                            labeltype = "prob",
                                                            n = 3)
 # Cálculo da proporção de cada tópico
-prop_tidystm_genero <- tidystm_genero |> 
+prop_genero <- stm_genero |> 
   group_by(topic) |> 
   mutate(total = sum(estimate)) |> 
   group_by(topic, covariate.value) |> 
@@ -404,21 +403,24 @@ prop_tidystm_genero <- tidystm_genero |>
   arrange(covariate.value, desc(proporcao)) 
 
 # Gráfico gênero
-prop_tidystm_genero |>
+prop_genero |>
 ggplot(aes(x = fct_inorder(as_factor(topic)),
            y = proporcao,
            fill = covariate.value)) +
   geom_col() +
+  geom_hline(yintercept = 50, color = "white") +
   scale_y_continuous(labels = percent_format(scale = 1))+
   theme_classic() +
   coord_flip() +
-  scale_fill_d3() +
+  scale_fill_manual(values = met.brewer("Austria", 2))  +
   labs(x = "",
        y = "",
-       title = "Distribuição de trabalhos orientados por <span style= 'color:#FF7F0EFF; font-size:12pt;'>**Homens**</span> e <span style= 'color:#1F77B4FF;font-size:12pt;'>**Mulheres**</span> entre os 80 tópicos") +
+       title = "Description of the Gender Distribution among the 80 topics",
+       subtitle = "Theses Supervised by <span style= 'color:#16317d;'>**Men**</span> e <span style= 'color:#a40000;'>**Women**</span>") +
   theme(legend.position = "none",
         plot.title = element_markdown(face = "bold"),
-        text = element_text(size = 10))
+        plot.subtitle = element_markdown(),
+        text = element_text(size = 15))
 
 # Sumariza por categoria | SEM EFEITOS####
 cat_count <- tidygamma  |> 
