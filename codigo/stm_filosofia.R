@@ -35,7 +35,7 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
   dplyr::filter(!doc_id %in% c(7854, 7849, 8205)) |> # - 3 trabalhos com palavras repetidas (n = 11733)
   dplyr::filter(an_base >= 1991) |>  # - 7 trabalhos (11726)
   dplyr::mutate(doc_id = row_number()) |> # Reconfiguração do id dos docs (ao rodar STM, os ids são desconfigurados)
-  select(doc_id, an_base, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador)
+  select(doc_id, an_base, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas,  g_orientador)
 
 # ngrams e stopwords ####
 # Para não poluir esse script, a análise de ngrams e de stopwords foi realizada em script separado.

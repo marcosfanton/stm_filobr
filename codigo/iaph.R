@@ -313,10 +313,10 @@ dados_god |> ggplot(aes(x = frequencia_o,
                                          linewidth = 0.5, 
                                          linetype = "solid")) 
 ggsave(
-  "figs/iaph/graf2_supervisorvsstudents.png",
+  "dados/catalogo/topics_student-supervisor.png",
   bg = "white",
-  width = 20,
-  height = 18,
+  width = 14,
+  height = 12,
   dpi = 1200,
   plot = last_plot())
 
