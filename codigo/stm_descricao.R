@@ -1,56 +1,48 @@
 ####Pacotes####
 library(tidyverse)
 library(here)
-library(tidytext) # Manipulação de texto
-library(stringi) # Manipulação de texto
-library(textcat) # Detecção de resumos em outros idiomas
-library(stm) # Structural topic model
-library(furrr) # Rodar múltiplos modelos 
-library(tidystm) # Extração de efeitos do modelo
+library(geomtextpath) # Labels nos gráficos
 library(MetBrewer) # Paleta de cores
+library(ggtext) # Config de textos
+library(geobr) # Mapa Brasil
+
 library(scales) # Uso de porcentagem em gráficos
 library(embed) # UMAP
 library(umap) # UMAP
 library(recipes) # UMAP
-library(ggtext) # Config de textos
 library(gganimate) # Produção de gif
 library(ggstream)  # Produção de grafico stream
-library(geomtextpath) # Labels nos gráficos
 library(gt) # Construção de tabelas
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
 # Importação do banco limpo em "limpeza_catalogo.R"
-dados <- read.csv("dados/catalogo.csv")
-
-dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filosofia (N = 12525)
-  dplyr::mutate(g_orientador = as.factor(g_orientador), # Tranforma em fator variável gênero
-                lang = textcat::textcat(ds_resumo)) |> # Cria identificar de idioma com base nos resumos
-  dplyr::filter(
-    stringi::stri_count_words(dados$ds_resumo) > 15, # -172 trabalhos com resumos insuficientes (n = 12353)
-    is.na(nm_grau_academico) | nm_grau_academico != "mestrado profissional", #-356 trabalhos do mestrado acadêmico (n = 11997)
-    lang == "portuguese", # -70 trabalhos com resumos em outros idiomas (n = 11927)
-    !is.na(g_orientador), # -184 trabalhos sem identificação de gênero do orientador (n = 11743)
-    !is.na(nm_producao)) |> # -1 trabalho sem título (n = 11742)
-  dplyr::distinct(nm_producao, ds_resumo, .keep_all = TRUE) |> # -6 trabalhos repetidos (n = 11736)
-  dplyr::mutate(doc_id = row_number()) |> 
-  dplyr::filter(!doc_id %in% c(7854, 7849, 8205)) |> # - 3 trabalhos com palavras repetidas (n = 11733)
-  dplyr::filter(an_base >= 1991) |>  # - 7 trabalhos (11726)
-  dplyr::mutate(doc_id = row_number()) |> # Reconfiguração do id dos docs (ao rodar STM, os ids são desconfigurados)
-  select(doc_id, an_base, nm_producao, nm_grau_academico, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador, g_discente, g_oridis)
+dados <- read.csv("dados/catalogo.csv") |> 
+  select(an_base, 
+         nm_grau_academico, 
+         nm_entidade_ensino, 
+         nm_regiao, 
+         g_orientador, 
+         g_discente, 
+         g_oridis) |> 
+  filter(nm_grau_academico != "mestrado profissional")
 
 # Gráfico 01 | Evolução do n. de Teses e Dissertações Filosofia####
-evol_total <-  dados |> 
+ev_total <-  dados |> 
   summarize(n = n(),
             .by = c(an_base, nm_grau_academico)) |> 
-  bind_rows(dados  |> 
+  bind_rows(dados |> 
               group_by(an_base)  |> 
-              summarise(nm_grau_academico = "total", n = n()))
+              summarise(nm_grau_academico = "Total", n = n())) |> 
+  mutate(nm_grau_academico = str_replace_all(nm_grau_academico,
+                                             pattern = c("mestrado" = "Dissertation",
+                                                         "doutorado" = "Thesis")))
 
 # Gráfico evolução 
-evol_total |> 
+ev_total |> 
+  filter(an_base >= 1991) |> 
 ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
-  geom_point(alpha = 0.4) +
-  geom_line(alpha = 0.4) +
+  geom_point(alpha = 0.6) +
+  geom_line(alpha = 0.6) +
   geom_labelsmooth(aes(label = nm_grau_academico), 
                    text_smoothing = 30, 
                    fill = "#F6F6FF",
@@ -61,26 +53,94 @@ ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
                    linewidth = 2, 
                    boxlinewidth = 0.6) +
   scale_color_manual(values = met.brewer("Degas", 3))  +
-  scale_x_continuous(limits = c(1991, 2021), breaks = seq(1990, 2021, 5)) +
+  scale_x_continuous(limits = c(1990, 2021), breaks = seq(1990, 2021, 5)) +
   scale_y_continuous(position = "right") +
   theme_classic() +
-  labs(title = "Evolution of Defenses in Philosophy Graduate Programs over the Years",
-       subtitle = "Theses and dissertations defended between 1991-2021 | n: 11.726",
-       x = "",
+  labs(x = "",
        y = "") +
-  theme(plot.title = element_markdown(face = "bold"),
-        plot.subtitle = element_markdown(),
-        legend.position = "none",
-        text = element_text(size = 20)) +
+  theme(legend.position = "none",
+        text = element_text(size = 30)) +
   coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
 
 ggsave(
-  "figs/stm_trabalhosano.png",
+  "figs/stm_evoldefenses.png",
   bg = "white",
   width = 16,
-  height = 12,
+  height = 10,
   dpi = 1200,
   plot = last_plot())
+
+# Gráfico 02 | Mapa Brasil####
+# Baixar dados populacionais por Estado
+# Site: Elaboração: Atlas do Desenvolvimento Humano no Brasil. Pnud Brasil, Ipea e FJP, 2022.
+# Site: Fontes: dados do IBGE e de registros administrativos, conforme especificados nos metadados disponíveis disponíveis em: http://atlasbrasil.org.br/acervo/biblioteca.
+
+# Baixar mapa de regiões
+regiao <- geobr::read_region(year = 2020)
+# Sumarizar dados por região
+dados_regiao <- dados |> 
+  group_by(nm_regiao) |> 
+  summarize(trabalhos = n()) |> 
+  mutate(nm_regiao = recode(nm_regiao, # MANTER OS NOMES PARA FUNCIONAR
+                            "centrooeste" = "Centro Oeste",
+                            "nordeste" = "Nordeste",
+                            "norte" = "Norte",
+                            "sudeste" = "Sudeste",
+                            "sul" = "Sul")) 
+# Unificar bancos
+regiao <- dplyr::left_join(regiao, 
+                           dados_regiao, 
+                           by = c("name_region" = "nm_regiao"))
+
+# Gráfico - Regiao
+ggplot(regiao) +
+  geom_sf(aes(fill = trabalhos), color = "NA") +
+  labs(size = 30) +
+  theme_void() +
+  theme(plot.title = element_markdown(face = "bold"),
+        legend.position = "none") +
+  scale_fill_distiller(palette = "Blues", direction = 1) +
+  geom_sf_text(aes(label = trabalhos), size = 12) 
+
+ggsave(
+  "figs/fig2_brazilmap.png",
+  bg = "white",
+  width = 15,
+  height = 10,
+  dpi = 1200,
+  plot = last_plot())
+
+# Gráfico 3 | Desigualdade de gênero####
+dados |> 
+  mutate(g_oridis = recode(g_oridis,
+                           "FF" = "W/W",
+                           "FM" = "W/M",
+                           "MF" = "M/W",
+                           "MM" = "M/M")) |> 
+  drop_na() |> 
+  ggplot(aes(x = an_base, 
+             fill = g_oridis)) +
+  geom_bar(position = "fill") +
+  theme_classic() +
+  labs(x = "",
+       y = "",
+       fill = "Supervisor/Candidate") +
+  scale_x_continuous(limits = c(1990, 2021)) +
+  scale_y_continuous(labels=scales::percent, position = "right") +
+  scale_fill_manual(values = met.brewer("Degas", 3))  +
+  theme(legend.position = "top",
+        legend.text=element_text(size=36),
+        text = element_text(size = 36, family = "Times New Roman")) + 
+  coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
+
+ggsave(
+  "figs/graf6.png",
+  bg = "white",
+  width = 17,
+  height = 12,
+  dpi = 300,
+  plot = last_plot())
+
 
 # Gráfico 02 | Descrição Orientadores ao longo do tempo####
 #Contagem da média

@@ -1,19 +1,9 @@
 ####Pacotes####
 library(tidyverse)
 library(here)
-library(skimr)
 library(genderBR) # Dicionário de nomes e gênero
 library(stringi)
 library(textclean)
-library(MetBrewer)
-library(ggforce)
-library(ggridges)
-library(extrafont)
-library(ggtext)
-library(ggstream)
-library(janitor)
-library(epiR)
-library(gt)
 
 #Unificação dos bancos de 1987-2021####
 #Todos os bancos foram baixados em CSV na página da CAPES - Dados Abertos 
