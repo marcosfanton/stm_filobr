@@ -5,6 +5,8 @@ library(geomtextpath) # Labels nos gráficos
 library(MetBrewer) # Paleta de cores
 library(ggtext) # Config de textos
 library(geobr) # Mapa Brasil
+library(janitor) # Tabela
+library(epiR) # Cálculo de razão de prevalência
 
 library(scales) # Uso de porcentagem em gráficos
 library(embed) # UMAP
@@ -24,7 +26,8 @@ dados <- read.csv("dados/catalogo.csv") |>
          g_orientador, 
          g_discente, 
          g_oridis) |> 
-  filter(nm_grau_academico != "mestrado profissional")
+  filter(nm_grau_academico != "mestrado profissional") |> 
+  filter(an_base >= 1991)
 
 # Gráfico 01 | Evolução do n. de Teses e Dissertações Filosofia####
 ev_total <-  dados |> 
@@ -39,7 +42,6 @@ ev_total <-  dados |>
 
 # Gráfico evolução 
 ev_total |> 
-  filter(an_base >= 1991) |> 
 ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
   geom_point(alpha = 0.6) +
   geom_line(alpha = 0.6) +
@@ -111,35 +113,60 @@ ggsave(
   plot = last_plot())
 
 # Gráfico 3 | Desigualdade de gênero####
-dados |> 
+graf3_genero <- dados |> 
   mutate(g_oridis = recode(g_oridis,
                            "FF" = "W/W",
                            "FM" = "W/M",
                            "MF" = "M/W",
                            "MM" = "M/M")) |> 
-  drop_na() |> 
+  drop_na() 
+
+graf3_genero |> 
   ggplot(aes(x = an_base, 
              fill = g_oridis)) +
   geom_bar(position = "fill") +
   theme_classic() +
   labs(x = "",
        y = "",
-       fill = "Supervisor/Candidate") +
+       fill = "Supervisor/Student") +
   scale_x_continuous(limits = c(1990, 2021)) +
   scale_y_continuous(labels=scales::percent, position = "right") +
-  scale_fill_manual(values = met.brewer("Degas", 3))  +
+  scale_fill_manual(values = met.brewer("Austria", 4))  +
   theme(legend.position = "top",
-        legend.text=element_text(size=36),
-        text = element_text(size = 36, family = "Times New Roman")) + 
+        legend.text=element_text(size=30),
+        text = element_text(size = 30)) + 
   coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
 
 ggsave(
-  "figs/graf6.png",
+  "figs/graf3_genero.png",
   bg = "white",
   width = 17,
   height = 12,
-  dpi = 300,
+  dpi = 1200,
   plot = last_plot())
+
+# Descrição 
+graf3_genero |> 
+  group_by(g_oridis) |> 
+  summarize(total_d = n()) |> 
+  mutate(frequencia_d = round(total_d/sum(total_d)*100,2)) 
+
+# Razão de prevalência orientador-estudante####
+matriz <- graf3_genero |>  
+  tabyl(g_orientador, g_discente) |> 
+  adorn_totals(c("row", "col"))
+
+dat.v <- matrix(c(775, #W/W
+                  2570, #M/W
+                  1504, #W/M
+                  6755), #M/M
+                ncol =2)
+
+
+
+resultado <- epi.2by2(dat = dat.v, method = "cross.sectional",
+                      conf.level = 0.95, units = 100, outcome = "as.columns")
+
 
 
 # Gráfico 02 | Descrição Orientadores ao longo do tempo####
