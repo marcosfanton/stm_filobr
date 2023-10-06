@@ -156,6 +156,9 @@ topic_model <- stm(filosparse,
                    data = covars,
                    init.type = "Spectral")
 
+saveRDS(topic_model, "dados/stm_modelo80.rda")
+readRDS("dados/stm_modelo80.rda")
+
 # Extração matrizes####
 # Extração beta####
 tidybeta <- tidytext::tidy(topic_model) |> 
