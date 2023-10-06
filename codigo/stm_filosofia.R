@@ -2,12 +2,11 @@
 library(tidyverse)
 library(here)
 library(tidytext) # Manipulação de texto
-library(stringi) # Manipulação de texto
-library(textcat) # Detecção de resumos em outros idiomas
 library(stm) # Structural topic model
 library(furrr) # Rodar múltiplos modelos 
-library(tidystm) # Extração de efeitos do modelo
 library(MetBrewer) # Paleta de cores
+
+library(tidystm) # Extração de efeitos do modelo
 library(scales) # Uso de porcentagem em gráficos
 library(embed) # UMAP
 library(umap) # UMAP
@@ -85,12 +84,70 @@ filowords |>
   readr::write_csv("dados/filowords_stm.csv")
 filowords <- read_csv("dados/filowords_stm.csv",
                       show_col_types = FALSE)
-# Preparação do banco em matriz esparsa
+# Preparação do banco em matriz esparsa####
 filosparse <- filowords |> tidytext::cast_sparse(doc_id, word, n) #matriz para análise
 # Preparação das covariáveis para análise
 covars <- filowords |> dplyr::distinct(doc_id, an_base, g_orientador) #matriz de covariáveis
 
-# Modelo STM
+#********* STM *********####
+# Múltiplos modelos - 40-100####
+plan(multisession)
+many_models <- tibble(K = c(40, 50, 60, 70, 80, 90, 100)) |> #Teste de modelos com 40 a 80 Tópicos
+  mutate(topic_model = furrr::future_map(K, ~ stm(filosparse, 
+                                                  K = .,
+                                                  prevalence = ~ g_orientador + s(an_base),
+                                                  seed = 1987,
+                                                  data = covars,
+                                                  init.type = "Spectral"),
+                                         .options = furrr_options(seed = TRUE)))
+# Gráficos de diagnóstico####
+heldout <- make.heldout(filosparse)
+k_result <- many_models |> # Cria banco com resultados de cada tópico
+  mutate(exclusivity = map(topic_model, exclusivity),
+         semantic_coherence = map(topic_model, semanticCoherence, filosparse),
+         eval_heldout = map(topic_model, eval.heldout, heldout$missing),
+         residual = map(topic_model, checkResiduals, filosparse),
+         bound =  map_dbl(topic_model, function(x) max(x$convergence$bound)),
+         lfact = map_dbl(topic_model, function(x) lfactorial(x$settings$dim$K)),
+         lbound = bound + lfact,
+         iterations = map_dbl(topic_model, function(x) length(x$convergence$bound)))
+
+# Gráfico 
+k_result |>  
+  transmute(K,
+            `Lower bound` = lbound,
+            `Residual` = map_dbl(residual, "dispersion"),
+            `Semantic coherence` = map_dbl(semantic_coherence, mean),
+            `Held-out likelihood` = map_dbl(eval_heldout, "expected.heldout"))  |> 
+  gather(Metric, Value, -K) |> 
+  ggplot(aes(K, 
+             Value, 
+             color = Metric)) +
+  geom_point(size = 2)+
+  geom_line(linewidth = 1.5, alpha = 0.9, show.legend = FALSE) +
+  scale_color_manual(values = met.brewer("Austria", 4))  +
+  theme_classic()+
+  facet_wrap(~Metric, scales = "free_y") +
+  labs(x = "K",
+       y = NULL)+
+  theme(legend.position = "none",
+        text = element_text(size = 30))
+
+ggsave(
+  "figs/stm_diagnostico.png",
+  bg = "white",
+  width = 17,
+  height = 12,
+  dpi = 1200,
+  plot = last_plot())
+
+# Escolha do modelo#### 
+#Escolha do modelo a partir do resultado de modelos múltiplos 
+topic_model <- k_result  |>  
+  filter(K == 80) |> 
+  pull(topic_model) %>% 
+  .[[1]]
+#OU
 #Modelo simples####
 topic_model <- stm(filosparse,
                    K = 80,
@@ -99,18 +156,12 @@ topic_model <- stm(filosparse,
                    data = covars,
                    init.type = "Spectral")
 
-# Extração de matrizes####
-# Beta
+# Extração matrizes####
+# Extração beta####
 tidybeta <- tidytext::tidy(topic_model) |> 
   mutate(topic = as_factor(topic))
-# Gamma
-tidygamma <- tidytext::tidy(topic_model, 
-                            matrix = "gamma") |> 
-  right_join(covars, by = c("document" = "doc_id")) |> 
-  arrange(topic, desc(gamma)) |> 
-  mutate(topic = as_factor(topic))
 
-# Matriz Beta - Palavras mais frequentes de cada tópico 
+# Escolha de top words
 top_words <- tidybeta  |> 
   arrange(desc(beta))  |> 
   group_by(topic) |> 
@@ -118,7 +169,15 @@ top_words <- tidybeta  |>
   summarise(terms = paste(term, collapse = ", ")) |> 
   ungroup()
 
-# Matriz Gamma - Prevalência de tópicos com respectivos termos
+# Matriz Gamma####
+# Matriz Gamma
+tidygamma <- tidytext::tidy(topic_model, 
+                            matrix = "gamma") |> 
+  right_join(covars, by = c("document" = "doc_id")) |> 
+  arrange(topic, desc(gamma)) |> 
+  mutate(topic = as_factor(topic))
+
+# 
 gamma_words <- tidygamma |> 
   group_by(topic) |> 
   summarise(gamma = mean(gamma)) |> 
@@ -152,8 +211,7 @@ gamma_words |>
   geom_text(hjust = 0, nudge_y = -0.000001, size = 6) +
   coord_flip() +
   scale_y_continuous(expand = c(0,0),
-                     limits = c(0, 0.038),
-                     labels = percent_format()) +
+                     limits = c(0, 0.038)) +
   theme_classic() +
   scale_fill_manual(values = met.brewer("Cross", 80))  +
   labs(x = NULL, 
@@ -239,6 +297,21 @@ tidygamma <- tidygamma |>
 
 tidygamma <- tidygamma |> 
   filter(category != "Excluídos")
+
+# Tabelão tópicos####
+resumo <- labelTopics(topic_model, n = 5)
+frexs <- as_tibble(resumo$frex) 
+
+frex <- frexs |> 
+  mutate(topic = as.factor(row_number()),
+         frex = paste(V1, V2, V3, V4, V5, sep = ", ")) |> 
+  select(topic, frex)
+
+# Tabelão
+tabelao <- left_join(frex, gamma_words, by = "topic") |> 
+  left_join(categorias, by = "topic") |> 
+  mutate(gamma = round(gamma*100,3))
+
 
 # UMAP ####
 # Preparação do banco
