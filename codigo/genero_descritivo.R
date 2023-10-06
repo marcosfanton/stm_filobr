@@ -8,8 +8,6 @@ library(ggridges)
 library(extrafont)
 library(ggtext)
 library(ggstream)
-library(janitor)
-library(epiR)
 library(stringi)
 library(gt)
 library(janitor)
@@ -21,7 +19,7 @@ library(sf)
 
 # ******TOTAL******#### 
 # Banco - N: 1117943
-dados <- read.csv("dados/catalogo/catalogo9121_raw.csv") 
+dados <- read.csv("dados/bancos/catalogo9121_raw.csv") 
 
 # Transforma variáveis de interesse em categóricas
 fatores <- c("nm_grande_area_conhecimento", 

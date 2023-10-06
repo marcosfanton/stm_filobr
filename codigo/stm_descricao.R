@@ -50,8 +50,8 @@ ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
                    fill = "#F6F6FF",
                    method = "loess", 
                    formula = y ~ x,
-                   hjust = 0.7,
-                   size = 6, 
+                   hjust = 0.4,
+                   size = 12, 
                    linewidth = 2, 
                    boxlinewidth = 0.6) +
   scale_color_manual(values = met.brewer("Degas", 3))  +
@@ -152,102 +152,14 @@ graf3_genero |>
   mutate(frequencia_d = round(total_d/sum(total_d)*100,2)) 
 
 # Razão de prevalência orientador-estudante####
-matriz <- graf3_genero |>  
-  tabyl(g_orientador, g_discente) |> 
-  adorn_totals(c("row", "col"))
-
 dat.v <- matrix(c(775, #W/W
                   2570, #M/W
                   1504, #W/M
                   6755), #M/M
                 ncol =2)
-
-
-
 resultado <- epi.2by2(dat = dat.v, method = "cross.sectional",
                       conf.level = 0.95, units = 100, outcome = "as.columns")
-
-
-
-# Gráfico 02 | Descrição Orientadores ao longo do tempo####
-#Contagem da média
-dados |> 
-  group_by(g_orientador) |> 
-  summarize(total = n()) |> 
-  mutate(frequencia = round(total/sum(total)*100,2))
-# Gráfico
-dados |> 
-  ggplot(aes(x = an_base, 
-             fill = g_orientador)) +
-  geom_bar(position = "fill") +
-  theme_void() +
-  labs(title = "Gender Inequality in Philosophy Graduate Programs in Brazil",
-       subtitle = "Dissertations supervised by <span style= 'color:#16317d; font-size:20pt;'>**Men**</span> and <span style= 'color:#a40000;font-size:20pt;'>**Women**</span> (1991-2021)",
-       x = "",
-       y = "") +
-  scale_fill_manual(values = met.brewer("Austria", 2))  +
-  scale_x_continuous(limits = c(1990, 2021), expand = c(0, 0)) +
-  scale_y_continuous(position = "right") +
-  theme(plot.title = element_markdown(face = "bold", hjust = 0.1),  #letra do título
-        plot.subtitle = element_markdown(hjust = 0.09),
-        legend.position = "none",
-        axis.text.y=element_blank(),
-        text = element_text(size = 20)) +
-  geom_richtext(aes(x = 2017, 
-                    y = 0.4, 
-                    label ="&#187;Mean:80.3%&#171;"),
-                stat = "unique",
-                size = 10,
-                fill = "#F6F6FF",
-                color = "black")
-
-ggsave(
-  "figs/stm_generoano.png",
-  bg = "white",
-  width = 16,
-  height = 12,
-  dpi = 1200,
-  plot = last_plot())
-
-# Gráfico 03 | Palavras mais frequentes em keywords####
-# Diagnóstico de palavras mais frequentes 
-filo_freqwords <- dados |> 
-  tidytext::unnest_tokens(output = word, input = ds_palavra_chave) |> # Separação de palavras dos resumos
-  filter(!str_length(word) <= 2) |> # Eliminação de palavras com 2 ou menos caracteres
-  mutate(word = as_factor(word)) |> 
-  count(word, sort = TRUE) |> # Contagem de palavras
-  filter(n >= 100) |> 
-  filter(!str_detect(word, "filosofia")) # Elimina a palavra filosofia
-
-# Gráfico
-filo_freqwords |> 
-  top_n(25) |> 
-  ggplot(aes(y = reorder(word,n), 
-             x = n,
-             fill = word)) +
-  scale_x_continuous(expand = c(.01, .01)) +
-  geom_col() +
-  geom_text(aes(label = n),
-            hjust = 1.2,
-            color = "white",
-            fontface = "bold",
-            size = 10) +
-  scale_fill_manual(values = met.brewer("Lakota", 25), guide = "none")  +
-  theme_void() +
-  labs(title = "Description of the Top 25 Most Frequent Keywords in Dissertations",
-       x = "") +
-  theme(plot.title = element_markdown(face = "bold"),
-        axis.text.y = element_text(size = 25, hjust = 1),
-        text = element_text(size = 18))
-
-ggsave(
-  "figs/stm_freqkeyword.png",
-  bg = "white",
-  width = 13,
-  height = 14,
-  dpi = 1200,
-  plot = last_plot())
-
+#********* STM *********####
 # Gráfico 04 | Modelo 80 Tópicos####
 gamma_words |> 
   ggplot(aes(topic, gamma, 
