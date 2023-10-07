@@ -137,7 +137,22 @@ ggsave(
   plot = last_plot())
 
 
-trends_ano_melted <- trends_ano %>%
+# TABELA TRENDS ANO#### 
+sorted_df <- stm_ano %>%
+  arrange(covariate.value, desc(estimate))
+
+top_10_topics <- sorted_df %>%
+  group_by(covariate.value) %>%
+  slice_head(n = 10)
+
+
+
+trends_ano <- stm_ano |> 
+  select(topic, covariate.value, estimate) |> 
+  pivot_wider(names_from = "covariate.value", 
+              values_from  = "estimate") 
+
+trends_ano1 <- trends_ano  |> 
   pivot_longer(cols = -topic, names_to = "year", values_to = "value")
 
 # Converta o ano para numérico

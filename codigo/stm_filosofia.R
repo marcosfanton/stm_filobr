@@ -12,7 +12,7 @@ library(umap) # UMAP
 library(embed) # UMAP
 library(ggtext) # Config de textos
 library(tidystm) # Extração de efeitos do modelo
-
+library(scales) # Percentagem em gráficos
 
 library(gganimate) # Produção de gif
 library(ggstream)  # Produção de grafico stream
@@ -411,13 +411,34 @@ ordem_topicos <- tabelao$topic
    dpi = 1200,
    plot = last_plot())
  
-# Cálculo da variação dos tópicos no tempo#### 
+# Tabela da variação dos tópicos no tempo#### 
 trends_ano <- stm_ano |> 
-  select(topic, covariate.value, estimate) |> 
-  pivot_wider(names_from = "covariate.value", 
-              values_from  = "estimate")  
+   arrange(covariate.value, 
+           desc(estimate)) |> 
+   group_by(covariate.value) |> 
+   slice_head(n = 10) |> 
+   mutate(topic = as.numeric(topic),
+          covariate.value = substr(as.character(covariate.value),
+                                   3,
+                                   nchar(as.character(covariate.value))),
+          row = row_number()) |> 
+   select(row, topic, covariate.value) |> 
+   tidyr::pivot_wider(names_from = covariate.value,
+                      values_from  = topic) |> 
+   select(-row)
+# Tabelao ano
+tabelao_ano <- trends_ano |> 
+   gt() |> 
+   opt_table_font(
+     font = "Times New Roman") 
 
-
+#Salvar
+gtsave(tabelao_ano, 
+       "tabelao_ano.docx", 
+       path = "dados",
+       vwidth = 2400,
+       vheight = 1700)
+ 
 # Gráfico Tempo-Categoria-Trabalho####
 # Rotulação de cada documento por categoria
 cat_count <- tidygamma  |> 
@@ -481,10 +502,16 @@ stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero,
 # Cálculo da proporção de gênero para cada tópico####
 prop_topicgenero <- stm_genero |> 
   group_by(topic) |> 
-  mutate(total = sum(estimate)) |> 
+  mutate(total = sum(estimate),
+         topic = as.factor(topic)) |> 
   group_by(topic, covariate.value) |> 
-  mutate(proporcao = round(estimate/sum(total)*100,2)) |> 
-  arrange(covariate.value, desc(proporcao)) 
+  mutate(proporcao = round(estimate/sum(total)*100,2),
+         covariate.value = recode(covariate.value,
+                                  "Female" = "Woman",
+                                  "Male" = "Man")) |> 
+  arrange(covariate.value, desc(proporcao)) |> 
+  left_join(categorias, by = "topic")  
+  
 
 # Gráfico Tópico-gênero####
 prop_topicgenero |>
@@ -493,26 +520,22 @@ prop_topicgenero |>
              fill = covariate.value)) +
   geom_col() +
   geom_hline(yintercept = 50, color = "white") +
-  scale_y_continuous(labels = percent_format(scale = 1),
-                     expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,1)) +
   theme_classic() +
   coord_flip() +
   scale_fill_manual(values = met.brewer("Austria", 2))  +
   labs(x = "",
-       y = "",
-       title = "Description of the Gender Distribution among the 80 topics",
-       subtitle = "Theses Supervised by <span style= 'color:#16317d;'>**Men**</span> e <span style= 'color:#a40000;'>**Women**</span>") +
-  theme(legend.position = "none",
-        plot.title = element_markdown(face = "bold"),
-        plot.subtitle = element_markdown(),
-        text = element_text(size = 15))
+       y = "%",
+       fill = "") +
+  theme(legend.position = "top",
+        text = element_text(size = 25))
 
 ggsave(
-  "figs/stm_80t_topicgenero.png",
+  "figs/stm_topic-genero.png",
   bg = "white",
-  width = 20,
-  height = 18,
-  dpi = 600,
+  width = 17,
+  height = 21,
+  dpi = 1200,
   plot = last_plot())
 
 # Gráfico Gênero-Categoria####
@@ -528,85 +551,50 @@ prop_catgenero <- stm_genero |>
   arrange(covariate.value, desc(proporcao)) 
 
 
-prop_catgenero |>
-  ggplot(aes(x = fct_inorder(category),
-             y = proporcao,
-             fill = covariate.value)) +
-  geom_col() +
-  geom_hline(yintercept = 50, color = "white") +
-  scale_y_continuous(labels = percent_format(scale = 1),
-                     expand = c(0,1)) +
-  theme_classic() +
-  coord_flip() +
-  scale_fill_manual(values = met.brewer("Austria", 2))  +
-  labs(x = "",
-       y = "",
-       title = "Description of the Gender Distribution among Categories",
-       subtitle = "Theses Supervised by <span style= 'color:#16317d;'>**Men**</span> e <span style= 'color:#a40000;'>**Women**</span>") +
-  theme(legend.position = "none",
-        plot.title = element_markdown(face = "bold"),
-        plot.subtitle = element_markdown(),
-        axis.text.y = element_markdown(size = 20, 
-                                       face = "bold",
-                                       color = "black"),
-        text = element_text(size = 25))
-
-ggsave(
-  "figs/stm_80t_categorygender.png",
-  bg = "white",
-  width = 23,
-  height = 18,
-  dpi = 600,
-  plot = last_plot())
-
-# Tabela | 11-11 tópicos-gênero####
-tab_80 <- prop_genero  |> 
+# Tabela | 12-12 tópicos-gênero####
+tab_genero <- prop_topicgenero  |> 
   select(topic, covariate.value, label, proporcao)  |> 
   mutate(label = str_replace_all(label, "\\(Covariate Level: Male\\)", "")) |> 
   pivot_wider(names_from = covariate.value,
-              values_from = c(topic, proporcao)) 
+              values_from = c(topic, proporcao)) |> 
+  left_join(categorias, by = c("topic_Woman" = "topic"))
+  
 
 # Prepara o gamma
 tab_gamma <- gamma_words |> 
-  mutate(topic = as_factor(str_replace_all(topic, "T", "")))
+  mutate(topic = as.numeric(topic))
+  
 
-# Tabela dos 10-10
-tab_22 <- left_join(tab_80,
-                    tab_gamma,
-                    by = c("topic_Female" = "topic")) |> 
-  slice(1:11, 70:80) |> 
-  select(-c(terms, topic_Male)) |> 
-  mutate(gamma = round(gamma*100,4))
+# Tabela dos 12-12
+tab_24 <- left_join(tab_genero,
+                    gamma_words,
+                    by = c("topic_Woman" = "topic")) |> 
+  slice(1:12, 69:80) |> 
+  select(-c(label, terms, topic_Man, proporcao_Man)) |> 
+  mutate(gamma = round(gamma*100,3))
 
 # TABELA 3 
-tabela_22 <- tab_22 |> 
+tabela_genero12 <- tab_24 |> 
   gt() |> 
-  cols_move_to_start(c(category,topic_Female)) |> 
-  cols_hide(proporcao_Male) |> 
+  cols_move_to_start(c(category, topic_Woman)) |> 
   cols_label(   # Títulos
-    topic_Female = "Topic",
-    label = "Terms (\U03B2)",
+    topic_Woman = "Topic",
     gamma = "\U03B3(%)",
-    proporcao_Female = "Woman (%)",
+    proporcao_Woman = "Woman (%)",
     category = "Category"
-  ) |>
-  tab_header(
-    title = "Topics with Higher and Lower Prevalence of Women Supervisors") |> 
-  cols_align(
-    align = "center",
-    columns = everything()) |>  
-  data_color(
-    columns = proporcao_Female,
-    target_columns = everything(),
-    palette = "inferno"
   ) |>
   tab_options(
     table_body.hlines.style = "none",
     column_labels.border.top.color = "black",
     column_labels.border.bottom.color = "black",
     table_body.border.bottom.color = "black"
-  )
+  ) |> 
+  opt_table_font(
+  font = "Times New Roman") 
 
-gtsave(tabela_22,
-       "figs/stm_table_topicgender.png",
-       vwidth = 2000, vheight = 3000)
+#Salvar
+gtsave(tabela_genero12, 
+       "tabela_genero.docx", 
+       path = "dados",
+       vwidth = 1400,
+       vheight = 1700)

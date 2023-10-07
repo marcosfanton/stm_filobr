@@ -7,13 +7,6 @@ library(ggtext) # Config de textos
 library(geobr) # Mapa Brasil
 library(janitor) # Tabela
 library(epiR) # Cálculo de razão de prevalência
-
-library(scales) # Uso de porcentagem em gráficos
-library(embed) # UMAP
-library(umap) # UMAP
-library(recipes) # UMAP
-library(gganimate) # Produção de gif
-library(ggstream)  # Produção de grafico stream
 library(gt) # Construção de tabelas
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
@@ -121,6 +114,7 @@ graf3_genero <- dados |>
                            "MM" = "M/M")) |> 
   drop_na() 
 
+# Gráfico
 graf3_genero |> 
   ggplot(aes(x = an_base, 
              fill = g_oridis)) +
