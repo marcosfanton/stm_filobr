@@ -7,6 +7,13 @@ library(ggtext) # Config de textos
 library(geobr) # Mapa Brasil
 library(janitor) # Tabela
 library(epiR) # Cálculo de razão de prevalência
+
+library(scales) # Uso de porcentagem em gráficos
+library(embed) # UMAP
+library(umap) # UMAP
+library(recipes) # UMAP
+library(gganimate) # Produção de gif
+library(ggstream)  # Produção de grafico stream
 library(gt) # Construção de tabelas
 
 # Filtragem de observações com base na qualidade dos resumos e seleção de variáveis ####
@@ -81,21 +88,29 @@ dados_regiao <- dados |>
                             "nordeste" = "Nordeste",
                             "norte" = "Norte",
                             "sudeste" = "Sudeste",
-                            "sul" = "Sul")) 
+                            "sul" = "Sul")) |> 
+  mutate(frequencia = round(trabalhos/sum(trabalhos)*100,2)) 
 # Unificar bancos
 regiao <- dplyr::left_join(regiao, 
                            dados_regiao, 
                            by = c("name_region" = "nm_regiao"))
 
 # Gráfico - Regiao
+col_palette <-  colorspace::desaturate(sequential_hcl(
+  n = 7, h = c(0, -100), c = c(80, NA, 40), l = c(40, 75), power = c(1, 1), 
+                               register = "Red-Blue")) 
+
 ggplot(regiao) +
   geom_sf(aes(fill = trabalhos), color = "NA") +
   labs(size = 30) +
   theme_void() +
   theme(plot.title = element_markdown(face = "bold"),
         legend.position = "none") +
-  scale_fill_distiller(palette = "Blues", direction = 1) +
-  geom_sf_text(aes(label = trabalhos), size = 12) 
+  scale_fill_gradientn(colors = col_palette) +
+  geom_sf_text(aes(label = stringr::str_glue('{trabalhos}\n({frequencia}%)')), 
+               size = 9,
+               color = "White",
+               fontface = "bold") 
 
 ggsave(
   "figs/fig2_brazilmap.png",
@@ -105,45 +120,21 @@ ggsave(
   dpi = 1200,
   plot = last_plot())
 
-# Gráfico 3 | Desigualdade de gênero####
-graf3_genero <- dados |> 
+# Tabela 3 | Desigualdade de gênero####
+# Salvar tabela para descrição 
+tab_genero <- dados |>
   mutate(g_oridis = recode(g_oridis,
                            "FF" = "W/W",
                            "FM" = "W/M",
                            "MF" = "M/W",
                            "MM" = "M/M")) |> 
-  drop_na() 
-
-# Gráfico
-graf3_genero |> 
-  ggplot(aes(x = an_base, 
-             fill = g_oridis)) +
-  geom_bar(position = "fill") +
-  theme_classic() +
-  labs(x = "",
-       y = "",
-       fill = "Supervisor/Student") +
-  scale_x_continuous(limits = c(1990, 2021)) +
-  scale_y_continuous(labels=scales::percent, position = "right") +
-  scale_fill_manual(values = met.brewer("Austria", 4))  +
-  theme(legend.position = "top",
-        legend.text=element_text(size=30),
-        text = element_text(size = 30)) + 
-  coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
-
-ggsave(
-  "figs/graf3_genero.png",
-  bg = "white",
-  width = 17,
-  height = 12,
-  dpi = 1200,
-  plot = last_plot())
-
-# Descrição 
-graf3_genero |> 
+  drop_na() |> 
   group_by(g_oridis) |> 
-  summarize(total_d = n()) |> 
-  mutate(frequencia_d = round(total_d/sum(total_d)*100,2)) 
+  summarize(total = n()) |> 
+  mutate(frequency = round(total/sum(total)*100,2)) 
+
+tab_genero |>
+  readr::write_csv("dados/tab_genero.csv")
 
 # Razão de prevalência orientador-estudante####
 dat.v <- matrix(c(775, #W/W
