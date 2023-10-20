@@ -122,13 +122,7 @@ ggsave(
 
 # Tabela 3 | Desigualdade de gênero####
 # Salvar tabela para descrição 
-tab_genero <- dados |>
-  mutate(g_oridis = recode(g_oridis,
-                           "FF" = "W/W",
-                           "FM" = "W/M",
-                           "MF" = "M/W",
-                           "MM" = "M/M")) |> 
-  drop_na() |> 
+tab_genero <- dados |> 
   group_by(g_oridis) |> 
   summarize(total = n()) |> 
   mutate(frequency = round(total/sum(total)*100,2)) 
