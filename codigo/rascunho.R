@@ -171,3 +171,53 @@ tabela_trends <- top10_trends %>%
   pivot_wider(names_from = year, values_from = topic)
 
 colnames(tabela_trends) <- gsub("`", "", colnames(tabela_trends))
+
+
+# MAPA CORRETO####
+# Gráfico 02 | Mapa Brasil####
+# Baixar dados populacionais por Estado
+# Site: Elaboração: Atlas do Desenvolvimento Humano no Brasil. Pnud Brasil, Ipea e FJP, 2022.
+# Site: Fontes: dados do IBGE e de registros administrativos, conforme especificados nos metadados disponíveis disponíveis em: http://atlasbrasil.org.br/acervo/biblioteca.
+
+# Baixar mapa de regiões
+regiao <- geobr::read_region(year = 2020)
+# Sumarizar dados por região
+dados_regiao <- dados |> 
+  group_by(nm_regiao) |> 
+  summarize(trabalhos = n()) |> 
+  mutate(nm_regiao = recode(nm_regiao, # MANTER OS NOMES PARA FUNCIONAR
+                            "centrooeste" = "Centro Oeste",
+                            "nordeste" = "Nordeste",
+                            "norte" = "Norte",
+                            "sudeste" = "Sudeste",
+                            "sul" = "Sul")) |> 
+  mutate(frequencia = round(trabalhos/sum(trabalhos)*100,2)) 
+# Unificar bancos
+regiao <- dplyr::left_join(regiao, 
+                           dados_regiao, 
+                           by = c("name_region" = "nm_regiao"))
+
+# Gráfico - Regiao
+col_palette <-  colorspace::desaturate(sequential_hcl(
+  n = 7, h = c(0, -100), c = c(80, NA, 40), l = c(40, 75), power = c(1, 1), 
+  register = "Red-Blue")) 
+
+ggplot(regiao) +
+  geom_sf(aes(fill = trabalhos), color = "NA") +
+  labs(size = 30) +
+  theme_void() +
+  theme(plot.title = element_markdown(face = "bold"),
+        legend.position = "none") +
+  scale_fill_gradientn(colors = col_palette) +
+  geom_sf_text(aes(label = stringr::str_glue('{trabalhos}\n({frequencia}%)')), 
+               size = 9,
+               color = "White",
+               fontface = "bold") 
+
+ggsave(
+  "figs/fig2_brazilmap.png",
+  bg = "white",
+  width = 15,
+  height = 10,
+  dpi = 1200,
+  plot = last_plot())
