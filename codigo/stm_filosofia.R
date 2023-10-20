@@ -155,6 +155,8 @@ topic_model <- k_result  |>
   pull(topic_model) %>% 
   .[[1]]
 # Extração de matrizes####
+# Carregar modelo
+load(file = "dados/stm_model80t.rda")
 # Beta
 tidybeta <- tidytext::tidy(topic_model) |> 
   mutate(topic = as_factor(topic))
