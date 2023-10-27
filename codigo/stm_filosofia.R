@@ -170,7 +170,7 @@ top_words <- tidybeta  |>
   summarise(terms = paste(term, collapse = ", ")) |> 
   ungroup()
 
-# Matriz Gamma####
+# Extração Gamma####
 # Matriz Gamma
 tidygamma <- tidytext::tidy(topic_model, 
                             matrix = "gamma") |> 
@@ -222,8 +222,8 @@ categorias <- dplyr::tibble(
     c(3,9,12,18,20,25,30,32,33,39,45,47,48,49,56,68,75), # Política OK
     c(14,15,21,23,46,51,53,55,57,65,69,73,76), # Metafísica OK
     c(5,13,28,29,42,62,71,77,79), # Fenomenologia OK
-    c(26,27,40,41,58,64,70,72,74,78), # Mente e Linguagem OK
-    c(8,16,17,22,31,35,44,63,66,67), # Filosofia da ciência
+    c(27,40,41,58,64,70,72,74,78), # Mente e Linguagem OK 
+    c(8,16,17,22,26,31,35,44,63,66,67), # Filosofia da ciência OK
     c(4,11,24,36,37,50,54,60,61), # Estética OK
     c(6,7,19,34,43,52,59), # Ética OK
     c(1,2,10,38,80) # Excluir
@@ -373,7 +373,7 @@ umap_model <- prep(umap_recipe)
 juice(umap_model)  |> 
   ggplot(aes(UMAP1, UMAP2)) +
   geom_point(aes(fill = category), alpha = .8, size = 6, shape = 21) +
-  #geom_text(aes(label = topic), check_overlap = TRUE, size = 3, color = "white") +
+  geom_text(aes(label = topic), check_overlap = TRUE, size = 3, color = "white") +
   scale_fill_manual(values = met.brewer("Cross", 7)) +
   theme_classic() +
   labs(fill = "") +
@@ -507,7 +507,7 @@ categorias_tempo_ano |>
         text = element_text(size = 28))
 
 ggsave(
-  "figs/stm_category-ano.png",
+  "figs/teste.png",
   bg = "white",
   width = 17,
   height = 11,
@@ -527,9 +527,12 @@ stm_efeitogenero <- stm::estimateEffect(1:80 ~ g_orientador,
 stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero, 
                                                            covariate = "g_orientador", 
                                                            model = topic_model, 
-                                                           method = "pointestimate",
+                                                           method = "difference",
                                                            labeltype = "prob",
                                                            n = 3)
+
+
+
 # Cálculo da proporção de gênero para cada tópico####
 prop_topicgenero <- stm_genero |> 
   group_by(topic) |> 
@@ -541,7 +544,8 @@ prop_topicgenero <- stm_genero |>
                                   "Female" = "Woman",
                                   "Male" = "Man")) |> 
   arrange(covariate.value, desc(proporcao)) |> 
-  left_join(categorias, by = "topic")  
+  left_join(categorias, by = "topic")  |> 
+  ungroup()
   
 
 # Gráfico Tópico-gênero####
@@ -568,6 +572,22 @@ ggsave(
   height = 21,
   dpi = 1200,
   plot = last_plot())
+
+# Tabela proporção
+tabela_topicgenero <- prop_topicgenero |> 
+  filter(covariate.value == "Woman" & category != "Excluded") |> 
+  select(category, topic, proporcao) |> 
+  arrange(proporcao) |> 
+  gt() |>  
+  opt_table_font(font = "Times New Roman") 
+
+# Salvar
+gtsave(tabela_topicgenero, 
+       "tabela_genero.docx", 
+       path = "dados",
+       vwidth = 2400,
+       vheight = 1700)
+
 
 # Gráfico Gênero-Categoria####
 
