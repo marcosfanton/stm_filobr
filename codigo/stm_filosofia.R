@@ -515,6 +515,10 @@ ggsave(
   plot = last_plot())
 
 # Salvar tabela  
+teste <- categorias_tempo_ano |> 
+  group_by(an_base) |> 
+  mutate(frequencia = round(n/sum(n)*100,2))
+
 categorias_tempo_ano |>
   readr::write_csv("dados/ncategorias.csv")
 
