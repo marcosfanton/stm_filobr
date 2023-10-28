@@ -155,6 +155,7 @@ topic_model <- stm(filosparse,
                    init.type = "Spectral")
 
 saveRDS(topic_model, "dados/stm_modelo80.rda")
+# LOAD Modelo 80 tópicos
 load(file = "dados/stm_model80t.rda")
 
 # Extração matrizes####
@@ -166,8 +167,8 @@ tidybeta <- tidytext::tidy(topic_model) |>
 top_words <- tidybeta  |> 
   arrange(desc(beta))  |> 
   group_by(topic) |> 
-  top_n(5, beta) |> 
-  summarise(terms = paste(term, collapse = ", ")) |> 
+  top_n(10, beta) |> 
+  summarise(terms = paste(term, collapse = ",")) |> 
   ungroup()
 
 # Extração Gamma####
@@ -251,7 +252,7 @@ tabelao <- tidygamma |>
   left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma 
   group_by(topic) |> 
-  slice_max(order_by = gamma, n = 10) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
+  slice_max(order_by = gamma, n = 5) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
   mutate(nm_producao = paste(nm_producao, collapse = ", ")) |> 
   ungroup() |> 
   distinct(topic, .keep_all = TRUE) |> 
@@ -373,7 +374,7 @@ umap_model <- prep(umap_recipe)
 juice(umap_model)  |> 
   ggplot(aes(UMAP1, UMAP2)) +
   geom_point(aes(fill = category), alpha = .8, size = 6, shape = 21) +
-  geom_text(aes(label = topic), check_overlap = TRUE, size = 3, color = "white") +
+ # geom_text(aes(label = topic), check_overlap = TRUE, size = 3, color = "white") +
   scale_fill_manual(values = met.brewer("Cross", 7)) +
   theme_classic() +
   labs(fill = "") +
@@ -505,7 +506,7 @@ categorias_tempo_ano |>
         text = element_text(size = 28))
 
 ggsave(
-  "figs/teste.png",
+  "figs/stm_category_ano.png",
   bg = "white",
   width = 17,
   height = 11,
@@ -513,12 +514,12 @@ ggsave(
   plot = last_plot())
 
 # Salvar tabela  
-teste <- categorias_tempo_ano |> 
+evolucao_categorias <- categorias_tempo_ano |> 
   group_by(an_base) |> 
   mutate(frequencia = round(n/sum(n)*100,2))
 
-categorias_tempo_ano |>
-  readr::write_csv("dados/ncategorias.csv")
+evolucao_categorias |>
+  readr::write_csv("dados/evolucao_categorias.csv")
 
 # Efeito gênero de orientador####
 stm_efeitogenero <- stm::estimateEffect(1:80 ~ g_orientador, 
@@ -529,10 +530,9 @@ stm_efeitogenero <- stm::estimateEffect(1:80 ~ g_orientador,
 stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero, 
                                                            covariate = "g_orientador", 
                                                            model = topic_model, 
-                                                           method = "difference",
+                                                           method = "pointestimate",
                                                            labeltype = "prob",
                                                            n = 3)
-
 
 # Cálculo da proporção de gênero para cada tópico####
 prop_topicgenero <- stm_genero |> 
@@ -578,20 +578,19 @@ ggsave(
 tabela_topicgenero <- prop_topicgenero |> 
   filter(covariate.value == "Woman" & category != "Excluded") |> 
   select(category, topic, proporcao) |> 
-  arrange(proporcao) |> 
+  arrange(desc(proporcao)) |> 
   gt() |>  
   opt_table_font(font = "Times New Roman") 
 
 # Salvar
 gtsave(tabela_topicgenero, 
-       "tabela_genero.docx", 
+       "tabelao_genero.docx", 
        path = "dados",
        vwidth = 2400,
        vheight = 1700)
 
 
 # Gráfico Gênero-Categoria####
-
 # Inclusão das categorias
 prop_catgenero <- stm_genero |> 
   mutate(topic = as_factor(topic))  |> 
