@@ -251,14 +251,14 @@ tabelao <- tidygamma |>
   left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma 
   group_by(topic) |> 
-  slice_max(order_by = gamma, n = 5) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
+  slice_max(order_by = gamma, n = 10) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
   mutate(nm_producao = paste(nm_producao, collapse = ", ")) |> 
   ungroup() |> 
   distinct(topic, .keep_all = TRUE) |> 
   select(category, topic, nm_producao) |> 
   left_join(gamma_words, by = "topic") |> 
   mutate(gamma = round(gamma * 100,2)) |> 
-  select(category, topic, terms, nm_producao, gamma) |>  # Seleciona apenas as variáveis de interesse
+  select(category, topic, terms, nm_producao,gamma) |>  # Seleciona apenas as variáveis de interesse
   arrange(category, desc(gamma)) 
 
 # Tabelão.doc####
@@ -269,6 +269,8 @@ tabelao1 <- tabelao |>
   cols_hide(nm_producao) |> 
   opt_table_font(
     font = "Times New Roman") 
+
+
 
 #Salvar
 gtsave(tabelao1, 
@@ -603,8 +605,15 @@ prop_catgenero <- stm_genero |>
   group_by(category, covariate.value) |>
   summarise(total = sum(estimate)) |> 
   mutate(proporcao = round(total/sum(total)*100,2)) |> 
-  arrange(covariate.value, desc(proporcao)) 
+  arrange(covariate.value, desc(proporcao)) |> 
+  gt()
 
+# Salvar
+gtsave(prop_catgenero, 
+       "tabela_genero_categorias.docx", 
+       path = "dados",
+       vwidth = 2400,
+       vheight = 1700)
 
 # Tabela | 12-12 tópicos-gênero####
 tab_genero <- prop_topicgenero  |> 
