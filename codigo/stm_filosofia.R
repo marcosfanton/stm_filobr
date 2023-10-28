@@ -270,8 +270,6 @@ tabelao1 <- tabelao |>
   opt_table_font(
     font = "Times New Roman") 
 
-
-
 #Salvar
 gtsave(tabelao1, 
        "tabelao1.docx", 
@@ -390,7 +388,6 @@ ggsave(
   dpi = 1200,
   plot = last_plot())
 
-
 #Efeitos#### 
 # Efeito ano####
 stm_efeitoano <- stm::estimateEffect(1:80 ~ an_base, 
@@ -404,7 +401,6 @@ stm_ano <- tidystm::extract.estimateEffect(x = stm_efeitoano,
                                                         method = "pointestimate",
                                                         labeltype = "prob",
                                                         n = 3)
-
 # Limpeza do banco e rotulação de categorias  
 stm_ano <- stm_ano |> 
   mutate(topic = as_factor(topic),
@@ -536,7 +532,6 @@ stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero,
                                                            method = "difference",
                                                            labeltype = "prob",
                                                            n = 3)
-
 
 
 # Cálculo da proporção de gênero para cada tópico####
