@@ -219,22 +219,22 @@ ggsave(
 # Categorias 
 categorias <- dplyr::tibble(
   topic = as_factor(unlist(list(
-    c(3,9,12,18,20,25,30,32,33,39,45,47,48,49,56,68,75), # Política OK
+    c(3,9,12,18,20,25,30,32,33,39,45,47,48,49,50,56,68,75), # Política OK
     c(14,15,21,23,46,51,53,55,57,65,69,73,76), # Metafísica OK
     c(5,13,28,29,42,62,71,77,79), # Fenomenologia OK
     c(27,40,41,58,64,70,72,74,78), # Mente e Linguagem OK 
     c(8,16,17,22,26,31,35,44,63,66,67), # Filosofia da ciência OK
-    c(4,11,24,36,37,50,54,60,61), # Estética OK
+    c(4,11,24,36,37,54,60,61), # Estética OK
     c(6,7,19,34,43,52,59), # Ética OK
     c(1,2,10,38,80) # Excluir
   ))),
   category = as_factor(c(
-    rep("Social and Political Philosophy", 17),
+    rep("Social and Political Philosophy", 18),
     rep("Metaphysics", 13),
     rep("Phenomenology and Hermeneutics", 9),
     rep("Philosophy of Mind and Language", 9),
     rep("Philosophy of Science", 11),
-    rep("Aesthetics", 9),
+    rep("Aesthetics", 8),
     rep("Ethics", 7),
     rep("Excluded", 5)
   )
