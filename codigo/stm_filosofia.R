@@ -32,7 +32,7 @@ dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filoso
   dplyr::filter(!doc_id %in% c(7854, 7849, 8205)) |> # - 3 trabalhos com palavras repetidas (n = 11733)
   dplyr::filter(an_base >= 1991) |>  # - 7 trabalhos (11726)
   dplyr::mutate(doc_id = row_number()) |> # Reconfiguração do id dos docs (ao rodar STM, os ids são desconfigurados)
-  select(doc_id, an_base, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas,  g_orientador)
+  select(doc_id, an_base, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador)
 
 # ngrams e stopwords ####
 # Para não poluir esse script, a análise de ngrams e de stopwords foi realizada em script separado.
@@ -221,23 +221,23 @@ ggsave(
 categorias <- dplyr::tibble(
   topic = as_factor(unlist(list(
     c(3,9,12,18,20,25,30,32,33,39,45,47,48,49,50,56,68,75), # Política OK
-    c(14,15,21,23,46,51,53,55,57,65,69,73,76), # Metafísica OK
+    c(14,15,21,23,51,53,55,57,65,69,73,76), # Metafísica OK (46)
     c(5,13,28,29,42,62,71,77,79), # Fenomenologia OK
     c(27,40,41,58,64,70,72,74,78), # Mente e Linguagem OK 
     c(8,16,17,22,26,31,35,44,63,66,67), # Filosofia da ciência OK
     c(4,11,24,36,37,54,60,61), # Estética OK
     c(6,7,19,34,43,52,59), # Ética OK
-    c(1,2,10,38,80) # Excluir
+    c(1,2,10,38,46,80) # Excluir
   ))),
   category = as_factor(c(
     rep("Social and Political Philosophy", 18),
-    rep("Metaphysics", 13),
+    rep("Metaphysics", 12),
     rep("Phenomenology and Hermeneutics", 9),
     rep("Philosophy of Mind and Language", 9),
     rep("Philosophy of Science", 11),
     rep("Aesthetics", 8),
     rep("Ethics", 7),
-    rep("Excluded", 5)
+    rep("Excluded", 6)
   )
   ))
 
@@ -252,7 +252,7 @@ tabelao <- tidygamma |>
   left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma 
   group_by(topic) |> 
-  slice_max(order_by = gamma, n = 5) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
+  slice_max(order_by = gamma, n = 10) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
   mutate(nm_producao = paste(nm_producao, collapse = ", ")) |> 
   ungroup() |> 
   distinct(topic, .keep_all = TRUE) |> 

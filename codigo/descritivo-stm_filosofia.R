@@ -17,9 +17,6 @@ library(janitor) # Estatísticas sumárias
 dados <- read.csv("dados/catalogo.csv") |> 
   select(an_base, nm_entidade_ensino, nm_regiao, nm_subtipo_producao, sg_uf_ies, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador, g_discente, g_oridis)
 
-# Set up do tema####
-theme_set(theme_minimal(base_family = "Roboto"))
-
 # Gráfico - Evolução total da produção#### 
 dados |> 
   ggplot(aes(x=an_base)) +
