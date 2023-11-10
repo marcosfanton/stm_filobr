@@ -53,7 +53,8 @@ ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
                    hjust = 0.4,
                    size = 12, 
                    linewidth = 2, 
-                   boxlinewidth = 0.6) +
+                   boxlinewidth = 0.6,
+                   family = "Times New Roman") +
   scale_color_manual(values = met.brewer("Degas", 3))  +
   scale_x_continuous(limits = c(1990, 2021), breaks = seq(1990, 2021, 5)) +
   scale_y_continuous(position = "right") +
@@ -61,7 +62,7 @@ ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
   labs(x = "",
        y = "") +
   theme(legend.position = "none",
-        text = element_text(size = 30)) +
+        text = element_text(size = 30, family = "Times New Roman")) +
   coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
 
 ggsave(

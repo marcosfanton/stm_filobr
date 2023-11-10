@@ -85,7 +85,10 @@ filowords <- read_csv("dados/filowords_stm.csv",
 # Preparação do banco em matriz esparsa####
 filosparse <- filowords |> tidytext::cast_sparse(doc_id, word, n) #matriz para análise
 # Preparação das covariáveis para análise
-covars <- filowords |> dplyr::distinct(doc_id, an_base, g_orientador) #matriz de covariáveis
+covars <- filowords |> 
+  dplyr::distinct(doc_id, an_base, g_orientador) |> 
+  mutate(g_orientador = as.factor(g_orientador)) 
+  
 
 #********* STM *********####
 # Múltiplos modelos - 40-100####
@@ -153,6 +156,7 @@ topic_model <- stm(filosparse,
                    seed = 1987,
                    data = covars,
                    init.type = "Spectral")
+topic_model$meta <- covars
 
 saveRDS(topic_model, "dados/stm_modelo80.rda")
 # LOAD Modelo 80 tópicos
@@ -221,7 +225,7 @@ ggsave(
 categorias <- dplyr::tibble(
   topic = as_factor(unlist(list(
     c(3,9,12,18,20,25,30,32,33,39,45,47,48,49,50,56,68,75), # Política OK
-    c(14,15,21,23,51,53,55,57,65,69,73,76), # Metafísica OK (46)
+    c(14,15,21,23,51,53,55,57,65,69,73,76), # Metafísica OK 
     c(5,13,28,29,42,62,71,77,79), # Fenomenologia OK
     c(27,40,41,58,64,70,72,74,78), # Mente e Linguagem OK 
     c(8,16,17,22,26,31,35,44,63,66,67), # Filosofia da ciência OK
@@ -288,7 +292,7 @@ total_categorias |>
 
 # Gráfico Beta ####
 ordem_topicos <- tabelao$topic
-tidybeta <- tidybeta |> 
+tidybeta_graph <- tidybeta |> 
   group_by(topic)  |> 
   top_n(5, beta) |> 
   ungroup() |> 
@@ -297,7 +301,7 @@ tidybeta <- tidybeta |>
   left_join(categorias, by = "topic") |> 
   filter(category != "Excluded")
 
-tidybeta |> 
+tidybeta_graph |> 
   ggplot(aes(x = term, 
              y = beta, 
              fill = category)) +
@@ -309,7 +313,39 @@ tidybeta |>
        y = "",
        fill = "") +
   theme(legend.position = "top",
-        text = element_text(size = 25),
+        text = element_text(size = 25, family = "Times New Roman"),
+        axis.text.x = element_blank()) +
+  coord_flip() +
+  scale_x_reordered() 
+
+# Gráfico Beta (inglês)####
+# Tradução - TRADUZIR MANUALMENTE#### 
+lista_pt <- as.character(tidybeta_graph$term)
+lista_en <- gtranslate::translate(as.character(tidybeta_graph$term), 
+                             from = "auto", 
+                             to = "en")
+correspondencia <- setNames(lista_en, lista_pt)
+
+tidybeta_graph_en <- tidybeta_graph |> 
+  mutate(term =  recode(term,
+                        !!!setNames(lista_en, lista_pt)))
+
+         
+# Gráfico
+
+tidybeta_graph_en |> 
+  ggplot(aes(x = term, 
+             y = beta, 
+             fill = category)) +
+  theme_classic() +
+  geom_col(alpha = 0.9) +
+  scale_fill_manual(values = met.brewer("Cross", 7)) +
+  facet_wrap(~ topic, scales = "free", ncol = 5) +
+  labs(x = "",
+       y = "",
+       fill = "") +
+  theme(legend.position = "top",
+        text = element_text(size = 25, family = "Times New Roman"),
         axis.text.x = element_blank()) +
   coord_flip() +
   scale_x_reordered() 
@@ -379,7 +415,7 @@ juice(umap_model)  |>
   theme_classic() +
   labs(fill = "") +
   theme(legend.position = "bottom",
-        text = element_text(size = 16)) 
+        text = element_text(size = 16, family = "Times New Roman")) 
 
 ggsave(
   "figs/stm_umap.png",
@@ -393,8 +429,7 @@ ggsave(
 # Efeito ano####
 stm_efeitoano <- stm::estimateEffect(1:80 ~ an_base, 
                                     stmobj = topic_model, 
-                                    metadata = covars, 
-                                    uncertainty = "Global")
+                                    metadata = covars)
 
 stm_ano <- tidystm::extract.estimateEffect(x = stm_efeitoano, 
                                                         covariate = "an_base", 
@@ -410,23 +445,24 @@ stm_ano <- stm_ano |>
   filter(category != "Excluded")
 
 # Gráfico ano-tópicos#### 
-ordem_topicos <- tabelao$topic
  stm_ano |> 
-   mutate(topic = factor(topic, levels = ordem_topicos)) |> 
+  mutate(topic = factor(topic, levels = ordem_topicos)) |> 
   ggplot(aes(x = covariate.value,
              y = scale(estimate),
-             ymin = ci.lower,
-             ymax = ci.upper,
+         #    ymin = ci.lower, 
+         #    ymax = ci.upper, Sem CI em função da resolução do gráfico
              color = category)) +
   facet_wrap(~topic, ncol = 6) +
   theme_classic() +
   geom_line(linewidth = 2) +
+#  geom_ribbon(alpha = 0.2) +
   labs(x = "Year(1991-2021)",
        y = "Point Estimation",
        color = "") +
   scale_color_manual(values = met.brewer("Cross", 7)) +
+#  scale_fill_manual(values = met.brewer("Cross", 7)) +
   theme(legend.position = "top",
-        text = element_text(size = 30),
+        text = element_text(size = 30, family = "Times New Roman"),
         axis.text.x = element_blank())
 
  ggsave(
@@ -438,33 +474,75 @@ ordem_topicos <- tabelao$topic
    plot = last_plot())
  
 # Tabela da variação dos tópicos no tempo#### 
+# Tabela paisagem
+ trends_ano <- stm_ano |> 
+   left_join(topic_labels, by = "topic") |> 
+   arrange(covariate.value, 
+           desc(estimate)) |> 
+   group_by(covariate.value) |> 
+   slice_head(n = 10) |> 
+   mutate(row = row_number()) |> 
+   select(row, topic_label, covariate.value) |> 
+   tidyr::pivot_wider(names_from = covariate.value,
+                      values_from  = topic_label) |> 
+   select(-row) |> 
+   ungroup()
+ 
+# Tabela retrato 
 trends_ano <- stm_ano |> 
+  left_join(topic_labels, by = "topic") |> 
    arrange(covariate.value, 
            desc(estimate)) |> 
    group_by(covariate.value) |> 
    slice_head(n = 10) |> 
    mutate(topic = as.numeric(topic),
-          covariate.value = substr(as.character(covariate.value),
-                                   3,
-                                   nchar(as.character(covariate.value))),
           row = row_number()) |> 
    select(row, topic, covariate.value) |> 
-   tidyr::pivot_wider(names_from = covariate.value,
-                      values_from  = topic) |> 
-   select(-row)
+   tidyr::pivot_wider(names_from = row,
+                      values_from  = topic)  
+
 # Tabelao ano
 tabelao_ano <- trends_ano |> 
-   gt() |> 
+   gt() |>
    opt_table_font(
      font = "Times New Roman") 
 
 #Salvar
 gtsave(tabelao_ano, 
-       "tabelao_ano.docx", 
+       "tabelao_ano-paisagem.docx", 
        path = "dados",
        vwidth = 2400,
        vheight = 1700)
- 
+
+# Gráfico Tempo-Categoria####
+categorias_tempo <- stm_ano |> 
+  summarize(total = sum(estimate), .by = c(covariate.value, category))
+
+categorias_tempo |>
+  ggplot(aes(x = covariate.value,
+             y = total,
+             fill = category)) +
+  geom_col() +
+  theme_classic() +
+  labs(x = "",
+       y = "%",
+       fill = "") +
+  scale_fill_manual(values = met.brewer("Cross", 7)) +
+  scale_y_continuous(limits = c(0, 1), position = "right", labels = scales::number_format(scale = 1e2)) +
+  scale_x_continuous(limits = c(1990, 2022)) +
+  guides(color = guide_legend(override.aes = list(size = 3))) +
+  theme(legend.position = "top",
+        plot.title = element_markdown(face = "bold"),
+        text = element_text(size = 28, family = "Times New Roman"))
+
+ggsave(
+  "figs/stm_category_ano.png",
+  bg = "white",
+  width = 17,
+  height = 11,
+  dpi = 1200,
+  plot = last_plot())
+
 # Gráfico Tempo-Categoria-Trabalho####
 # Rotulação de cada documento por categoria
 categorias_tempo <- tidygamma  |> 
@@ -524,15 +602,60 @@ evolucao_categorias |>
 # Efeito gênero de orientador####
 stm_efeitogenero <- stm::estimateEffect(1:80 ~ g_orientador, 
                                        stmobj = topic_model, 
-                                       metadata = covars, 
-                                       uncertainty = "Global")
+                                       metadata = topic_model$meta)
 
-stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero, 
-                                                           covariate = "g_orientador", 
-                                                           model = topic_model, 
-                                                           method = "pointestimate",
-                                                           labeltype = "prob",
-                                                           n = 3)
+stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero,
+                                              covariate = "g_orientador",
+                                              cov.value1 = "Female",
+                                              cov.value2 = "Male",
+                                              method = "difference")
+
+# salvar tabela com sumário
+write.csv(tidy(tab_efeitogenero), "dados/efeito_genero.csv")
+
+sink("dados/efeito_genero.txt")
+print(summary(stm_efeitogenero))
+sink()  
+
+stm_genero <- stm_genero |> 
+  mutate(topic = as_factor(topic)) |> 
+  left_join(topic_labels, by = "topic") |> 
+  left_join(categorias, by = "topic") |> 
+  mutate(topic_label = as_factor(topic_label),
+         topic_label = reorder(topic_label, estimate))
+
+top_value <- c(8,9,11,14,25,26,27,34,35,37,39,45,48,53,54,61,62,64,65,69,72)
+
+stm_genero |> 
+ # filter(topic %in% top_value) |>  # Filtro para os tópicos significativos
+  filter(category != "Excluded") |> # Filtro para todos, menos tópicos excluídos
+  ggplot(aes(x = topic_label,
+             y = estimate,
+             color = category)) +
+  geom_point(stat = "identity", size = 3) +
+  geom_errorbar(aes(ymin = ci.lower, ymax = ci.upper), 
+                linewidth = 1.5, width = 0.3) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_color_manual(values = met.brewer("Cross", 7)) +
+  labs(title = "",
+       x = "",
+       y = "(-) Woman (+)",
+       color = "") +
+  theme_classic() + 
+  coord_flip() +
+  theme(legend.position = "right",
+        text = element_text(size = 25, family = "Times New Roman"),
+        axis.title.y = element_text(hjust = 0.5),
+        legend.text = element_text(size=20)) 
+ggsave(
+  "figs/stm_topic-genero_total.tiff",
+  bg = "white",
+  width = 17,
+  height = 21,
+  dpi = 1200,
+  plot = last_plot()) 
+
+
 
 # Cálculo da proporção de gênero para cada tópico####
 prop_topicgenero <- stm_genero |> 
