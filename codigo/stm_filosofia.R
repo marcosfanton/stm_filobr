@@ -47,6 +47,7 @@ dados <- dados |>
 # Salvar banco com amostra final para testes com stopwords personalizadas
 dados |> 
   readr::write_csv("dados/dados_pre-stm.csv")
+# dados####
 dados <- read.csv("dados/dados_pre-stm.csv")
 # Stopwords personalizada da filosofia ####
 filolixo <- readr::read_lines("dados/filolixo")
@@ -89,14 +90,13 @@ covars <- filowords |>
   dplyr::distinct(doc_id, an_base, g_orientador) |> 
   mutate(g_orientador = as.factor(g_orientador)) 
   
-
 #********* STM *********####
 # Múltiplos modelos - 40-100####
 plan(multisession)
 many_models <- tibble(K = c(40, 50, 60, 70, 80, 90, 100)) |> #Teste de modelos com 40 a 80 Tópicos
   mutate(topic_model = furrr::future_map(K, ~ stm(filosparse, 
                                                   K = .,
-                                                  prevalence = ~ g_orientador + s(an_base),
+                                                  prevalence = ~ g_orientador + an_base,
                                                   seed = 1987,
                                                   data = covars,
                                                   init.type = "Spectral"),
@@ -124,6 +124,7 @@ k_result |>
   ggplot(aes(K, 
              Value, 
              color = Metric)) +
+  geom_rect(aes(xmin = 70, xmax = 85, ymin = -Inf, ymax = Inf), fill = "gray92", color = "gray100", alpha = 0.5) +  
   geom_point(size = 2)+
   geom_line(linewidth = 1.5, alpha = 0.9, show.legend = FALSE) +
   scale_color_manual(values = met.brewer("Austria", 4))  +
@@ -132,13 +133,13 @@ k_result |>
   labs(x = "K",
        y = NULL)+
   theme(legend.position = "none",
-        text = element_text(size = 30))
+        text = element_text(size = 25, family = "Times New Roman"))
 
 ggsave(
   "figs/stm_diagnostico.png",
   bg = "white",
-  width = 17,
-  height = 12,
+  width = 10,
+  height = 8,
   dpi = 1200,
   plot = last_plot())
 
@@ -152,25 +153,27 @@ topic_model <- k_result  |>
 #Modelo simples####
 topic_model <- stm(filosparse,
                    K = 80,
-                   prevalence = ~ g_orientador + s(an_base),
+                   prevalence = ~ g_orientador + an_base,
                    seed = 1987,
                    data = covars,
                    init.type = "Spectral")
 topic_model$meta <- covars
 
-saveRDS(topic_model, "dados/stm_modelo80.rda")
+saveRDS(topic_model, "dados/stm_modelo80-2711.rda")
 # LOAD Modelo 80 tópicos
 load(file = "dados/stm_model80t.rda")
 
 # Extração matrizes####
+# VER ARQUIVO topic_labels.R
 # Extração beta####
 tidybeta <- tidytext::tidy(topic_model) |> 
-  mutate(topic = as_factor(topic))
-
+  mutate(topic = as_factor(topic)) |> 
+  left_join(topic_labels, by = "topic")
+  
 # Escolha de top words
 top_words <- tidybeta  |> 
   arrange(desc(beta))  |> 
-  group_by(topic) |> 
+  group_by(labels) |> 
   top_n(10, beta) |> 
   summarise(terms = paste(term, collapse = ",")) |> 
   ungroup()
@@ -181,21 +184,22 @@ tidygamma <- tidytext::tidy(topic_model,
                             matrix = "gamma") |> 
   right_join(covars, by = c("document" = "doc_id")) |> 
   arrange(topic, desc(gamma)) |> 
-  mutate(topic = as_factor(topic))
+  mutate(topic = as_factor(topic)) |> 
+  left_join(topic_labels, by = "topic")
 
 # 
 gamma_words <- tidygamma |> 
-  group_by(topic) |> 
+  group_by(labels) |> 
   summarise(gamma = mean(gamma)) |> 
   arrange(desc(gamma)) |> 
-  left_join(top_words, by = "topic") |> 
-  mutate(topic = reorder(topic, gamma))
+  left_join(top_words, by = "labels") |> 
+  mutate(labels = reorder(labels, gamma))
 
 # Gráfico gamma #### 
 gamma_words |> 
-  ggplot(aes(topic, gamma, 
+  ggplot(aes(labels, gamma, 
              label = terms, 
-             fill = topic)) +
+             fill = labels)) +
   geom_col(show.legend = FALSE) +
   geom_text(hjust = 0, nudge_y = -0.000001, size = 6) +
   coord_flip() +
@@ -208,7 +212,7 @@ gamma_words |>
        title = "80 Topics with the Estimated Topic Proportion (&#947;)") +
   theme(plot.title = element_markdown(face = "bold"),
         legend.position = "none",
-        text = element_text(size = 20)) 
+        text = element_text(size = 10)) 
 
 # Salvar gráfico
 ggsave(
@@ -225,13 +229,13 @@ ggsave(
 categorias <- dplyr::tibble(
   topic = as_factor(unlist(list(
     c(3,9,12,18,20,25,30,32,33,39,45,47,48,49,50,56,68,75), # Política OK
-    c(14,15,21,23,51,53,55,57,65,69,73,76), # Metafísica OK 
+    c(14,15,23,38,51,53,55,57,65,69,73,76), # Metafísica OK 
     c(5,13,28,29,42,62,71,77,79), # Fenomenologia OK
     c(27,40,41,58,64,70,72,74,78), # Mente e Linguagem OK 
     c(8,16,17,22,26,31,35,44,63,66,67), # Filosofia da ciência OK
     c(4,11,24,36,37,54,60,61), # Estética OK
     c(6,7,19,34,43,52,59), # Ética OK
-    c(1,2,10,38,46,80) # Excluir
+    c(1,2,10,21,46,80) # Excluir
   ))),
   category = as_factor(c(
     rep("Social and Political Philosophy", 18),
@@ -251,135 +255,103 @@ tidygamma <- tidygamma |>
 
 # Tabelão####
 # Categoria | Tópico | Beta | 5 trabalhos | Gamma 
+# VER ARQUIVO topic_labels.R
 tabelao <- tidygamma |> 
   mutate(document = as.integer(document)) |> 
   left_join(dados,
             by = c("document" = "doc_id")) |> # Unifica o banco dados com a matrix gamma 
   group_by(topic) |> 
-  slice_max(order_by = gamma, n = 10) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
+  slice_max(order_by = gamma, n = 5) |> # Encontra os docs mais representativo de cada tópico (com maior gamma)
   mutate(nm_producao = paste(nm_producao, collapse = ", ")) |> 
   ungroup() |> 
   distinct(topic, .keep_all = TRUE) |> 
-  select(category, topic, nm_producao) |> 
-  left_join(gamma_words, by = "topic") |> 
+  select(category, topic, labels, nm_producao) |> 
+  left_join(gamma_words, by = "labels") |> 
   mutate(gamma = round(gamma * 100,2)) |> 
-  select(category, topic, terms, nm_producao,gamma) |>  # Seleciona apenas as variáveis de interesse
-  arrange(category, desc(gamma)) 
+  select(category, topic, labels, terms, nm_producao,gamma) |>   # Seleciona apenas as variáveis de interesse
+  group_by(category) |> 
+  mutate(total = sum(gamma)) |> 
+  ungroup() |> 
+  arrange(desc(total), desc(gamma))
+
+# Ordem dos labels####
+ordem_labels <- tabelao$labels
 
 # Tabelão.doc####
-# TABELA 01 - TOPIC | TERMS | GAMMA
+# TABELA 01 - TOPIC | BETAS | GAMMA
 tabelao1 <- tabelao |> 
   group_by(category) |>
   gt() |> 
-  cols_hide(nm_producao) |> 
+  cols_hide(c(nm_producao, total)) |> # Anular terms/nm_producao
+  cols_move_to_start(labels) |> 
+  opt_table_font(
+    font = "Times New Roman") 
+
+# TABELA 02 - TOPIC | MONOGRAPHS | GAMMA
+tabelao2 <- tabelao |> 
+  group_by(category) |>
+  gt() |> 
+  cols_hide(c(terms, gamma, total)) |> # Anular terms/nm_producao
+  cols_move_to_start(labels) |> 
   opt_table_font(
     font = "Times New Roman") 
 
 #Salvar
 gtsave(tabelao1, 
-       "tabelao1.docx", 
-       path = "dados",
-       vwidth = 1400,
-       vheight = 1700)
-
-# Cálculo prevalência categorias
-total_categorias <- tabelao |> 
-  summarize(total = sum(gamma), .by = c(category))
-  
-# Salvar tabela  
-total_categorias |>
-  readr::write_csv("dados/total_category.csv")
+       "tabelao2_titles.docx", 
+       path = "dados")
 
 # Gráfico Beta ####
-ordem_topicos <- tabelao$topic
+# Tradução 
+# Ver traducaobeta.R
 tidybeta_graph <- tidybeta |> 
-  group_by(topic)  |> 
+  left_join(categorias, by = "topic") |> 
+  filter(!str_detect(category, "Excluded")) |> 
+  group_by(labels)  |> 
   top_n(5, beta) |> 
   ungroup() |> 
-  mutate(topic = factor(topic, levels = ordem_topicos),
-         term = reorder_within(term, beta, topic)) |>  
-  left_join(categorias, by = "topic") |> 
-  filter(category != "Excluded")
+  mutate(labels = factor(labels, levels = ordem_labels),
+         term = str_replace_all(term,
+                                setNames(traducao_beta$term_en,
+                                         traducao_beta$term_pt)),
+         term = reorder_within(term, beta, labels)) 
 
-tidybeta_graph |> 
-  ggplot(aes(x = term, 
-             y = beta, 
-             fill = category)) +
-  theme_classic() +
-  geom_col(alpha = 0.9) +
-  scale_fill_manual(values = met.brewer("Cross", 7)) +
-  facet_wrap(~ topic, scales = "free", ncol = 5) +
-  labs(x = "",
-       y = "",
-       fill = "") +
-  theme(legend.position = "top",
-        text = element_text(size = 25, family = "Times New Roman"),
-        axis.text.x = element_blank()) +
-  coord_flip() +
-  scale_x_reordered() 
-
-# Gráfico Beta (inglês)####
-# Tradução - TRADUZIR MANUALMENTE#### 
-lista_pt <- as.character(tidybeta_graph$term)
-lista_en <- gtranslate::translate(as.character(tidybeta_graph$term), 
-                             from = "auto", 
-                             to = "en")
-correspondencia <- setNames(lista_en, lista_pt)
-
-tidybeta_graph_en <- tidybeta_graph |> 
-  mutate(term =  recode(term,
-                        !!!setNames(lista_en, lista_pt)))
-
-         
 # Gráfico
-
-tidybeta_graph_en |> 
+tidybeta_graph |> 
+  filter(!str_detect(category, "Excluded")) |> 
   ggplot(aes(x = term, 
              y = beta, 
              fill = category)) +
   theme_classic() +
   geom_col(alpha = 0.9) +
   scale_fill_manual(values = met.brewer("Cross", 7)) +
-  facet_wrap(~ topic, scales = "free", ncol = 5) +
+  scale_y_continuous(labels = scales::number_format(accuracy = 0.01))+
+  facet_wrap(~ labels, scales = "free", ncol = 10) +
   labs(x = "",
        y = "",
        fill = "") +
   theme(legend.position = "top",
-        text = element_text(size = 25, family = "Times New Roman"),
-        axis.text.x = element_blank()) +
+        text = element_text(size = 14, family = "Times New Roman"),
+        axis.text.x = element_blank(),
+        strip.text = element_text(size = 6)) +
   coord_flip() +
   scale_x_reordered() 
 
 # Salvar
 ggsave(
-  "figs/stm_tabelaobeta.png",
+  "figs/stm_grafbeta.png",
   bg = "white",
-  width = 19,
-  height = 30,
-  dpi = 900,
+  width = 26,
+  height = 14,
+  dpi = 1200,
   plot = last_plot())
-
-# TABELA 01 - TOPIC | TERMS | GAMMA
-tabelao2 <- tabelao |> 
-  select(category, topic, nm_producao) |> 
-  group_by(category) |>
-  gt() |> 
-  opt_table_font(
-    font = "Times New Roman") 
-
-#Salvar
-gtsave(tabelao2, 
-       "tabelao2.docx", 
-       path = "dados",
-       vwidth = 1400,
-       vheight = 1700)
 
 # UMAP ####
 # Preparação do banco
 # Exclusão de Excluídos para análise 
 tidygamma <- tidygamma |> 
-  filter(category != "Excluded")
-
+  filter(!str_detect(category, "Excluded"))  
+  
 gammawide <- tidygamma  |>  
   summarise(gamma = mean(gamma), .by = c(category, document))  |> 
   pivot_wider(id_cols = document,
@@ -409,18 +381,18 @@ umap_model <- prep(umap_recipe)
 # Gráfico UMAP####
 juice(umap_model)  |> 
   ggplot(aes(UMAP1, UMAP2)) +
-  geom_point(aes(fill = category), alpha = .8, size = 6, shape = 21) +
+  geom_point(aes(fill = category), alpha = .8, size = 5, shape = 21) +
  # geom_text(aes(label = topic), check_overlap = TRUE, size = 3, color = "white") +
   scale_fill_manual(values = met.brewer("Cross", 7)) +
   theme_classic() +
   labs(fill = "") +
   theme(legend.position = "bottom",
-        text = element_text(size = 16, family = "Times New Roman")) 
+        text = element_text(size = 20, family = "Times New Roman")) 
 
 ggsave(
   "figs/stm_umap.png",
   bg = "white",
-  width = 11,
+  width = 12,
   height = 8,
   dpi = 1200,
   plot = last_plot())
@@ -434,57 +406,104 @@ stm_efeitoano <- stm::estimateEffect(1:80 ~ an_base,
 stm_ano <- tidystm::extract.estimateEffect(x = stm_efeitoano, 
                                                         covariate = "an_base", 
                                                         model = topic_model, 
-                                                        method = "pointestimate",
-                                                        labeltype = "prob",
-                                                        n = 3)
+                                                        method = "pointestimate")
 # Limpeza do banco e rotulação de categorias  
+# VER ARQUIVO topic_labels.R
 stm_ano <- stm_ano |> 
-  mutate(topic = as_factor(topic),
-         label = str_replace_all(label, "\\(Covariate Level: 1991\\)", "")) |> 
+  mutate(topic = as_factor(topic)) |> 
   left_join(categorias, by = "topic") |> 
-  filter(category != "Excluded")
+  left_join(topic_labels, by = "topic") |> 
+  filter(!str_detect(labels, "Excluded")) |> 
+  mutate(labels = factor(labels, levels = ordem_labels))
 
-# Gráfico ano-tópicos#### 
- stm_ano |> 
-  mutate(topic = factor(topic, levels = ordem_topicos)) |> 
+# Gráfico Efeito ano-tópicos####
+stm_ano |> 
   ggplot(aes(x = covariate.value,
-             y = scale(estimate),
-         #    ymin = ci.lower, 
-         #    ymax = ci.upper, Sem CI em função da resolução do gráfico
+             y = estimate,
+             ymin = ci.lower, 
+             ymax = ci.upper, # Sem CI em função da resolução do gráfico
              color = category)) +
-  facet_wrap(~topic, ncol = 6) +
+  facet_wrap(~labels, ncol = 6) +
   theme_classic() +
-  geom_line(linewidth = 2) +
-#  geom_ribbon(alpha = 0.2) +
-  labs(x = "Year(1991-2021)",
+  geom_line(linewidth = 1, aes(color = category)) +
+  geom_ribbon(aes(fill = category), 
+              alpha = 0.2,
+              show.legend = FALSE) +
+  labs(x = "Year (1991-2021)",
        y = "Point Estimation",
        color = "") +
   scale_color_manual(values = met.brewer("Cross", 7)) +
-#  scale_fill_manual(values = met.brewer("Cross", 7)) +
   theme(legend.position = "top",
-        text = element_text(size = 30, family = "Times New Roman"),
-        axis.text.x = element_blank())
+        text = element_text(size = 6, family = "Times New Roman"),
+        axis.text.x = element_blank(),
+        legend.text = element_text(size=8))
+
+# Gráfico ano-tópicos por categoria#### 
+ stm_ano |> 
+  filter(category == "Social and Political Philosophy") |> 
+  ggplot(aes(x = covariate.value,
+             y = estimate,
+             ymin = ci.lower, 
+             ymax = ci.upper, #Sem CI em função da resolução do gráfico
+             color = category)) +
+  facet_wrap(~labels, ncol = 6) +
+  theme_classic() +
+  geom_line(linewidth = 1, aes(color = "Social and Political Philosophy")) +
+  geom_ribbon(aes(fill = "Social and Political Philosophy"), 
+              alpha = 0.2,
+              show.legend = FALSE) +
+  labs(x = "Year (1991-2021)",
+       y = "Point Estimation",
+       color = "") +
+  scale_color_manual(values = "#c969a1") +
+  scale_fill_manual(values = "#c969a1") +
+  theme(legend.position = "top",
+        text = element_text(size = 6, family = "Times New Roman"),
+        axis.text.x = element_blank(),
+        legend.text = element_text(size=8))
 
  ggsave(
-   "figs/stm_topics-ano.png",
+   "figs/stm_topics-ano_meta.png",
    bg = "white",
-   width = 18,
-   height = 20, #Limite
+   width = 6,
+   height = 7, #Limite
    dpi = 1200,
    plot = last_plot())
+ 
+ stm_ano |> 
+   filter(category == "Metaphysics") |> 
+   ggplot(aes(x = covariate.value,
+              y = estimate,
+              ymin = ci.lower, 
+              ymax = ci.upper, #Sem CI em função da resolução do gráfico
+              color = category)) +
+   facet_wrap(~topic_label, ncol = 6) +
+   theme_classic() +
+   geom_line(linewidth = 1, aes(color = "Metaphysics")) +
+   geom_ribbon(aes(fill = "Metaphysics"), 
+               alpha = 0.2,
+               show.legend = FALSE) +
+   labs(x = "Year (1991-2021)",
+        y = "Point Estimation",
+        color = "") +
+   scale_color_manual(values = "#ce4441") +
+   scale_fill_manual(values = "#ce4441") +
+   theme(legend.position = "top",
+         text = element_text(size = 6, family = "Times New Roman"),
+         axis.text.x = element_blank(),
+         legend.text = element_text(size=12))
  
 # Tabela da variação dos tópicos no tempo#### 
 # Tabela paisagem
  trends_ano <- stm_ano |> 
-   left_join(topic_labels, by = "topic") |> 
    arrange(covariate.value, 
            desc(estimate)) |> 
    group_by(covariate.value) |> 
    slice_head(n = 10) |> 
    mutate(row = row_number()) |> 
-   select(row, topic_label, covariate.value) |> 
+   select(row, topic, covariate.value) |> 
    tidyr::pivot_wider(names_from = covariate.value,
-                      values_from  = topic_label) |> 
+                      values_from  = topic) |> 
    select(-row) |> 
    ungroup()
  
@@ -493,8 +512,8 @@ trends_ano <- stm_ano |>
   left_join(topic_labels, by = "topic") |> 
    arrange(covariate.value, 
            desc(estimate)) |> 
-   group_by(covariate.value) |> 
-   slice_head(n = 10) |> 
+   group_by(covariate.value) |>
+  slice_head(n = 10) |> 
    mutate(topic = as.numeric(topic),
           row = row_number()) |> 
    select(row, topic, covariate.value) |> 
@@ -516,7 +535,10 @@ gtsave(tabelao_ano,
 
 # Gráfico Tempo-Categoria####
 categorias_tempo <- stm_ano |> 
-  summarize(total = sum(estimate), .by = c(covariate.value, category))
+  summarize(total = sum(estimate), .by = c(covariate.value, category)) 
+
+categorias_tempo |>
+  readr::write_csv("dados/evolucao_categorias.csv")
 
 categorias_tempo |>
   ggplot(aes(x = covariate.value,
@@ -533,13 +555,13 @@ categorias_tempo |>
   guides(color = guide_legend(override.aes = list(size = 3))) +
   theme(legend.position = "top",
         plot.title = element_markdown(face = "bold"),
-        text = element_text(size = 28, family = "Times New Roman"))
+        text = element_text(size = 14, family = "Times New Roman"))
 
 ggsave(
   "figs/stm_category_ano.png",
   bg = "white",
-  width = 17,
-  height = 11,
+  width = 8,
+  height = 7,
   dpi = 1200,
   plot = last_plot())
 
@@ -591,27 +613,16 @@ ggsave(
   dpi = 1200,
   plot = last_plot())
 
-# Salvar tabela  
-evolucao_categorias <- categorias_tempo_ano |> 
-  group_by(an_base) |> 
-  mutate(frequencia = round(n/sum(n)*100,2))
-
-evolucao_categorias |>
-  readr::write_csv("dados/evolucao_categorias.csv")
-
 # Efeito gênero de orientador####
 stm_efeitogenero <- stm::estimateEffect(1:80 ~ g_orientador, 
                                        stmobj = topic_model, 
-                                       metadata = topic_model$meta)
+                                       metadata = covars)
 
 stm_genero <- tidystm::extract.estimateEffect(x = stm_efeitogenero,
                                               covariate = "g_orientador",
                                               cov.value1 = "Female",
                                               cov.value2 = "Male",
                                               method = "difference")
-
-# salvar tabela com sumário
-write.csv(tidy(tab_efeitogenero), "dados/efeito_genero.csv")
 
 sink("dados/efeito_genero.txt")
 print(summary(stm_efeitogenero))
@@ -621,20 +632,21 @@ stm_genero <- stm_genero |>
   mutate(topic = as_factor(topic)) |> 
   left_join(topic_labels, by = "topic") |> 
   left_join(categorias, by = "topic") |> 
-  mutate(topic_label = as_factor(topic_label),
-         topic_label = reorder(topic_label, estimate))
+  mutate(labels = as_factor(labels),
+         labels = reorder(labels, estimate))  
+  
 
-top_value <- c(8,9,11,14,25,26,27,34,35,37,39,45,48,53,54,61,62,64,65,69,72)
+top_value <- c(8,9,11,14,25,26,27,34,35,39,43,44,45,48,53,54,58,61,62,64,65,69,72)
 
 stm_genero |> 
- # filter(topic %in% top_value) |>  # Filtro para os tópicos significativos
-  filter(category != "Excluded") |> # Filtro para todos, menos tópicos excluídos
-  ggplot(aes(x = topic_label,
+  filter(topic %in% top_value) |>  # Filtro para os tópicos significativos
+  filter(!str_detect(category, "Excluded")) |> # Filtro para todos, menos tópicos excluídos
+  ggplot(aes(x = labels,
              y = estimate,
              color = category)) +
   geom_point(stat = "identity", size = 3) +
   geom_errorbar(aes(ymin = ci.lower, ymax = ci.upper), 
-                linewidth = 1.5, width = 0.3) +
+                linewidth = 1, width = 0.3) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   scale_color_manual(values = met.brewer("Cross", 7)) +
   labs(title = "",
@@ -643,19 +655,20 @@ stm_genero |>
        color = "") +
   theme_classic() + 
   coord_flip() +
-  theme(legend.position = "right",
-        text = element_text(size = 25, family = "Times New Roman"),
-        axis.title.y = element_text(hjust = 0.5),
-        legend.text = element_text(size=20)) 
+  theme(legend.position = "top",
+        legend.justification = c("right", "top"),
+        text = element_text(size = 12, family = "Times New Roman"),
+        legend.text = element_text(size=10),
+        axis.title.y = element_text(hjust = 0.5)
+  )
+
 ggsave(
-  "figs/stm_topic-genero_total.tiff",
+  "figs/stm_topic-genero-top.png",
   bg = "white",
-  width = 17,
-  height = 21,
+  width = 7,
+  height = 6,
   dpi = 1200,
   plot = last_plot()) 
-
-
 
 # Cálculo da proporção de gênero para cada tópico####
 prop_topicgenero <- stm_genero |> 
@@ -718,7 +731,7 @@ gtsave(tabela_topicgenero,
 prop_catgenero <- stm_genero |> 
   mutate(topic = as_factor(topic))  |> 
   left_join(categorias, by = "topic") |> 
-  filter(category != "Excluídos") |> 
+  filter(!str_detect(category, "Excluded")) |> 
   group_by(category, covariate.value) |>
   summarise(total = sum(estimate)) |> 
   mutate(proporcao = round(total/sum(total)*100,2)) |> 
@@ -744,38 +757,3 @@ tab_genero <- prop_topicgenero  |>
 # Prepara o gamma
 tab_gamma <- gamma_words |> 
   mutate(topic = as.numeric(topic))
-  
-
-# Tabela dos 12-12
-tab_24 <- left_join(tab_genero,
-                    gamma_words,
-                    by = c("topic_Woman" = "topic")) |> 
-  slice(1:12, 69:80) |> 
-  select(-c(label, terms, topic_Man, proporcao_Man)) |> 
-  mutate(gamma = round(gamma*100,3))
-
-# TABELA 3 
-tabela_genero12 <- tab_24 |> 
-  gt() |> 
-  cols_move_to_start(c(category, topic_Woman)) |> 
-  cols_label(   # Títulos
-    topic_Woman = "Topic",
-    gamma = "\U03B3(%)",
-    proporcao_Woman = "Woman (%)",
-    category = "Category"
-  ) |>
-  tab_options(
-    table_body.hlines.style = "none",
-    column_labels.border.top.color = "black",
-    column_labels.border.bottom.color = "black",
-    table_body.border.bottom.color = "black"
-  ) |> 
-  opt_table_font(
-  font = "Times New Roman") 
-
-#Salvar
-gtsave(tabela_genero12, 
-       "tabela_genero.docx", 
-       path = "dados",
-       vwidth = 1400,
-       vheight = 1700)

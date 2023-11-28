@@ -1,218 +1,218 @@
-an_base,category,n,frequencia
-1991,Phenomenology and Hermeneutics,9,12.68
-1991,Metaphysics,11,15.49
-1991,Philosophy of Science,20,28.17
-1991,Philosophy of Mind and Language,4,5.63
-1991,Social and Political Philosophy,16,22.54
-1991,Aesthetics,9,12.68
-1991,Ethics,2,2.82
-1992,Metaphysics,15,17.86
-1992,Phenomenology and Hermeneutics,14,16.67
-1992,Philosophy of Science,17,20.24
-1992,Social and Political Philosophy,23,27.38
-1992,Ethics,5,5.95
-1992,Aesthetics,6,7.14
-1992,Philosophy of Mind and Language,4,4.76
-1993,Phenomenology and Hermeneutics,20,19.8
-1993,Social and Political Philosophy,24,23.76
-1993,Aesthetics,11,10.89
-1993,Philosophy of Science,22,21.78
-1993,Metaphysics,18,17.82
-1993,Philosophy of Mind and Language,3,2.97
-1993,Ethics,3,2.97
-1994,Ethics,11,10.58
-1994,Aesthetics,6,5.77
-1994,Social and Political Philosophy,18,17.31
-1994,Metaphysics,18,17.31
-1994,Philosophy of Mind and Language,8,7.69
-1994,Phenomenology and Hermeneutics,17,16.35
-1994,Philosophy of Science,26,25
-1995,Social and Political Philosophy,19,17.76
-1995,Ethics,12,11.21
-1995,Philosophy of Science,20,18.69
-1995,Aesthetics,11,10.28
-1995,Metaphysics,15,14.02
-1995,Phenomenology and Hermeneutics,18,16.82
-1995,Philosophy of Mind and Language,12,11.21
-1996,Social and Political Philosophy,35,22.01
-1996,Philosophy of Science,40,25.16
-1996,Phenomenology and Hermeneutics,11,6.92
-1996,Aesthetics,24,15.09
-1996,Ethics,13,8.18
-1996,Metaphysics,26,16.35
-1996,Philosophy of Mind and Language,10,6.29
-1997,Social and Political Philosophy,30,18.07
-1997,Aesthetics,25,15.06
-1997,Philosophy of Science,26,15.66
-1997,Phenomenology and Hermeneutics,22,13.25
-1997,Philosophy of Mind and Language,12,7.23
-1997,Metaphysics,36,21.69
-1997,Ethics,15,9.04
-1998,Social and Political Philosophy,51,27.13
-1998,Ethics,23,12.23
-1998,Philosophy of Science,23,12.23
-1998,Aesthetics,17,9.04
-1998,Phenomenology and Hermeneutics,26,13.83
-1998,Philosophy of Mind and Language,11,5.85
-1998,Metaphysics,37,19.68
-1999,Philosophy of Science,30,15.38
-1999,Social and Political Philosophy,36,18.46
-1999,Metaphysics,37,18.97
-1999,Phenomenology and Hermeneutics,25,12.82
-1999,Ethics,29,14.87
-1999,Philosophy of Mind and Language,22,11.28
-1999,Aesthetics,16,8.21
-2000,Philosophy of Mind and Language,31,12.11
-2000,Social and Political Philosophy,55,21.48
-2000,Phenomenology and Hermeneutics,28,10.94
-2000,Aesthetics,35,13.67
-2000,Ethics,25,9.77
-2000,Metaphysics,48,18.75
-2000,Philosophy of Science,34,13.28
-2001,Philosophy of Science,41,17.67
-2001,Philosophy of Mind and Language,24,10.34
-2001,Phenomenology and Hermeneutics,40,17.24
-2001,Metaphysics,37,15.95
-2001,Social and Political Philosophy,43,18.53
-2001,Ethics,27,11.64
-2001,Aesthetics,20,8.62
-2002,Social and Political Philosophy,60,21.05
-2002,Ethics,34,11.93
-2002,Phenomenology and Hermeneutics,47,16.49
-2002,Philosophy of Science,34,11.93
-2002,Aesthetics,31,10.88
-2002,Philosophy of Mind and Language,34,11.93
-2002,Metaphysics,45,15.79
-2003,Social and Political Philosophy,69,21.23
-2003,Philosophy of Science,45,13.85
-2003,Phenomenology and Hermeneutics,46,14.15
-2003,Philosophy of Mind and Language,40,12.31
-2003,Ethics,53,16.31
-2003,Metaphysics,52,16
-2003,Aesthetics,20,6.15
-2004,Ethics,43,14.48
-2004,Metaphysics,61,20.54
-2004,Phenomenology and Hermeneutics,46,15.49
-2004,Philosophy of Science,50,16.84
-2004,Social and Political Philosophy,47,15.82
-2004,Philosophy of Mind and Language,25,8.42
-2004,Aesthetics,25,8.42
-2005,Aesthetics,29,8.26
-2005,Phenomenology and Hermeneutics,51,14.53
-2005,Metaphysics,75,21.37
-2005,Philosophy of Mind and Language,38,10.83
-2005,Ethics,45,12.82
-2005,Social and Political Philosophy,71,20.23
-2005,Philosophy of Science,42,11.97
-2006,Social and Political Philosophy,71,19.94
-2006,Aesthetics,43,12.08
-2006,Philosophy of Mind and Language,40,11.24
-2006,Ethics,36,10.11
-2006,Metaphysics,62,17.42
-2006,Phenomenology and Hermeneutics,42,11.8
-2006,Philosophy of Science,62,17.42
-2007,Ethics,48,12.4
-2007,Phenomenology and Hermeneutics,58,14.99
-2007,Social and Political Philosophy,88,22.74
-2007,Metaphysics,71,18.35
-2007,Philosophy of Science,44,11.37
-2007,Aesthetics,41,10.59
-2007,Philosophy of Mind and Language,37,9.56
-2008,Metaphysics,70,19.23
-2008,Ethics,44,12.09
-2008,Social and Political Philosophy,78,21.43
-2008,Phenomenology and Hermeneutics,44,12.09
-2008,Philosophy of Mind and Language,45,12.36
-2008,Aesthetics,33,9.07
-2008,Philosophy of Science,50,13.74
-2009,Phenomenology and Hermeneutics,59,14.71
-2009,Ethics,48,11.97
-2009,Social and Political Philosophy,89,22.19
-2009,Metaphysics,72,17.96
-2009,Philosophy of Mind and Language,46,11.47
-2009,Aesthetics,44,10.97
-2009,Philosophy of Science,43,10.72
-2010,Philosophy of Science,54,11.07
-2010,Social and Political Philosophy,103,21.11
-2010,Ethics,71,14.55
-2010,Metaphysics,93,19.06
-2010,Philosophy of Mind and Language,52,10.66
-2010,Phenomenology and Hermeneutics,52,10.66
-2010,Aesthetics,63,12.91
-2011,Philosophy of Science,59,11.55
-2011,Ethics,54,10.57
-2011,Philosophy of Mind and Language,41,8.02
-2011,Phenomenology and Hermeneutics,68,13.31
-2011,Social and Political Philosophy,140,27.4
-2011,Metaphysics,97,18.98
-2011,Aesthetics,52,10.18
-2012,Philosophy of Science,70,13.18
-2012,Phenomenology and Hermeneutics,79,14.88
-2012,Ethics,67,12.62
-2012,Social and Political Philosophy,124,23.35
-2012,Metaphysics,95,17.89
-2012,Philosophy of Mind and Language,43,8.1
-2012,Aesthetics,53,9.98
-2013,Ethics,84,14.05
-2013,Social and Political Philosophy,148,24.75
-2013,Metaphysics,121,20.23
-2013,Phenomenology and Hermeneutics,69,11.54
-2013,Aesthetics,62,10.37
-2013,Philosophy of Mind and Language,50,8.36
-2013,Philosophy of Science,64,10.7
-2014,Social and Political Philosophy,120,19.77
-2014,Philosophy of Science,85,14
-2014,Phenomenology and Hermeneutics,90,14.83
-2014,Aesthetics,68,11.2
-2014,Metaphysics,113,18.62
-2014,Ethics,77,12.69
-2014,Philosophy of Mind and Language,54,8.9
-2015,Aesthetics,89,13.71
-2015,Ethics,100,15.41
-2015,Social and Political Philosophy,133,20.49
-2015,Metaphysics,109,16.8
-2015,Phenomenology and Hermeneutics,85,13.1
-2015,Philosophy of Mind and Language,59,9.09
-2015,Philosophy of Science,74,11.4
-2016,Phenomenology and Hermeneutics,65,11.73
-2016,Philosophy of Science,55,9.93
-2016,Philosophy of Mind and Language,69,12.45
-2016,Social and Political Philosophy,124,22.38
-2016,Ethics,81,14.62
-2016,Metaphysics,97,17.51
-2016,Aesthetics,63,11.37
-2017,Metaphysics,138,18.42
-2017,Phenomenology and Hermeneutics,111,14.82
-2017,Philosophy of Mind and Language,70,9.35
-2017,Social and Political Philosophy,168,22.43
-2017,Philosophy of Science,83,11.08
-2017,Aesthetics,77,10.28
-2017,Ethics,102,13.62
-2018,Ethics,72,10.73
-2018,Social and Political Philosophy,179,26.68
-2018,Metaphysics,116,17.29
-2018,Phenomenology and Hermeneutics,95,14.16
-2018,Aesthetics,75,11.18
-2018,Philosophy of Mind and Language,59,8.79
-2018,Philosophy of Science,75,11.18
-2019,Social and Political Philosophy,192,26.09
-2019,Ethics,88,11.96
-2019,Aesthetics,82,11.14
-2019,Phenomenology and Hermeneutics,100,13.59
-2019,Philosophy of Science,77,10.46
-2019,Metaphysics,129,17.53
-2019,Philosophy of Mind and Language,68,9.24
-2020,Social and Political Philosophy,132,23.53
-2020,Aesthetics,82,14.62
-2020,Philosophy of Mind and Language,45,8.02
-2020,Metaphysics,94,16.76
-2020,Philosophy of Science,71,12.66
-2020,Phenomenology and Hermeneutics,77,13.73
-2020,Ethics,60,10.7
-2021,Philosophy of Mind and Language,63,9.81
-2021,Social and Political Philosophy,166,25.86
-2021,Aesthetics,92,14.33
-2021,Phenomenology and Hermeneutics,83,12.93
-2021,Ethics,60,9.35
-2021,Metaphysics,107,16.67
-2021,Philosophy of Science,71,11.06
+covariate.value,category,total
+1991,Social and Political Philosophy,0.20233329900087357
+1992,Social and Political Philosophy,0.20409413948556518
+1993,Social and Political Philosophy,0.20585497997025684
+1994,Social and Political Philosophy,0.20761582045494853
+1995,Social and Political Philosophy,0.2093766609396402
+1996,Social and Political Philosophy,0.2111375014243318
+1997,Social and Political Philosophy,0.21289834190902346
+1998,Social and Political Philosophy,0.2146591823937151
+1999,Social and Political Philosophy,0.21642002287840675
+2000,Social and Political Philosophy,0.2181808633630984
+2001,Social and Political Philosophy,0.21994170384778997
+2002,Social and Political Philosophy,0.22170254433248163
+2003,Social and Political Philosophy,0.2234633848171733
+2004,Social and Political Philosophy,0.22522422530186492
+2005,Social and Political Philosophy,0.2269850657865565
+2006,Social and Political Philosophy,0.2287459062712482
+2007,Social and Political Philosophy,0.2305067467559399
+2008,Social and Political Philosophy,0.2322675872406315
+2009,Social and Political Philosophy,0.23402842772532315
+2010,Social and Political Philosophy,0.23578926821001475
+2011,Social and Political Philosophy,0.23755010869470644
+2012,Social and Political Philosophy,0.2393109491793981
+2013,Social and Political Philosophy,0.24107178966408976
+2014,Social and Political Philosophy,0.24283263014878137
+2015,Social and Political Philosophy,0.24459347063347298
+2016,Social and Political Philosophy,0.24635431111816464
+2017,Social and Political Philosophy,0.24811515160285633
+2018,Social and Political Philosophy,0.24987599208754793
+2019,Social and Political Philosophy,0.25163683257223957
+2020,Social and Political Philosophy,0.2533976730569312
+2021,Social and Political Philosophy,0.2551585135416229
+1991,Aesthetics,0.08121719912104901
+1992,Aesthetics,0.08184734558784604
+1993,Aesthetics,0.08247749205464308
+1994,Aesthetics,0.08310763852144012
+1995,Aesthetics,0.08373778498823717
+1996,Aesthetics,0.08436793145503421
+1997,Aesthetics,0.08499807792183127
+1998,Aesthetics,0.0856282243886283
+1999,Aesthetics,0.08625837085542534
+2000,Aesthetics,0.08688851732222239
+2001,Aesthetics,0.08751866378901943
+2002,Aesthetics,0.08814881025581646
+2003,Aesthetics,0.08877895672261352
+2004,Aesthetics,0.08940910318941056
+2005,Aesthetics,0.09003924965620759
+2006,Aesthetics,0.09066939612300463
+2007,Aesthetics,0.09129954258980168
+2008,Aesthetics,0.09192968905659873
+2009,Aesthetics,0.09255983552339578
+2010,Aesthetics,0.09318998199019281
+2011,Aesthetics,0.09382012845698987
+2012,Aesthetics,0.09445027492378688
+2013,Aesthetics,0.09508042139058394
+2014,Aesthetics,0.09571056785738098
+2015,Aesthetics,0.09634071432417803
+2016,Aesthetics,0.09697086079097506
+2017,Aesthetics,0.0976010072577721
+2018,Aesthetics,0.09823115372456914
+2019,Aesthetics,0.09886130019136619
+2020,Aesthetics,0.09949144665816324
+2021,Aesthetics,0.10012159312496027
+1991,Phenomenology and Hermeneutics,0.1240334746481393
+1992,Phenomenology and Hermeneutics,0.12382788117587192
+1993,Phenomenology and Hermeneutics,0.12362228770360453
+1994,Phenomenology and Hermeneutics,0.12341669423133718
+1995,Phenomenology and Hermeneutics,0.12321110075906978
+1996,Phenomenology and Hermeneutics,0.1230055072868024
+1997,Phenomenology and Hermeneutics,0.12279991381453503
+1998,Phenomenology and Hermeneutics,0.12259432034226765
+1999,Phenomenology and Hermeneutics,0.12238872687000027
+2000,Phenomenology and Hermeneutics,0.12218313339773292
+2001,Phenomenology and Hermeneutics,0.12197753992546555
+2002,Phenomenology and Hermeneutics,0.12177194645319818
+2003,Phenomenology and Hermeneutics,0.1215663529809308
+2004,Phenomenology and Hermeneutics,0.1213607595086634
+2005,Phenomenology and Hermeneutics,0.12115516603639605
+2006,Phenomenology and Hermeneutics,0.12094957256412865
+2007,Phenomenology and Hermeneutics,0.12074397909186128
+2008,Phenomenology and Hermeneutics,0.12053838561959392
+2009,Phenomenology and Hermeneutics,0.12033279214732653
+2010,Phenomenology and Hermeneutics,0.12012719867505917
+2011,Phenomenology and Hermeneutics,0.11992160520279177
+2012,Phenomenology and Hermeneutics,0.1197160117305244
+2013,Phenomenology and Hermeneutics,0.11951041825825702
+2014,Phenomenology and Hermeneutics,0.11930482478598967
+2015,Phenomenology and Hermeneutics,0.11909923131372228
+2016,Phenomenology and Hermeneutics,0.1188936378414549
+2017,Phenomenology and Hermeneutics,0.11868804436918753
+2018,Phenomenology and Hermeneutics,0.11848245089692017
+2019,Phenomenology and Hermeneutics,0.11827685742465277
+2020,Phenomenology and Hermeneutics,0.11807126395238539
+2021,Phenomenology and Hermeneutics,0.11786567048011805
+1991,Ethics,0.07765167456922714
+1992,Ethics,0.07863338720783414
+1993,Ethics,0.07961509984644112
+1994,Ethics,0.0805968124850481
+1995,Ethics,0.08157852512365509
+1996,Ethics,0.0825602377622621
+1997,Ethics,0.08354195040086909
+1998,Ethics,0.08452366303947609
+1999,Ethics,0.08550537567808307
+2000,Ethics,0.08648708831669007
+2001,Ethics,0.08746880095529705
+2002,Ethics,0.08845051359390403
+2003,Ethics,0.08943222623251104
+2004,Ethics,0.09041393887111801
+2005,Ethics,0.091395651509725
+2006,Ethics,0.092377364148332
+2007,Ethics,0.093359076786939
+2008,Ethics,0.09434078942554598
+2009,Ethics,0.09532250206415298
+2010,Ethics,0.09630421470275996
+2011,Ethics,0.09728592734136696
+2012,Ethics,0.09826763997997394
+2013,Ethics,0.09924935261858095
+2014,Ethics,0.10023106525718793
+2015,Ethics,0.10121277789579493
+2016,Ethics,0.10219449053440191
+2017,Ethics,0.1031762031730089
+2018,Ethics,0.10415791581161589
+2019,Ethics,0.1051396284502229
+2020,Ethics,0.10612134108882988
+2021,Ethics,0.10710305372743688
+1991,Philosophy of Science,0.1831218202636982
+1992,Philosophy of Science,0.18090620880269317
+1993,Philosophy of Science,0.17869059734168818
+1994,Philosophy of Science,0.1764749858806832
+1995,Philosophy of Science,0.17425937441967818
+1996,Philosophy of Science,0.17204376295867319
+1997,Philosophy of Science,0.16982815149766817
+1998,Philosophy of Science,0.16761254003666315
+1999,Philosophy of Science,0.16539692857565813
+2000,Philosophy of Science,0.16318131711465314
+2001,Philosophy of Science,0.16096570565364815
+2002,Philosophy of Science,0.1587500941926431
+2003,Philosophy of Science,0.1565344827316381
+2004,Philosophy of Science,0.15431887127063312
+2005,Philosophy of Science,0.15210325980962808
+2006,Philosophy of Science,0.14988764834862311
+2007,Philosophy of Science,0.1476720368876181
+2008,Philosophy of Science,0.14545642542661308
+2009,Philosophy of Science,0.14324081396560812
+2010,Philosophy of Science,0.14102520250460307
+2011,Philosophy of Science,0.13880959104359808
+2012,Philosophy of Science,0.1365939795825931
+2013,Philosophy of Science,0.13437836812158807
+2014,Philosophy of Science,0.13216275666058308
+2015,Philosophy of Science,0.12994714519957806
+2016,Philosophy of Science,0.12773153373857304
+2017,Philosophy of Science,0.12551592227756805
+2018,Philosophy of Science,0.12330031081656305
+2019,Philosophy of Science,0.12108469935555802
+2020,Philosophy of Science,0.11886908789455303
+2021,Philosophy of Science,0.11665347643354802
+1991,Metaphysics,0.18500487210352373
+1992,Metaphysics,0.18411010541811376
+1993,Metaphysics,0.18321533873270374
+1994,Metaphysics,0.18232057204729366
+1995,Metaphysics,0.1814258053618836
+1996,Metaphysics,0.18053103867647358
+1997,Metaphysics,0.17963627199106355
+1998,Metaphysics,0.17874150530565353
+1999,Metaphysics,0.17784673862024347
+2000,Metaphysics,0.17695197193483342
+2001,Metaphysics,0.17605720524942337
+2002,Metaphysics,0.17516243856401337
+2003,Metaphysics,0.1742676718786033
+2004,Metaphysics,0.17337290519319326
+2005,Metaphysics,0.1724781385077832
+2006,Metaphysics,0.1715833718223732
+2007,Metaphysics,0.17068860513696313
+2008,Metaphysics,0.16979383845155308
+2009,Metaphysics,0.16889907176614305
+2010,Metaphysics,0.168004305080733
+2011,Metaphysics,0.16710953839532297
+2012,Metaphysics,0.16621477170991297
+2013,Metaphysics,0.16532000502450286
+2014,Metaphysics,0.16442523833909287
+2015,Metaphysics,0.16353047165368279
+2016,Metaphysics,0.16263570496827276
+2017,Metaphysics,0.16174093828286276
+2018,Metaphysics,0.16084617159745268
+2019,Metaphysics,0.15995140491204266
+2020,Metaphysics,0.15905663822663263
+2021,Metaphysics,0.15816187154122255
+1991,Philosophy of Mind and Language,0.10006313300284292
+1992,Philosophy of Mind and Language,0.10025934408014976
+1993,Philosophy of Mind and Language,0.10045555515745665
+1994,Philosophy of Mind and Language,0.10065176623476352
+1995,Philosophy of Mind and Language,0.1008479773120704
+1996,Philosophy of Mind and Language,0.10104418838937725
+1997,Philosophy of Mind and Language,0.1012403994666841
+1998,Philosophy of Mind and Language,0.10143661054399097
+1999,Philosophy of Mind and Language,0.10163282162129784
+2000,Philosophy of Mind and Language,0.1018290326986047
+2001,Philosophy of Mind and Language,0.10202524377591159
+2002,Philosophy of Mind and Language,0.10222145485321844
+2003,Philosophy of Mind and Language,0.10241766593052533
+2004,Philosophy of Mind and Language,0.10261387700783217
+2005,Philosophy of Mind and Language,0.10281008808513904
+2006,Philosophy of Mind and Language,0.10300629916244591
+2007,Philosophy of Mind and Language,0.10320251023975278
+2008,Philosophy of Mind and Language,0.10339872131705966
+2009,Philosophy of Mind and Language,0.10359493239436653
+2010,Philosophy of Mind and Language,0.10379114347167338
+2011,Philosophy of Mind and Language,0.10398735454898025
+2012,Philosophy of Mind and Language,0.10418356562628713
+2013,Philosophy of Mind and Language,0.10437977670359398
+2014,Philosophy of Mind and Language,0.10457598778090085
+2015,Philosophy of Mind and Language,0.10477219885820774
+2016,Philosophy of Mind and Language,0.1049684099355146
+2017,Philosophy of Mind and Language,0.10516462101282147
+2018,Philosophy of Mind and Language,0.10536083209012832
+2019,Philosophy of Mind and Language,0.10555704316743521
+2020,Philosophy of Mind and Language,0.10575325424474208
+2021,Philosophy of Mind and Language,0.10594946532204894

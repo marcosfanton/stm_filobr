@@ -103,8 +103,8 @@ catalogo8721 <- catalogo8721  |>
 #Para não enviesar a amostra (excluir todos trabalhos orientados por determinador professor),
 #iremos atribuir o gênero manualmente para as observações que não foram definidas.
 
-#Seleção dos nomes sem gênero atribuído
-semgenero <- catalogo8721 |> 
+#Seleção dos nomes sem gênero atribuído - n: 349
+semgenero <- catalogo8721 |>  
   filter(!is.na(nm_orientador)) |> # Filtra NAs do nome do orientador
   filter(is.na(g_orientador)) |> #Filtra apenas observações sem atribuição de gênero
   distinct(nm_orientador)   # Mantêm apenas os nomes únicos
