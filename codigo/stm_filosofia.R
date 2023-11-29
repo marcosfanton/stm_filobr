@@ -297,8 +297,8 @@ tabelao2 <- tabelao |>
     font = "Times New Roman") 
 
 #Salvar
-gtsave(tabelao2, 
-       "tabelao_titles.docx", 
+gtsave(tabelao1, 
+       "tabelao_terms.docx", 
        path = "dados")
 
 # Gráfico Beta ####
