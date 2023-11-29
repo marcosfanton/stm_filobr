@@ -297,8 +297,8 @@ tabelao2 <- tabelao |>
     font = "Times New Roman") 
 
 #Salvar
-gtsave(tabelao1, 
-       "tabelao2_titles.docx", 
+gtsave(tabelao2, 
+       "tabelao_titles.docx", 
        path = "dados")
 
 # Gráfico Beta ####
@@ -418,6 +418,7 @@ stm_ano <- stm_ano |>
 
 # Gráfico Efeito ano-tópicos####
 stm_ano |> 
+  filter(labels == "MARX") |> 
   ggplot(aes(x = covariate.value,
              y = estimate,
              ymin = ci.lower, 
@@ -744,16 +745,3 @@ gtsave(prop_catgenero,
        path = "dados",
        vwidth = 2400,
        vheight = 1700)
-
-# Tabela | 12-12 tópicos-gênero####
-tab_genero <- prop_topicgenero  |> 
-  select(topic, covariate.value, label, proporcao)  |> 
-  mutate(label = str_replace_all(label, "\\(Covariate Level: Male\\)", "")) |> 
-  pivot_wider(names_from = covariate.value,
-              values_from = c(topic, proporcao)) |> 
-  left_join(categorias, by = c("topic_Woman" = "topic"))
-  
-
-# Prepara o gamma
-tab_gamma <- gamma_words |> 
-  mutate(topic = as.numeric(topic))
