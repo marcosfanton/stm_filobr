@@ -201,7 +201,7 @@ gamma_words |>
              label = terms, 
              fill = labels)) +
   geom_col(show.legend = FALSE) +
-  geom_text(hjust = 0, nudge_y = -0.000001, size = 6) +
+  geom_text(hjust = 0, nudge_y = -0.000001, size = 5) +
   coord_flip() +
   scale_y_continuous(expand = c(0,0),
                      limits = c(0, 0.038)) +
@@ -218,7 +218,7 @@ gamma_words |>
 ggsave(
   "figs/stm_model80t.png",
   bg = "white",
-  width = 20,
+  width = 22,
   height = 12,
   dpi = 900,
   plot = last_plot())
