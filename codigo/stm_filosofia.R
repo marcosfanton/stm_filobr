@@ -312,37 +312,58 @@ tidybeta_graph <- tidybeta |>
   ungroup() |> 
   mutate(labels = factor(labels, levels = ordem_labels),
          term = str_replace_all(term,
-                                setNames(traducao_beta$term_en,
-                                         traducao_beta$term_pt)),
-         term = reorder_within(term, beta, labels)) 
+                                 setNames(traducao_beta$term_en,
+                                          str_c("\\b", traducao_beta$term_pt, "\\b"))),
+          term = reorder_within(term, beta, labels))
 
 # Gráfico
+# Cores
+category_colors <- c(
+  "Social and Political Philosophy" = "#c969a1",
+  "Metaphysics" = "#ce4441",
+  "Philosophy of Science" = "#859b6c",
+  "Phenomenology and Hermeneutics" = "#ee8577",
+  "Philosophy of Mind and Language" = "#ffbb44",
+  "Aesthetics" = "#62929a",
+  "Ethics" = "#004f63")
+
 tidybeta_graph |> 
   filter(!str_detect(category, "Excluded")) |> 
+  filter(category %in% c(
+     # "Social and Political Philosophy"
+     #"Metaphysics"
+     # "Philosophy of Science"
+     # "Phenomenology and Hermeneutics"
+    # "Philosophy of Mind and Language"
+   #"Aesthetics"
+   "Ethics"
+    )) |> 
   ggplot(aes(x = term, 
              y = beta, 
              fill = category)) +
   theme_classic() +
   geom_col(alpha = 0.9) +
-  scale_fill_manual(values = met.brewer("Cross", 7)) +
+  scale_fill_manual(values = category_colors) +
   scale_y_continuous(labels = scales::number_format(accuracy = 0.01))+
-  facet_wrap(~ labels, scales = "free", ncol = 10) +
+  facet_wrap(~ labels, scales = "free", ncol = 3) +
   labs(x = "",
        y = "",
        fill = "") +
   theme(legend.position = "top",
+        legend.text = element_text(size = 14),
         text = element_text(size = 14, family = "Times New Roman"),
         axis.text.x = element_blank(),
-        strip.text = element_text(size = 6)) +
+        axis.text.y = element_text(size = 14),
+        strip.text = element_text(size = 12)) +
   coord_flip() +
   scale_x_reordered() 
 
 # Salvar
 ggsave(
-  "figs/stm_grafbeta.png",
+  "figs/stm_grafbeta-ethics.png",
   bg = "white",
-  width = 26,
-  height = 14,
+  width = 11,
+  height = 12,
   dpi = 1200,
   plot = last_plot())
 
@@ -441,58 +462,46 @@ stm_ano |>
 
 # Gráfico ano-tópicos por categoria#### 
  stm_ano |> 
-  filter(category == "Social and Political Philosophy") |> 
+  filter(!str_detect(category, "Excluded")) |> 
+  filter(category %in% c(
+     #"Social and Political Philosophy"
+    #"Metaphysics"
+    # "Philosophy of Science"
+    # "Phenomenology and Hermeneutics"
+    # "Philosophy of Mind and Language"
+    #"Aesthetics"
+    "Ethics"
+  )) |>  
   ggplot(aes(x = covariate.value,
              y = estimate,
              ymin = ci.lower, 
              ymax = ci.upper, #Sem CI em função da resolução do gráfico
              color = category)) +
-  facet_wrap(~labels, ncol = 6) +
+  facet_wrap(~labels, ncol = 3) +
   theme_classic() +
-  geom_line(linewidth = 1, aes(color = "Social and Political Philosophy")) +
-  geom_ribbon(aes(fill = "Social and Political Philosophy"), 
+  geom_line(linewidth = 1) +
+  geom_ribbon(aes(fill = "Ethics"), 
               alpha = 0.2,
               show.legend = FALSE) +
   labs(x = "Year (1991-2021)",
        y = "Point Estimation",
        color = "") +
-  scale_color_manual(values = "#c969a1") +
-  scale_fill_manual(values = "#c969a1") +
+  scale_color_manual(values = category_colors) +
+  scale_fill_manual(values = category_colors) +
   theme(legend.position = "top",
-        text = element_text(size = 6, family = "Times New Roman"),
+        text = element_text(size = 14, family = "Times New Roman"),
         axis.text.x = element_blank(),
-        legend.text = element_text(size=8))
+        legend.text = element_text(size=14),
+        strip.text = element_text(size = 14))
 
+# Salvar
  ggsave(
-   "figs/stm_topics-ano_meta.png",
+   "figs/stm_topics-ano_ethics.png",
    bg = "white",
-   width = 6,
-   height = 7, #Limite
+   width = 11,
+   height = 12, #Limite
    dpi = 1200,
    plot = last_plot())
- 
- stm_ano |> 
-   filter(category == "Metaphysics") |> 
-   ggplot(aes(x = covariate.value,
-              y = estimate,
-              ymin = ci.lower, 
-              ymax = ci.upper, #Sem CI em função da resolução do gráfico
-              color = category)) +
-   facet_wrap(~topic_label, ncol = 6) +
-   theme_classic() +
-   geom_line(linewidth = 1, aes(color = "Metaphysics")) +
-   geom_ribbon(aes(fill = "Metaphysics"), 
-               alpha = 0.2,
-               show.legend = FALSE) +
-   labs(x = "Year (1991-2021)",
-        y = "Point Estimation",
-        color = "") +
-   scale_color_manual(values = "#ce4441") +
-   scale_fill_manual(values = "#ce4441") +
-   theme(legend.position = "top",
-         text = element_text(size = 6, family = "Times New Roman"),
-         axis.text.x = element_blank(),
-         legend.text = element_text(size=12))
  
 # Tabela da variação dos tópicos no tempo#### 
 # Tabela paisagem
@@ -586,6 +595,7 @@ categorias_tempo_ano <- categorias_tempo |>
 
 # Gráfico
 categorias_tempo_ano |>
+  filter(!str_detect(category, "Excluded")) |> 
   ggplot(aes(x = an_base,
              y = n,
              color = category)) +
@@ -637,7 +647,7 @@ stm_genero <- stm_genero |>
          labels = reorder(labels, estimate))  
   
 
-top_value <- c(8,9,11,14,25,26,27,34,35,39,43,44,45,48,53,54,58,61,62,64,65,69,72)
+top_value <- c(8,9,11,14,15,19,25,26,27,34,35,39,43,44,45,48,53,54,58,61,62,64,65,69,72)
 
 stm_genero |> 
   filter(topic %in% top_value) |>  # Filtro para os tópicos significativos

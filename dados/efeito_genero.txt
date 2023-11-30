@@ -7,1199 +7,1679 @@ stm::estimateEffect(formula = 1:80 ~ g_orientador, stmobj = topic_model,
 Topic 1:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0049094  0.0010340
-g_orientadorMale 0.0008511  0.0011765
-                 t value Pr(>|t|)    
-(Intercept)        4.748 2.08e-06 ***
-g_orientadorMale   0.723    0.469    
+                  Estimate
+(Intercept)      0.0051349
+g_orientadorMale 0.0006616
+                 Std. Error
+(Intercept)       0.0011175
+g_orientadorMale  0.0012271
+                 t value Pr(>|t|)
+(Intercept)        4.595 4.37e-06
+g_orientadorMale   0.539     0.59
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 2:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.007621   0.001318
-g_orientadorMale 0.000284   0.001474
-                 t value Pr(>|t|)    
-(Intercept)        5.784 7.47e-09 ***
-g_orientadorMale   0.193    0.847    
+                  Estimate
+(Intercept)      0.0075649
+g_orientadorMale 0.0002942
+                 Std. Error
+(Intercept)       0.0012070
+g_orientadorMale  0.0013967
+                 t value Pr(>|t|)
+(Intercept)        6.268 3.79e-10
+g_orientadorMale   0.211    0.833
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 3:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0131232  0.0018570
-g_orientadorMale 0.0003011  0.0020096
-                 t value Pr(>|t|)    
-(Intercept)        7.067 1.67e-12 ***
-g_orientadorMale   0.150    0.881    
+                  Estimate
+(Intercept)      1.361e-02
+g_orientadorMale 1.936e-05
+                 Std. Error
+(Intercept)       1.862e-03
+g_orientadorMale  2.007e-03
+                 t value Pr(>|t|)
+(Intercept)        7.308 2.88e-13
+g_orientadorMale   0.010    0.992
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 4:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.013777   0.001744
-g_orientadorMale -0.002970   0.002030
-                 t value Pr(>|t|)    
-(Intercept)        7.901 3.03e-15 ***
-g_orientadorMale  -1.463    0.144    
+                  Estimate
+(Intercept)       0.014181
+g_orientadorMale -0.003535
+                 Std. Error
+(Intercept)        0.001819
+g_orientadorMale   0.001977
+                 t value Pr(>|t|)
+(Intercept)        7.795 6.99e-15
+g_orientadorMale  -1.788   0.0739
+                    
+(Intercept)      ***
+g_orientadorMale .  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 5:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.008913   0.001352
-g_orientadorMale 0.001978   0.001537
-                 t value Pr(>|t|)    
-(Intercept)        6.592 4.52e-11 ***
-g_orientadorMale   1.287    0.198    
+                 Estimate
+(Intercept)      0.008672
+g_orientadorMale 0.002376
+                 Std. Error
+(Intercept)        0.001277
+g_orientadorMale   0.001410
+                 t value Pr(>|t|)
+(Intercept)        6.793 1.16e-11
+g_orientadorMale   1.685   0.0921
+                    
+(Intercept)      ***
+g_orientadorMale .  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 6:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0168990  0.0018348
-g_orientadorMale 0.0008789  0.0021165
-                 t value Pr(>|t|)    
-(Intercept)        9.210   <2e-16 ***
-g_orientadorMale   0.415    0.678    
+                 Estimate
+(Intercept)      0.016436
+g_orientadorMale 0.001372
+                 Std. Error
+(Intercept)        0.001895
+g_orientadorMale   0.002096
+                 t value Pr(>|t|)
+(Intercept)        8.673   <2e-16
+g_orientadorMale   0.655    0.513
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 7:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.004230   0.001182
-g_orientadorMale 0.002472   0.001337
-                 t value Pr(>|t|)    
-(Intercept)        3.578 0.000347 ***
-g_orientadorMale   1.848 0.064563 .  
+                 Estimate
+(Intercept)      0.004143
+g_orientadorMale 0.002568
+                 Std. Error
+(Intercept)        0.001201
+g_orientadorMale   0.001395
+                 t value Pr(>|t|)
+(Intercept)        3.450 0.000562
+g_orientadorMale   1.841 0.065613
+                    
+(Intercept)      ***
+g_orientadorMale .  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 8:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.011332   0.001071
-g_orientadorMale 0.004991   0.001217
-                 t value Pr(>|t|)    
-(Intercept)        10.58  < 2e-16 ***
-g_orientadorMale    4.10 4.17e-05 ***
+                 Estimate
+(Intercept)      0.011500
+g_orientadorMale 0.004747
+                 Std. Error
+(Intercept)        0.001094
+g_orientadorMale   0.001194
+                 t value Pr(>|t|)
+(Intercept)       10.516   <2e-16
+g_orientadorMale   3.978    7e-05
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 9:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.013284   0.001673
-g_orientadorMale -0.006801   0.001915
-                 t value Pr(>|t|)    
-(Intercept)        7.940  2.2e-15 ***
-g_orientadorMale  -3.552 0.000383 ***
+                  Estimate
+(Intercept)       0.012671
+g_orientadorMale -0.006395
+                 Std. Error
+(Intercept)        0.001495
+g_orientadorMale   0.001581
+                 t value Pr(>|t|)
+(Intercept)        8.477  < 2e-16
+g_orientadorMale  -4.044 5.28e-05
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 10:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.006967   0.001456
-g_orientadorMale 0.002188   0.001753
-                 t value Pr(>|t|)    
-(Intercept)        4.787 1.72e-06 ***
-g_orientadorMale   1.248    0.212    
+                 Estimate
+(Intercept)      0.007042
+g_orientadorMale 0.002148
+                 Std. Error
+(Intercept)        0.001482
+g_orientadorMale   0.001657
+                 t value Pr(>|t|)
+(Intercept)        4.752 2.03e-06
+g_orientadorMale   1.297    0.195
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 11:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.018438   0.002093
-g_orientadorMale -0.007006   0.002201
-                 t value Pr(>|t|)    
-(Intercept)        8.808  < 2e-16 ***
-g_orientadorMale  -3.184  0.00146 ** 
+                  Estimate
+(Intercept)       0.018586
+g_orientadorMale -0.007031
+                 Std. Error
+(Intercept)        0.002026
+g_orientadorMale   0.002237
+                 t value Pr(>|t|)
+(Intercept)        9.174  < 2e-16
+g_orientadorMale  -3.143  0.00168
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 12:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.018952   0.001942
-g_orientadorMale -0.003558   0.002170
-                 t value Pr(>|t|)    
-(Intercept)         9.76   <2e-16 ***
-g_orientadorMale   -1.64    0.101    
+                  Estimate
+(Intercept)       0.019645
+g_orientadorMale -0.004259
+                 Std. Error
+(Intercept)        0.002089
+g_orientadorMale   0.002238
+                 t value Pr(>|t|)
+(Intercept)        9.405   <2e-16
+g_orientadorMale  -1.903   0.0571
+                    
+(Intercept)      ***
+g_orientadorMale .  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 13:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.013092   0.001219
-g_orientadorMale -0.001108   0.001339
-                 t value Pr(>|t|)    
-(Intercept)       10.737   <2e-16 ***
-g_orientadorMale  -0.828    0.408    
+                  Estimate
+(Intercept)       0.013181
+g_orientadorMale -0.001101
+                 Std. Error
+(Intercept)        0.001249
+g_orientadorMale   0.001400
+                 t value Pr(>|t|)
+(Intercept)       10.555   <2e-16
+g_orientadorMale  -0.787    0.431
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 14:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.015947   0.001736
-g_orientadorMale -0.006707   0.001883
-                 t value Pr(>|t|)    
-(Intercept)        9.185  < 2e-16 ***
-g_orientadorMale  -3.563 0.000369 ***
+                  Estimate
+(Intercept)       0.015556
+g_orientadorMale -0.006165
+                 Std. Error
+(Intercept)        0.001603
+g_orientadorMale   0.001724
+                 t value Pr(>|t|)
+(Intercept)        9.707  < 2e-16
+g_orientadorMale  -3.576  0.00035
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 15:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.011944   0.001798
-g_orientadorMale 0.005354   0.002070
-                 t value Pr(>|t|)    
-(Intercept)        6.641 3.25e-11 ***
-g_orientadorMale   2.587  0.00969 ** 
+                 Estimate
+(Intercept)      0.011843
+g_orientadorMale 0.005847
+                 Std. Error
+(Intercept)        0.001745
+g_orientadorMale   0.002019
+                 t value Pr(>|t|)
+(Intercept)        6.788  1.2e-11
+g_orientadorMale   2.896  0.00378
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 16:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0071281  0.0013125
-g_orientadorMale 0.0009566  0.0014861
-                 t value Pr(>|t|)    
-(Intercept)        5.431 5.72e-08 ***
-g_orientadorMale   0.644     0.52    
+                  Estimate
+(Intercept)      0.0075988
+g_orientadorMale 0.0005948
+                 Std. Error
+(Intercept)       0.0014551
+g_orientadorMale  0.0016405
+                 t value Pr(>|t|)
+(Intercept)        5.222  1.8e-07
+g_orientadorMale   0.363    0.717
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 17:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.009451   0.001731
-g_orientadorMale 0.003042   0.001880
-                 t value Pr(>|t|)    
-(Intercept)        5.459  4.9e-08 ***
-g_orientadorMale   1.618    0.106    
+                 Estimate
+(Intercept)      0.009416
+g_orientadorMale 0.003027
+                 Std. Error
+(Intercept)        0.001762
+g_orientadorMale   0.001937
+                 t value Pr(>|t|)
+(Intercept)        5.345 9.22e-08
+g_orientadorMale   1.563    0.118
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 18:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.012640   0.001846
-g_orientadorMale 0.001484   0.002106
-                 t value Pr(>|t|)    
-(Intercept)        6.849 7.81e-12 ***
-g_orientadorMale   0.704    0.481    
+                 Estimate
+(Intercept)      0.012391
+g_orientadorMale 0.001828
+                 Std. Error
+(Intercept)        0.001790
+g_orientadorMale   0.001939
+                 t value Pr(>|t|)
+(Intercept)        6.924 4.62e-12
+g_orientadorMale   0.943    0.346
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 19:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.026217   0.002550
-g_orientadorMale -0.005759   0.002867
-                 t value Pr(>|t|)    
-(Intercept)       10.283   <2e-16 ***
-g_orientadorMale  -2.009   0.0446 *  
+                  Estimate
+(Intercept)       0.027507
+g_orientadorMale -0.007313
+                 Std. Error
+(Intercept)        0.002458
+g_orientadorMale   0.002744
+                 t value Pr(>|t|)
+(Intercept)       11.191  < 2e-16
+g_orientadorMale  -2.665  0.00771
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 20:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.005755   0.001472
-g_orientadorMale 0.002558   0.001651
-                 t value Pr(>|t|)    
-(Intercept)        3.909 9.33e-05 ***
-g_orientadorMale   1.549    0.121    
+                 Estimate
+(Intercept)      0.005895
+g_orientadorMale 0.002324
+                 Std. Error
+(Intercept)        0.001501
+g_orientadorMale   0.001606
+                 t value Pr(>|t|)
+(Intercept)        3.927 8.66e-05
+g_orientadorMale   1.447    0.148
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 21:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.008271   0.001427
-g_orientadorMale 0.002928   0.001562
-                 t value Pr(>|t|)    
-(Intercept)        5.796 6.96e-09 ***
-g_orientadorMale   1.875   0.0608 .  
+                 Estimate
+(Intercept)      0.008225
+g_orientadorMale 0.003033
+                 Std. Error
+(Intercept)        0.001521
+g_orientadorMale   0.001727
+                 t value Pr(>|t|)
+(Intercept)        5.407 6.54e-08
+g_orientadorMale   1.757    0.079
+                    
+(Intercept)      ***
+g_orientadorMale .  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 22:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.012779   0.002089
-g_orientadorMale 0.003289   0.002336
-                 t value Pr(>|t|)    
-(Intercept)        6.119 9.73e-10 ***
-g_orientadorMale   1.408    0.159    
+                 Estimate
+(Intercept)      0.012432
+g_orientadorMale 0.003332
+                 Std. Error
+(Intercept)        0.002036
+g_orientadorMale   0.002181
+                 t value Pr(>|t|)
+(Intercept)        6.105 1.06e-09
+g_orientadorMale   1.528    0.127
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 23:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0137411  0.0018033
-g_orientadorMale 0.0001266  0.0020302
-                 t value Pr(>|t|)    
-(Intercept)        7.620 2.73e-14 ***
-g_orientadorMale   0.062     0.95    
+                   Estimate
+(Intercept)       1.406e-02
+g_orientadorMale -1.206e-05
+                 Std. Error
+(Intercept)       1.796e-03
+g_orientadorMale  1.943e-03
+                 t value Pr(>|t|)
+(Intercept)        7.827  5.4e-15
+g_orientadorMale  -0.006    0.995
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 24:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.009479   0.001408
-g_orientadorMale -0.002308   0.001607
-                 t value Pr(>|t|)    
-(Intercept)        6.730 1.78e-11 ***
-g_orientadorMale  -1.436    0.151    
+                  Estimate
+(Intercept)       0.009391
+g_orientadorMale -0.002339
+                 Std. Error
+(Intercept)        0.001488
+g_orientadorMale   0.001617
+                 t value Pr(>|t|)
+(Intercept)        6.312 2.86e-10
+g_orientadorMale  -1.446    0.148
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 25:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.009033   0.001752
-g_orientadorMale 0.005992   0.001975
-                 t value Pr(>|t|)    
-(Intercept)        5.157 2.55e-07 ***
-g_orientadorMale   3.033  0.00242 ** 
+                 Estimate
+(Intercept)      0.008987
+g_orientadorMale 0.005767
+                 Std. Error
+(Intercept)        0.001766
+g_orientadorMale   0.001990
+                 t value Pr(>|t|)
+(Intercept)        5.088 3.68e-07
+g_orientadorMale   2.898  0.00376
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 26:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.007993   0.001669
-g_orientadorMale 0.008030   0.001910
-                 t value Pr(>|t|)    
-(Intercept)        4.789 1.70e-06 ***
-g_orientadorMale   4.204 2.64e-05 ***
+                 Estimate
+(Intercept)      0.007858
+g_orientadorMale 0.008070
+                 Std. Error
+(Intercept)        0.001760
+g_orientadorMale   0.002050
+                 t value Pr(>|t|)
+(Intercept)        4.465 8.08e-06
+g_orientadorMale   3.937 8.29e-05
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 27:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.016747   0.001514
-g_orientadorMale -0.004995   0.001681
-                 t value Pr(>|t|)    
-(Intercept)       11.062  < 2e-16 ***
-g_orientadorMale  -2.971  0.00297 ** 
+                  Estimate
+(Intercept)       0.016892
+g_orientadorMale -0.005026
+                 Std. Error
+(Intercept)        0.001409
+g_orientadorMale   0.001534
+                 t value Pr(>|t|)
+(Intercept)       11.991  < 2e-16
+g_orientadorMale  -3.276  0.00106
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 28:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.009367   0.001300
-g_orientadorMale 0.003518   0.001499
-                 t value Pr(>|t|)    
-(Intercept)        7.203 6.26e-13 ***
-g_orientadorMale   2.346    0.019 *  
+                 Estimate
+(Intercept)      0.009455
+g_orientadorMale 0.003390
+                 Std. Error
+(Intercept)        0.001218
+g_orientadorMale   0.001417
+                 t value Pr(>|t|)
+(Intercept)        7.761 9.16e-15
+g_orientadorMale   2.392   0.0168
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 29:
 
 Coefficients:
-                   Estimate Std. Error
-(Intercept)       0.0149611  0.0017296
-g_orientadorMale -0.0007233  0.0018515
-                 t value Pr(>|t|)    
-(Intercept)        8.650   <2e-16 ***
-g_orientadorMale  -0.391    0.696    
+                   Estimate
+(Intercept)       0.0144430
+g_orientadorMale -0.0003496
+                 Std. Error
+(Intercept)       0.0016055
+g_orientadorMale  0.0018624
+                 t value Pr(>|t|)
+(Intercept)        8.996   <2e-16
+g_orientadorMale  -0.188    0.851
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 30:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0102847  0.0015816
-g_orientadorMale 0.0002775  0.0017329
-                 t value Pr(>|t|)    
-(Intercept)        6.503 8.22e-11 ***
-g_orientadorMale   0.160    0.873    
+                  Estimate
+(Intercept)      1.059e-02
+g_orientadorMale 5.688e-05
+                 Std. Error
+(Intercept)       1.477e-03
+g_orientadorMale  1.791e-03
+                 t value Pr(>|t|)
+(Intercept)        7.167 8.13e-13
+g_orientadorMale   0.032    0.975
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 31:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.006996   0.001252
-g_orientadorMale 0.003215   0.001438
-                 t value Pr(>|t|)    
-(Intercept)        5.590 2.32e-08 ***
-g_orientadorMale   2.236   0.0254 *  
+                 Estimate
+(Intercept)      0.007228
+g_orientadorMale 0.003139
+                 Std. Error
+(Intercept)        0.001234
+g_orientadorMale   0.001396
+                 t value Pr(>|t|)
+(Intercept)        5.860 4.77e-09
+g_orientadorMale   2.248   0.0246
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 32:
 
 Coefficients:
-                   Estimate Std. Error
-(Intercept)       0.0134954  0.0013592
-g_orientadorMale -0.0008964  0.0014511
-                 t value Pr(>|t|)    
-(Intercept)        9.929   <2e-16 ***
-g_orientadorMale  -0.618    0.537    
+                   Estimate
+(Intercept)       0.0133978
+g_orientadorMale -0.0009065
+                 Std. Error
+(Intercept)       0.0014461
+g_orientadorMale  0.0015592
+                 t value Pr(>|t|)
+(Intercept)        9.265   <2e-16
+g_orientadorMale  -0.581    0.561
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 33:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.018844   0.001940
-g_orientadorMale -0.001656   0.002109
-                 t value Pr(>|t|)    
-(Intercept)        9.712   <2e-16 ***
-g_orientadorMale  -0.786    0.432    
+                  Estimate
+(Intercept)       0.019445
+g_orientadorMale -0.002064
+                 Std. Error
+(Intercept)        0.001880
+g_orientadorMale   0.001966
+                 t value Pr(>|t|)
+(Intercept)        10.34   <2e-16
+g_orientadorMale   -1.05    0.294
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 34:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.015092   0.001832
-g_orientadorMale -0.005745   0.001989
-                 t value Pr(>|t|)    
-(Intercept)        8.239  < 2e-16 ***
-g_orientadorMale  -2.888  0.00388 ** 
+                  Estimate
+(Intercept)       0.015087
+g_orientadorMale -0.005681
+                 Std. Error
+(Intercept)        0.001833
+g_orientadorMale   0.002040
+                 t value Pr(>|t|)
+(Intercept)        8.230  < 2e-16
+g_orientadorMale  -2.785  0.00536
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 35:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.006496   0.001763
-g_orientadorMale 0.008188   0.002009
-                 t value Pr(>|t|)    
-(Intercept)        3.685 0.000229 ***
-g_orientadorMale   4.076 4.61e-05 ***
+                 Estimate
+(Intercept)      0.006540
+g_orientadorMale 0.007996
+                 Std. Error
+(Intercept)        0.001846
+g_orientadorMale   0.002091
+                 t value Pr(>|t|)
+(Intercept)        3.543 0.000397
+g_orientadorMale   3.824 0.000132
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 36:
 
 Coefficients:
-                   Estimate Std. Error
-(Intercept)       0.0114538  0.0016253
-g_orientadorMale -0.0009975  0.0018255
-                 t value Pr(>|t|)    
-(Intercept)        7.047 1.93e-12 ***
-g_orientadorMale  -0.546    0.585    
+                   Estimate
+(Intercept)       0.0114040
+g_orientadorMale -0.0008918
+                 Std. Error
+(Intercept)       0.0016924
+g_orientadorMale  0.0018505
+                 t value Pr(>|t|)
+(Intercept)        6.738 1.68e-11
+g_orientadorMale  -0.482     0.63
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 37:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.018560   0.001939
-g_orientadorMale -0.004754   0.001959
-                 t value Pr(>|t|)    
-(Intercept)        9.571   <2e-16 ***
-g_orientadorMale  -2.427   0.0153 *  
+                  Estimate
+(Intercept)       0.018589
+g_orientadorMale -0.004891
+                 Std. Error
+(Intercept)        0.001802
+g_orientadorMale   0.001943
+                 t value Pr(>|t|)
+(Intercept)       10.315   <2e-16
+g_orientadorMale  -2.518   0.0118
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 38:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0064966  0.0012274
-g_orientadorMale 0.0004775  0.0013865
-                 t value Pr(>|t|)    
-(Intercept)        5.293 1.23e-07 ***
-g_orientadorMale   0.344    0.731    
+                  Estimate
+(Intercept)      0.0066303
+g_orientadorMale 0.0003191
+                 Std. Error
+(Intercept)       0.0012441
+g_orientadorMale  0.0013767
+                 t value Pr(>|t|)
+(Intercept)        5.329    1e-07
+g_orientadorMale   0.232    0.817
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 39:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.027335   0.002543
-g_orientadorMale -0.008084   0.003007
-                 t value Pr(>|t|)    
-(Intercept)       10.747  < 2e-16 ***
-g_orientadorMale  -2.688  0.00719 ** 
+                  Estimate
+(Intercept)       0.027655
+g_orientadorMale -0.008530
+                 Std. Error
+(Intercept)        0.002684
+g_orientadorMale   0.002996
+                 t value Pr(>|t|)
+(Intercept)       10.303  < 2e-16
+g_orientadorMale  -2.847  0.00442
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 40:
 
 Coefficients:
-                   Estimate Std. Error
-(Intercept)       0.0075391  0.0010080
-g_orientadorMale -0.0008053  0.0011783
-                 t value Pr(>|t|)    
-(Intercept)        7.479    8e-14 ***
-g_orientadorMale  -0.683    0.494    
+                   Estimate
+(Intercept)       0.0075941
+g_orientadorMale -0.0008788
+                 Std. Error
+(Intercept)       0.0010661
+g_orientadorMale  0.0011753
+                 t value Pr(>|t|)
+(Intercept)        7.124 1.11e-12
+g_orientadorMale  -0.748    0.455
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 41:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.011119   0.001841
-g_orientadorMale 0.004354   0.002110
-                 t value Pr(>|t|)    
-(Intercept)        6.039 1.59e-09 ***
-g_orientadorMale   2.063   0.0391 *  
+                 Estimate
+(Intercept)      0.011152
+g_orientadorMale 0.004387
+                 Std. Error
+(Intercept)        0.001905
+g_orientadorMale   0.002137
+                 t value Pr(>|t|)
+(Intercept)        5.855  4.9e-09
+g_orientadorMale   2.053   0.0401
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 42:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.013013   0.001457
-g_orientadorMale 0.001029   0.001613
-                 t value Pr(>|t|)    
-(Intercept)        8.929   <2e-16 ***
-g_orientadorMale   0.638    0.524    
+                  Estimate
+(Intercept)      0.0131261
+g_orientadorMale 0.0008665
+                 Std. Error
+(Intercept)       0.0014623
+g_orientadorMale  0.0016483
+                 t value Pr(>|t|)
+(Intercept)        8.976   <2e-16
+g_orientadorMale   0.526    0.599
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 43:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.006727   0.001629
-g_orientadorMale 0.005149   0.001863
-                 t value Pr(>|t|)    
-(Intercept)        4.130 3.65e-05 ***
-g_orientadorMale   2.763  0.00574 ** 
+                 Estimate
+(Intercept)      0.006860
+g_orientadorMale 0.004959
+                 Std. Error
+(Intercept)        0.001594
+g_orientadorMale   0.001851
+                 t value Pr(>|t|)
+(Intercept)        4.304 1.69e-05
+g_orientadorMale   2.679  0.00739
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 44:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.003888   0.001308
-g_orientadorMale 0.003977   0.001492
-                 t value Pr(>|t|)   
-(Intercept)        2.972  0.00297 **
-g_orientadorMale   2.665  0.00771 **
+                 Estimate
+(Intercept)      0.004046
+g_orientadorMale 0.003967
+                 Std. Error
+(Intercept)        0.001261
+g_orientadorMale   0.001484
+                 t value Pr(>|t|)
+(Intercept)        3.210  0.00133
+g_orientadorMale   2.673  0.00753
+                   
+(Intercept)      **
+g_orientadorMale **
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 45:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.003208   0.001424
-g_orientadorMale 0.007755   0.001655
-                 t value Pr(>|t|)    
-(Intercept)        2.253   0.0243 *  
-g_orientadorMale   4.685 2.83e-06 ***
+                 Estimate
+(Intercept)      0.003519
+g_orientadorMale 0.007461
+                 Std. Error
+(Intercept)        0.001445
+g_orientadorMale   0.001719
+                 t value Pr(>|t|)
+(Intercept)        2.434   0.0149
+g_orientadorMale   4.341 1.43e-05
+                    
+(Intercept)      *  
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 46:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.006104   0.001371
-g_orientadorMale 0.002013   0.001530
-                 t value Pr(>|t|)    
-(Intercept)        4.453 8.56e-06 ***
-g_orientadorMale   1.316    0.188    
+                 Estimate
+(Intercept)      0.006113
+g_orientadorMale 0.002069
+                 Std. Error
+(Intercept)        0.001271
+g_orientadorMale   0.001442
+                 t value Pr(>|t|)
+(Intercept)        4.811 1.52e-06
+g_orientadorMale   1.434    0.152
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 47:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.013004   0.002111
-g_orientadorMale 0.001961   0.002255
-                 t value Pr(>|t|)    
-(Intercept)        6.159 7.55e-10 ***
-g_orientadorMale   0.870    0.385    
+                 Estimate
+(Intercept)      0.013066
+g_orientadorMale 0.001845
+                 Std. Error
+(Intercept)        0.001899
+g_orientadorMale   0.002074
+                 t value Pr(>|t|)
+(Intercept)        6.879 6.34e-12
+g_orientadorMale   0.889    0.374
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 48:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.025700   0.002456
-g_orientadorMale -0.010627   0.002822
-                 t value Pr(>|t|)    
-(Intercept)       10.465  < 2e-16 ***
-g_orientadorMale  -3.766 0.000167 ***
+                  Estimate
+(Intercept)       0.025324
+g_orientadorMale -0.010196
+                 Std. Error
+(Intercept)        0.002454
+g_orientadorMale   0.002571
+                 t value Pr(>|t|)
+(Intercept)       10.320  < 2e-16
+g_orientadorMale  -3.966 7.35e-05
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 49:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.018606   0.002438
-g_orientadorMale 0.001095   0.002645
-                 t value Pr(>|t|)    
-(Intercept)        7.631 2.51e-14 ***
-g_orientadorMale   0.414    0.679    
+                 Estimate
+(Intercept)      0.018260
+g_orientadorMale 0.001428
+                 Std. Error
+(Intercept)        0.002410
+g_orientadorMale   0.002672
+                 t value Pr(>|t|)
+(Intercept)        7.577  3.8e-14
+g_orientadorMale   0.534    0.593
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 50:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.008477   0.001608
-g_orientadorMale -0.001951   0.001727
-                 t value Pr(>|t|)    
-(Intercept)        5.271 1.38e-07 ***
-g_orientadorMale  -1.130    0.259    
+                  Estimate
+(Intercept)       0.008551
+g_orientadorMale -0.002197
+                 Std. Error
+(Intercept)        0.001449
+g_orientadorMale   0.001624
+                 t value Pr(>|t|)
+(Intercept)        5.900 3.74e-09
+g_orientadorMale  -1.353    0.176
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 51:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.006079   0.001305
-g_orientadorMale 0.001679   0.001475
-                 t value Pr(>|t|)    
-(Intercept)        4.658 3.23e-06 ***
-g_orientadorMale   1.139    0.255    
+                 Estimate
+(Intercept)      0.006005
+g_orientadorMale 0.001767
+                 Std. Error
+(Intercept)        0.001279
+g_orientadorMale   0.001434
+                 t value Pr(>|t|)
+(Intercept)        4.695  2.7e-06
+g_orientadorMale   1.232    0.218
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 52:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.011240   0.001445
-g_orientadorMale 0.003776   0.001572
-                 t value Pr(>|t|)    
-(Intercept)        7.778 8.01e-15 ***
-g_orientadorMale   2.402   0.0163 *  
+                 Estimate
+(Intercept)      0.010999
+g_orientadorMale 0.003960
+                 Std. Error
+(Intercept)        0.001483
+g_orientadorMale   0.001614
+                 t value Pr(>|t|)
+(Intercept)        7.417 1.28e-13
+g_orientadorMale   2.454   0.0141
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 53:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.010841   0.001873
-g_orientadorMale 0.009236   0.002062
-                 t value Pr(>|t|)    
-(Intercept)        5.788 7.30e-09 ***
-g_orientadorMale   4.479 7.57e-06 ***
+                 Estimate
+(Intercept)      0.010831
+g_orientadorMale 0.009288
+                 Std. Error
+(Intercept)        0.001800
+g_orientadorMale   0.002058
+                 t value Pr(>|t|)
+(Intercept)        6.016 1.84e-09
+g_orientadorMale   4.513 6.45e-06
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 54:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.022720   0.002052
-g_orientadorMale -0.013837   0.002261
-                 t value Pr(>|t|)    
-(Intercept)        11.07  < 2e-16 ***
-g_orientadorMale   -6.12 9.64e-10 ***
+                  Estimate
+(Intercept)       0.022648
+g_orientadorMale -0.013576
+                 Std. Error
+(Intercept)        0.001952
+g_orientadorMale   0.002075
+                 t value Pr(>|t|)
+(Intercept)       11.604  < 2e-16
+g_orientadorMale  -6.542 6.33e-11
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 55:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.020637   0.002100
-g_orientadorMale -0.003598   0.002297
-                 t value Pr(>|t|)    
-(Intercept)        9.828   <2e-16 ***
-g_orientadorMale  -1.566    0.117    
+                  Estimate
+(Intercept)       0.020443
+g_orientadorMale -0.003726
+                 Std. Error
+(Intercept)        0.002166
+g_orientadorMale   0.002246
+                 t value Pr(>|t|)
+(Intercept)        9.437   <2e-16
+g_orientadorMale  -1.659   0.0971
+                    
+(Intercept)      ***
+g_orientadorMale .  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 56:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.007286   0.001324
-g_orientadorMale 0.001125   0.001563
-                 t value Pr(>|t|)    
-(Intercept)        5.505 3.78e-08 ***
-g_orientadorMale   0.720    0.472    
+                 Estimate
+(Intercept)      0.007010
+g_orientadorMale 0.001378
+                 Std. Error
+(Intercept)        0.001332
+g_orientadorMale   0.001529
+                 t value Pr(>|t|)
+(Intercept)        5.263 1.44e-07
+g_orientadorMale   0.902    0.367
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 57:
 
 Coefficients:
-                   Estimate Std. Error
-(Intercept)       0.0130141  0.0016820
-g_orientadorMale -0.0002318  0.0018962
-                 t value Pr(>|t|)    
-(Intercept)        7.738  1.1e-14 ***
-g_orientadorMale  -0.122    0.903    
+                   Estimate
+(Intercept)       0.0129906
+g_orientadorMale -0.0002069
+                 Std. Error
+(Intercept)       0.0016879
+g_orientadorMale  0.0018399
+                 t value Pr(>|t|)
+(Intercept)        7.696 1.51e-14
+g_orientadorMale  -0.112     0.91
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 58:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.010377   0.001297
-g_orientadorMale -0.003876   0.001469
-                 t value Pr(>|t|)    
-(Intercept)        8.001 1.35e-15 ***
-g_orientadorMale  -2.639  0.00833 ** 
+                  Estimate
+(Intercept)       0.010245
+g_orientadorMale -0.003704
+                 Std. Error
+(Intercept)        0.001336
+g_orientadorMale   0.001525
+                 t value Pr(>|t|)
+(Intercept)        7.669 1.88e-14
+g_orientadorMale  -2.428   0.0152
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 59:
 
 Coefficients:
-                   Estimate Std. Error
-(Intercept)       0.0166971  0.0020012
-g_orientadorMale -0.0006826  0.0022748
-                 t value Pr(>|t|)    
-(Intercept)        8.343   <2e-16 ***
-g_orientadorMale  -0.300    0.764    
+                   Estimate
+(Intercept)       0.0166968
+g_orientadorMale -0.0007822
+                 Std. Error
+(Intercept)       0.0019272
+g_orientadorMale  0.0022414
+                 t value Pr(>|t|)
+(Intercept)        8.664   <2e-16
+g_orientadorMale  -0.349    0.727
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 60:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0112149  0.0017003
-g_orientadorMale 0.0001996  0.0018610
-                 t value Pr(>|t|)    
-(Intercept)        6.596 4.41e-11 ***
-g_orientadorMale   0.107    0.915    
+                  Estimate
+(Intercept)      0.0108645
+g_orientadorMale 0.0006162
+                 Std. Error
+(Intercept)       0.0016345
+g_orientadorMale  0.0018494
+                 t value Pr(>|t|)
+(Intercept)        6.647 3.13e-11
+g_orientadorMale   0.333    0.739
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 61:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.021084   0.002204
-g_orientadorMale -0.009754   0.002377
-                 t value Pr(>|t|)    
-(Intercept)        9.565  < 2e-16 ***
-g_orientadorMale  -4.104 4.09e-05 ***
+                  Estimate
+(Intercept)       0.021688
+g_orientadorMale -0.010173
+                 Std. Error
+(Intercept)        0.002043
+g_orientadorMale   0.002232
+                 t value Pr(>|t|)
+(Intercept)       10.616  < 2e-16
+g_orientadorMale  -4.558 5.23e-06
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 62:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.013135   0.001521
-g_orientadorMale -0.005787   0.001588
-                 t value Pr(>|t|)    
-(Intercept)        8.636  < 2e-16 ***
-g_orientadorMale  -3.645 0.000269 ***
+                  Estimate
+(Intercept)       0.013099
+g_orientadorMale -0.005813
+                 Std. Error
+(Intercept)        0.001629
+g_orientadorMale   0.001782
+                 t value Pr(>|t|)
+(Intercept)        8.043 9.58e-16
+g_orientadorMale  -3.262  0.00111
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 63:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.012615   0.002043
-g_orientadorMale 0.004037   0.002397
-                 t value Pr(>|t|)    
-(Intercept)        6.175 6.85e-10 ***
-g_orientadorMale   1.684   0.0922 .  
+                 Estimate
+(Intercept)      0.012419
+g_orientadorMale 0.004338
+                 Std. Error
+(Intercept)        0.002079
+g_orientadorMale   0.002301
+                 t value Pr(>|t|)
+(Intercept)        5.974 2.38e-09
+g_orientadorMale   1.886   0.0594
+                    
+(Intercept)      ***
+g_orientadorMale .  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 64:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.013244   0.001798
-g_orientadorMale 0.006229   0.002045
-                 t value Pr(>|t|)    
-(Intercept)        7.365 1.89e-13 ***
-g_orientadorMale   3.046  0.00232 ** 
+                 Estimate
+(Intercept)      0.013299
+g_orientadorMale 0.006449
+                 Std. Error
+(Intercept)        0.001810
+g_orientadorMale   0.002064
+                 t value Pr(>|t|)
+(Intercept)        7.346 2.18e-13
+g_orientadorMale   3.124  0.00179
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 65:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.028100   0.002545
-g_orientadorMale -0.012277   0.002756
-                 t value Pr(>|t|)    
-(Intercept)       11.042  < 2e-16 ***
-g_orientadorMale  -4.455 8.47e-06 ***
+                  Estimate
+(Intercept)       0.028311
+g_orientadorMale -0.012602
+                 Std. Error
+(Intercept)        0.002491
+g_orientadorMale   0.002659
+                 t value Pr(>|t|)
+(Intercept)       11.365  < 2e-16
+g_orientadorMale  -4.739 2.18e-06
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 66:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0118992  0.0012640
-g_orientadorMale 0.0005808  0.0013699
-                 t value Pr(>|t|)    
-(Intercept)        9.414   <2e-16 ***
-g_orientadorMale   0.424    0.672    
+                  Estimate
+(Intercept)      0.0119174
+g_orientadorMale 0.0005388
+                 Std. Error
+(Intercept)       0.0011568
+g_orientadorMale  0.0012909
+                 t value Pr(>|t|)
+(Intercept)       10.302   <2e-16
+g_orientadorMale   0.417    0.676
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 67:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.014852   0.002276
-g_orientadorMale 0.002044   0.002475
-                 t value Pr(>|t|)    
-(Intercept)        6.527    7e-11 ***
-g_orientadorMale   0.826    0.409    
+                 Estimate
+(Intercept)      0.014591
+g_orientadorMale 0.002193
+                 Std. Error
+(Intercept)        0.002001
+g_orientadorMale   0.002243
+                 t value Pr(>|t|)
+(Intercept)        7.293 3.24e-13
+g_orientadorMale   0.978    0.328
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 68:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.012220   0.002052
-g_orientadorMale 0.003713   0.002261
-                 t value Pr(>|t|)    
-(Intercept)        5.954 2.69e-09 ***
-g_orientadorMale   1.642    0.101    
+                 Estimate
+(Intercept)      0.012237
+g_orientadorMale 0.003660
+                 Std. Error
+(Intercept)        0.002070
+g_orientadorMale   0.002217
+                 t value Pr(>|t|)
+(Intercept)        5.911 3.49e-09
+g_orientadorMale   1.651   0.0988
+                    
+(Intercept)      ***
+g_orientadorMale .  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 69:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.012827   0.001910
-g_orientadorMale 0.008423   0.002215
-                 t value Pr(>|t|)    
-(Intercept)        6.717 1.94e-11 ***
-g_orientadorMale   3.802 0.000144 ***
+                 Estimate
+(Intercept)      0.012639
+g_orientadorMale 0.008784
+                 Std. Error
+(Intercept)        0.002100
+g_orientadorMale   0.002376
+                 t value Pr(>|t|)
+(Intercept)        6.019  1.8e-09
+g_orientadorMale   3.697 0.000219
+                    
+(Intercept)      ***
+g_orientadorMale ***
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 70:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.010731   0.001315
-g_orientadorMale 0.001631   0.001561
-                 t value Pr(>|t|)    
-(Intercept)        8.161 3.65e-16 ***
-g_orientadorMale   1.045    0.296    
+                 Estimate
+(Intercept)      0.010558
+g_orientadorMale 0.001693
+                 Std. Error
+(Intercept)        0.001471
+g_orientadorMale   0.001671
+                 t value Pr(>|t|)
+(Intercept)        7.180 7.41e-13
+g_orientadorMale   1.013    0.311
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 71:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.022596   0.002879
-g_orientadorMale 0.006336   0.003236
-                 t value Pr(>|t|)    
-(Intercept)        7.848  4.6e-15 ***
-g_orientadorMale   1.958   0.0502 .  
+                 Estimate
+(Intercept)      0.022169
+g_orientadorMale 0.006299
+                 Std. Error
+(Intercept)        0.002697
+g_orientadorMale   0.002999
+                 t value Pr(>|t|)
+(Intercept)        8.218 2.28e-16
+g_orientadorMale   2.100   0.0357
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 72:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.016386   0.001905
-g_orientadorMale -0.006077   0.002065
-                 t value Pr(>|t|)    
-(Intercept)        8.604  < 2e-16 ***
-g_orientadorMale  -2.943  0.00326 ** 
+                  Estimate
+(Intercept)       0.016217
+g_orientadorMale -0.005735
+                 Std. Error
+(Intercept)        0.001900
+g_orientadorMale   0.002003
+                 t value Pr(>|t|)
+(Intercept)        8.536   <2e-16
+g_orientadorMale  -2.863   0.0042
+                    
+(Intercept)      ***
+g_orientadorMale ** 
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 73:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.011443   0.001770
-g_orientadorMale 0.001173   0.002024
-                 t value Pr(>|t|)    
-(Intercept)        6.464 1.06e-10 ***
-g_orientadorMale   0.579    0.562    
+                  Estimate
+(Intercept)      0.0115226
+g_orientadorMale 0.0008753
+                 Std. Error
+(Intercept)       0.0018049
+g_orientadorMale  0.0019041
+                 t value Pr(>|t|)
+(Intercept)        6.384 1.79e-10
+g_orientadorMale   0.460    0.646
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 74:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.010473   0.001642
-g_orientadorMale -0.002042   0.001805
-                 t value Pr(>|t|)    
-(Intercept)        6.377 1.87e-10 ***
-g_orientadorMale  -1.131    0.258    
+                  Estimate
+(Intercept)       0.010223
+g_orientadorMale -0.001697
+                 Std. Error
+(Intercept)        0.001573
+g_orientadorMale   0.001728
+                 t value Pr(>|t|)
+(Intercept)        6.500 8.36e-11
+g_orientadorMale  -0.983    0.326
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 75:
 
 Coefficients:
-                 Estimate Std. Error
-(Intercept)      0.008682   0.001715
-g_orientadorMale 0.003922   0.001931
-                 t value Pr(>|t|)    
-(Intercept)        5.061 4.24e-07 ***
-g_orientadorMale   2.031   0.0423 *  
+                 Estimate
+(Intercept)      0.008541
+g_orientadorMale 0.004261
+                 Std. Error
+(Intercept)        0.001621
+g_orientadorMale   0.001919
+                 t value Pr(>|t|)
+(Intercept)        5.269  1.4e-07
+g_orientadorMale   2.221   0.0264
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 76:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)      0.0128335  0.0017336
-g_orientadorMale 0.0004493  0.0019294
-                 t value Pr(>|t|)    
-(Intercept)        7.403 1.42e-13 ***
-g_orientadorMale   0.233    0.816    
+                 Estimate
+(Intercept)      0.012822
+g_orientadorMale 0.000440
+                 Std. Error
+(Intercept)        0.001756
+g_orientadorMale   0.001914
+                 t value Pr(>|t|)
+(Intercept)        7.303    3e-13
+g_orientadorMale   0.230    0.818
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 77:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.016166   0.001886
-g_orientadorMale -0.001786   0.002036
-                 t value Pr(>|t|)    
-(Intercept)        8.574   <2e-16 ***
-g_orientadorMale  -0.877     0.38    
+                  Estimate
+(Intercept)       0.015670
+g_orientadorMale -0.001153
+                 Std. Error
+(Intercept)        0.001730
+g_orientadorMale   0.001941
+                 t value Pr(>|t|)
+(Intercept)        9.058   <2e-16
+g_orientadorMale  -0.594    0.552
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 78:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.014625   0.001770
-g_orientadorMale -0.004040   0.001905
-                 t value Pr(>|t|)    
-(Intercept)        8.265   <2e-16 ***
-g_orientadorMale  -2.121    0.034 *  
+                  Estimate
+(Intercept)       0.014567
+g_orientadorMale -0.003882
+                 Std. Error
+(Intercept)        0.001719
+g_orientadorMale   0.001881
+                 t value Pr(>|t|)
+(Intercept)        8.476   <2e-16
+g_orientadorMale  -2.064    0.039
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 79:
 
 Coefficients:
-                  Estimate Std. Error
-(Intercept)       0.009285   0.001406
-g_orientadorMale -0.003490   0.001470
-                 t value Pr(>|t|)    
-(Intercept)        6.605 4.15e-11 ***
-g_orientadorMale  -2.374   0.0176 *  
+                  Estimate
+(Intercept)       0.009212
+g_orientadorMale -0.003457
+                 Std. Error
+(Intercept)        0.001234
+g_orientadorMale   0.001428
+                 t value Pr(>|t|)
+(Intercept)        7.468 8.71e-14
+g_orientadorMale  -2.421   0.0155
+                    
+(Intercept)      ***
+g_orientadorMale *  
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 Topic 80:
 
 Coefficients:
-                   Estimate Std. Error
-(Intercept)       1.042e-03  4.336e-05
-g_orientadorMale -3.839e-05  4.645e-05
-                 t value Pr(>|t|)    
-(Intercept)       24.017   <2e-16 ***
-g_orientadorMale  -0.826    0.409    
+                   Estimate
+(Intercept)       1.044e-03
+g_orientadorMale -3.882e-05
+                 Std. Error
+(Intercept)       4.568e-05
+g_orientadorMale  4.743e-05
+                 t value Pr(>|t|)
+(Intercept)       22.842   <2e-16
+g_orientadorMale  -0.818    0.413
+                    
+(Intercept)      ***
+g_orientadorMale    
 ---
 Signif. codes:  
-  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
-  0.1 ‘ ’ 1
+  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’
+  0.05 ‘.’ 0.1 ‘ ’ 1
 
