@@ -219,7 +219,7 @@ ggsave(
   "figs/stm_model80t.png",
   bg = "white",
   width = 22,
-  height = 12,
+  height = 14,
   dpi = 900,
   plot = last_plot())
 
