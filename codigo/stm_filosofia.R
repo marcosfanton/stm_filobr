@@ -218,8 +218,8 @@ gamma_words |>
 ggsave(
   "figs/stm_model80t.png",
   bg = "white",
-  width = 22,
-  height = 20,
+  width = 20,
+  height = 12,
   dpi = 900,
   plot = last_plot())
 
