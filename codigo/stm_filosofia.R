@@ -18,6 +18,53 @@ library(scales) # Percentagem em gráficos
 # Importação do banco limpo em "limpeza_catalogo.R"
 dados <- read.csv("dados/catalogo.csv")
 
+# Gráfico 01 | Evolução de Teses e Dissertações Filosofia####
+ev_total <-  dados |> 
+  summarize(n = n(),
+            .by = c(an_base, nm_grau_academico)) |> 
+  bind_rows(dados |> 
+              group_by(an_base)  |> 
+              summarise(nm_grau_academico = "Total", n = n())) |> 
+  filter(nm_grau_academico != "mestrado profissional") |> 
+  filter(an_base >= 1991) |> 
+  mutate(nm_grau_academico = str_replace_all(nm_grau_academico,
+                                             pattern = c("mestrado" = "Dissertation",
+                                                         "doutorado" = "Thesis")))
+# Gráfico evolução 
+ev_total |> 
+  ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
+  geom_point(alpha = 0.5) +
+  geom_line(alpha = 0.5) +
+  geom_labelsmooth(aes(label = nm_grau_academico), 
+                   text_smoothing = 30, 
+                   fill = "#F6F6FF",
+                   method = "loess", 
+                   formula = y ~ x,
+                   hjust = 0.4,
+                   size = 4, 
+                   linewidth = 1.5, 
+                   boxlinewidth = 0.6,
+                   family = "Times New Roman") +
+  scale_color_manual(values = met.brewer("Degas", 3))  +
+  scale_x_continuous(limits = c(1990, 2021), breaks = seq(1990, 2021, 5)) +
+  scale_y_continuous(position = "right") +
+  theme_classic() +
+  labs(x = "",
+       y = "") +
+  theme(legend.position = "none",
+        text = element_text(size = 14, family = "Times New Roman")) +
+  coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
+
+ggsave(
+  "figs/stm_evoldefenses.png",
+  bg = "white",
+  width = 8,
+  height = 6,
+  dpi = 1200,
+  plot = last_plot())
+
+# ****STM**** ####
+
 dados <- dados |> #Banco com total de trabalhos por Área de Conhecimento Filosofia (N = 12525)
   dplyr::mutate(g_orientador = as.factor(g_orientador), # Tranforma em fator variável gênero
                 lang = textcat::textcat(ds_resumo)) |> # Cria identificar de idioma com base nos resumos
@@ -219,7 +266,7 @@ ggsave(
   "figs/stm_model80t.png",
   bg = "white",
   width = 22,
-  height = 14,
+  height = 16,
   dpi = 900,
   plot = last_plot())
 
@@ -297,8 +344,8 @@ tabelao2 <- tabelao |>
     font = "Times New Roman") 
 
 #Salvar
-gtsave(tabelao1, 
-       "tabelao_terms.docx", 
+gtsave(tabelao2, 
+       "tabelao_titles.docx", 
        path = "dados")
 
 # Gráfico Beta ####

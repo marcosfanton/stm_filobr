@@ -6,8 +6,6 @@ library(MetBrewer) # Paleta de cores
 library(ggtext) # Config de textos
 library(geobr) # Mapa Brasil
 library(janitor) # Tabela
-library(epiR) # Cálculo de razão de prevalência
-
 library(scales) # Uso de porcentagem em gráficos
 library(embed) # UMAP
 library(umap) # UMAP
@@ -51,8 +49,8 @@ ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
                    method = "loess", 
                    formula = y ~ x,
                    hjust = 0.4,
-                   size = 12, 
-                   linewidth = 2, 
+                   size = 6, 
+                   linewidth = 1.5, 
                    boxlinewidth = 0.6,
                    family = "Times New Roman") +
   scale_color_manual(values = met.brewer("Degas", 3))  +
@@ -62,14 +60,14 @@ ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
   labs(x = "",
        y = "") +
   theme(legend.position = "none",
-        text = element_text(size = 30, family = "Times New Roman")) +
+        text = element_text(size = 14, family = "Times New Roman")) +
   coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
 
 ggsave(
   "figs/stm_evoldefenses.png",
   bg = "white",
-  width = 16,
-  height = 10,
+  width = 8,
+  height = 6,
   dpi = 1200,
   plot = last_plot())
 
