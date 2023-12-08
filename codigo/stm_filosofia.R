@@ -377,13 +377,13 @@ category_colors <- c(
 tidybeta_graph |> 
   filter(!str_detect(category, "Excluded")) |> 
   filter(category %in% c(
-     # "Social and Political Philosophy"
+      #"Social and Political Philosophy"
      #"Metaphysics"
      # "Philosophy of Science"
      # "Phenomenology and Hermeneutics"
     # "Philosophy of Mind and Language"
-   #"Aesthetics"
-   "Ethics"
+   "Aesthetics"
+   # "Ethics"
     )) |> 
   ggplot(aes(x = term, 
              y = beta, 
@@ -397,20 +397,20 @@ tidybeta_graph |>
        y = "",
        fill = "") +
   theme(legend.position = "top",
-        legend.text = element_text(size = 14),
-        text = element_text(size = 14, family = "Times New Roman"),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 14),
-        strip.text = element_text(size = 12)) +
+        legend.text = element_text(size = 18),
+        text = element_text(size = 16, family = "Times New Roman"),
+      #  axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 16),
+        strip.text = element_text(size = 13)) +
   coord_flip() +
   scale_x_reordered() 
 
 # Salvar
 ggsave(
-  "figs/stm_grafbeta-ethics.png",
+  "figs/stm_grafbeta-aestethics.png",
   bg = "white",
-  width = 11,
-  height = 12,
+  width = 13,
+  height = 16,
   dpi = 1200,
   plot = last_plot())
 

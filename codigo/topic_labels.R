@@ -75,9 +75,9 @@ topic_labels <- tribble(
   43, "METAETHICS",
   7, "VIRTUE ETHICS",
   1, "Excluded-1",
-  2, "TEACHING-2",
+  2, "Excluded-2",
   10, "Excluded-10",
-  21, "AQUINAS-21",
+  21, "Excluded-21",
   46, "Excluded-46",
   80, "Excluded-80"
 ) |> 
