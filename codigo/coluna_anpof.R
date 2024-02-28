@@ -91,7 +91,7 @@ tabela1 <- bind_rows(dados_nivel,
                      dados_discente,
                      dados_relacao) 
   
-#tab1 <- 
+tab1 <- 
   tabela1 |> 
   gt(groupname_col = "variavel",
      rowname_col = "categorias") |> 
@@ -105,7 +105,7 @@ tabela1 <- bind_rows(dados_nivel,
     sep_mark = ".",
     dec_mark = ",") |>   
   tab_header(
-    title = md("**Tabela 1:** Características de trabalhos finais defendidos em PPG's de Filosofia no Brasil (1991-2021) | N: 12.353 trabalhos"),
+    title = md("**Tabela 1:** Características de trabalhos finais defendidos em PPG's de Filosofia no Brasil (1991-2021) | N: 12.353 trabalhos")
   ) |> 
   tab_source_note(
     source_note = "Elaboração: Dataphilo. Dados: CAPES."
@@ -128,19 +128,18 @@ tabela1 <- bind_rows(dados_nivel,
   cols_width(categorias ~ px(200),
              variavel ~ px(80),
              total ~ px(80),
-             frequencia ~ px(80)) |> 
+             frequencia ~ px(80)) |>  
+  opt_table_font(font = google_font(name = "Gentium Book Basic")) |> 
+    tab_options(heading.title.font.size = px(12),
+                table.font.size = px(12),
+                row_group.padding = px(1),
+                data_row.padding =  px(1.5),
+                source_notes.font.size = px(10)) |> 
   tab_style(
-    style = cell_text(
-      size = px(20)
-    ),
-    locations = cells_title("title")) |> 
-    opt_table_font(
-      font = google_font(name = "Gentium Book Basic")) |> 
-  tab_style(
-  cell_borders(sides = c("bottom", "top"), color = "black", weight = 4),
+  cell_borders(sides = c("bottom", "top"), color = "black"),
   locations = cells_title()) |>
   tab_style(
-    cell_borders(sides = c("bottom", "top"), color = "black", weight = 4),
+    cell_borders(sides = c("bottom", "top"), color = "black"),
     locations = cells_source_notes()) |> 
     opt_table_lines("none")
   
@@ -175,14 +174,18 @@ dados |>
        caption = "Elaboração: Dataphilo | Dados: CAPES") + 
   scale_x_continuous(limits = c(1990, 2022)) +
   scale_y_continuous(labels=scales::percent, position = "right") +
-  theme(legend.position = "top")+ 
+  theme(legend.position = "top",
+        text = element_text(size = 22, family = "Gentium Book Plus"),
+        plot.title = element_markdown(size = 22, face = "bold", hjust = 0.5),
+        plot.subtitle = element_markdown(size = 20, hjust = 0.5),
+        legend.text = element_text(size = 20)) + 
   coord_cartesian(clip = 'off')  # Permite dados além dos limites do gráfico (seta,p.ex.)
 
 # Salvar gráfico
 ggsave(
   "figs/graf_relacao_anpof.png",
   bg = "white",
-  width = 10,
+  width = 11,
   height = 6,
   dpi = 1200,
   plot = last_plot())
@@ -201,7 +204,7 @@ traducao <- c(
 
 tabela2 <- tabelao |> 
   slice_max(gamma, n = 15) |> 
-  select(labels, topic, terms, gamma) |> 
+  select(labels, terms, gamma) |> 
   mutate(
     labels = str_to_title(labels),
     labels = str_replace_all(labels, traducao),
@@ -210,9 +213,6 @@ tabela2 <- tabelao |>
 tab2 <- 
   tabela2 |> 
   gt() |> 
-  cols_merge(
-    columns = c(labels, topic), # Total
-    pattern = "{1} ({2})") |>
   cols_label(
     labels = "Tópicos",
     #category = "Categoria",
@@ -224,7 +224,7 @@ tab2 <-
     sep_mark = ".",
     dec_mark = ",") |>   
   tab_header(
-    title = "Tabela 2: Os 15 Tópicos mais pesquisados em trabalhos finais da Pós-Graduação em Filosofia no Brasil (1991-2021)",
+    title = md("**Tabela 2:** Os 15 Tópicos mais pesquisados em trabalhos finais da Pós-Graduação em Filosofia no Brasil (1991-2021)"),
     subtitle = NULL
   ) |> 
   tab_source_note(
@@ -241,15 +241,21 @@ tab2 <-
       size = px(20)
     ),
     locations = cells_title("title")) |> 
-  cols_width(terms ~ px(250),
-             labels ~ px(220),
-             gamma ~ px(80)) |> 
+  cols_width(terms ~ px(300),
+             labels ~ px(150),
+             gamma ~ px(80)) |> opt_table_font(font = google_font(name = "Gentium Book Basic")) |> 
+  tab_options(heading.title.font.size = px(12),
+              table.font.size = px(12),
+              row_group.padding = px(1),
+              data_row.padding =  px(1.5),
+              source_notes.font.size = px(10)) |> 
   tab_style(
-    cell_borders(sides = c("bottom", "top"), color = "black", weight = 4),
+    cell_borders(sides = c("bottom", "top"), color = "black"),
     locations = cells_title()) |>
   tab_style(
-    cell_borders(sides = c("bottom", "top"), color = "black", weight = 4),
+    cell_borders(sides = c("bottom", "top"), color = "black"),
     locations = cells_source_notes()) |> 
+  opt_table_lines("none") |> 
   opt_row_striping()
 
 #Salvar
