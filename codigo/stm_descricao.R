@@ -54,7 +54,7 @@ ggplot(aes(x = an_base, y = n, color = nm_grau_academico)) +
                    boxlinewidth = 0.6,
                    family = "Times New Roman") +
   scale_color_manual(values = met.brewer("Degas", 3))  +
-  scale_x_continuous(limits = c(1990, 2021), breaks = seq(1990, 2021, 5)) +
+  scale_x_continuous(limits = c(1990, 2022), breaks = seq(1990, 2022, 5)) +
   scale_y_continuous(position = "right") +
   theme_classic() +
   labs(x = "",
@@ -121,8 +121,8 @@ ggsave(
 
 # Tabela 3 | Desigualdade de gênero####
 # Salvar tabela para descrição 
-tab_genero <- dados |> 
-  group_by(g_orientador) |> 
+tab_genero1 <- dados |> 
+  group_by(an_base, g_discente) |> 
   summarize(total = n()) |> 
   mutate(frequency = round(total/sum(total)*100,2)) 
 

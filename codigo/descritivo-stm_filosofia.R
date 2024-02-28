@@ -15,7 +15,17 @@ library(janitor) # Estatísticas sumárias
 
 # Extração do banco de dados total - n. 12525 
 dados <- read.csv("dados/catalogo.csv") |> 
-  select(an_base, nm_entidade_ensino, nm_regiao, nm_subtipo_producao, sg_uf_ies, nm_producao, ds_palavra_chave, ds_resumo, nr_paginas, g_orientador, g_discente, g_oridis)
+  select(an_base, 
+         nm_entidade_ensino, 
+         nm_regiao, 
+         nm_subtipo_producao, 
+         sg_uf_ies, nm_producao, 
+         ds_palavra_chave, 
+         ds_resumo, 
+         nr_paginas, 
+         g_orientador, 
+         g_discente, 
+         g_oridis)
 
 # Gráfico - Evolução total da produção#### 
 dados |> 

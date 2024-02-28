@@ -221,7 +221,7 @@ tidybeta <- tidytext::tidy(topic_model) |>
 top_words <- tidybeta  |> 
   arrange(desc(beta))  |> 
   group_by(labels) |> 
-  top_n(10, beta) |> 
+  top_n(5, beta) |> 
   summarise(terms = paste(term, collapse = ",")) |> 
   ungroup()
 
